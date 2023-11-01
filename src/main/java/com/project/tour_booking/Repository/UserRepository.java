@@ -9,9 +9,9 @@ import com.project.tour_booking.Entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
-    Optional<User> findByEmail(String email);
+    User findByEmail(String email);
+    User findByUsername(String username);
     Optional<User> findByUsernameOrEmail(String username, String email);
-    Optional<User> findByUsername(String username);
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
 }

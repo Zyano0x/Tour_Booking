@@ -19,6 +19,7 @@ public class Role {
     private String name;
 
     public Role() {
+
     }
 
     public Role(long id, String name) {
@@ -40,13 +41,5 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", name='" + getName() + "'" +
-            "}";
     }
 }

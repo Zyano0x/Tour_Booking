@@ -67,6 +67,9 @@ public class User {
     @Digits(integer = 10, fraction = 0, message = "Phone number must be a 10-digit number")
     private Long phone;
 
+    @Column(name = "verified", nullable = false)
+    private boolean verified;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -77,7 +80,7 @@ public class User {
 
     }
 
-    public User(Long id, String username, String password, String name, Date birthday, String gender, String email, String address, Long cid, Long phone, Set<Role> roles) {
+    public User(Long id, String username, String password, String name, Date birthday, String gender, String email, String address, Long cid, Long phone, boolean verified, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -88,6 +91,7 @@ public class User {
         this.address = address;
         this.cid = cid;
         this.phone = phone;
+        this.verified = verified;
         this.roles = roles;
     }
 
@@ -171,28 +175,23 @@ public class User {
         this.phone = phone;
     }
 
+    public boolean isVerified() {
+        return this.verified;
+    }
+
+    public boolean getVerified() {
+        return this.verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
     public Set<Role> getRoles() {
         return this.roles;
     }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", username='" + getUsername() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", name='" + getName() + "'" +
-            ", birthday='" + getBirthday() + "'" +
-            ", gender='" + getGender() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", cid='" + getCid() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", roles='" + getRoles() + "'" +
-            "}";
     }
 }
