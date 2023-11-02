@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.tour_booking.DTO.ResetPasswordDTO;
 import com.project.tour_booking.DTO.SignInDTO;
 import com.project.tour_booking.DTO.SignUpDTO;
 import com.project.tour_booking.Service.UserService;
@@ -38,5 +39,15 @@ public class UserController {
     @RequestMapping(value = "/resend-verification", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<String> reconfirmUserAccount(@RequestParam("token")String oldToken) {
         return userService.resendEmailVerification(oldToken);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPasswordUserAccount(@RequestBody String email) {
+        return userService.forgotPassword(email);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPasswordUserAccount(@RequestBody ResetPasswordDTO resetPasswordDTO) {
+        return userService.resetPassword(resetPasswordDTO);
     }
 }

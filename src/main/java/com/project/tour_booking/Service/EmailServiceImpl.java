@@ -6,9 +6,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.project.tour_booking.Entity.SecureToken;
-import com.project.tour_booking.Entity.User;
-
 @Service
 public class EmailServiceImpl implements EmailService {
     
@@ -21,13 +18,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     @Override
-    public void sendEmailVerification(User user, SecureToken token) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("no-reply@tourbooking.com");
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Complete Registration!");
-        mailMessage.setText("To confirm your account, please click here: "
-                            +"http://localhost:1337/api/confirm-account?token="+token.getToken());
-        javaMailSender.send(mailMessage);
+    public void sendEmail(SimpleMailMessage eMailMessage) {
+        javaMailSender.send(eMailMessage);
     }
 }

@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.tour_booking.DTO.ResetPasswordDTO;
 import com.project.tour_booking.DTO.SignUpDTO;
 import com.project.tour_booking.Entity.Role;
 import com.project.tour_booking.Entity.SecureToken;
@@ -28,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private SecureTokenService secureTokenService;
 
     @Autowired
     private EmailService emailService;
@@ -48,12 +53,12 @@ public class UserServiceImpl implements UserService {
         VALID,
         INVALID_TOKEN,
         EXPIRED,
-        VERIFIED,
     }
 
-    public UserServiceImpl(AuthenticationManager authenticationManager, EmailService emailService, UserRepository userRepository,
+    public UserServiceImpl(AuthenticationManager authenticationManager, EmailService emailService, SecureTokenService secureTokenService,UserRepository userRepository,
                             RoleRepository roleRepository, SecureTokenRepository secureTokenRepository, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
+        this.secureTokenService = secureTokenService;
         this.emailService = emailService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -111,7 +116,14 @@ public class UserServiceImpl implements UserService {
 
             secureTokenRepository.save(token);
 
-            emailService.sendEmailVerification(user, token);
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setFrom("no-reply@tourbooking.com");
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setSubject("Complete Registration!");
+            mailMessage.setText("To confirm your account, please click here: "
+                                +"http://localhost:1337/api/confirm-account?token="+token.getToken());
+
+            emailService.sendEmail(mailMessage);
 
             return new ResponseEntity<>(
                     "User registered successfully. Verify email by the link sent on your email address!",
@@ -132,12 +144,17 @@ public class UserServiceImpl implements UserService {
 
         if (validateToken(confirmationToken) == VerificationResult.INVALID_TOKEN) {
             return new ResponseEntity<>("Invalid verification token.", HttpStatus.BAD_REQUEST);
-        } else if (validateToken(confirmationToken) == VerificationResult.VERIFIED) {
-            return new ResponseEntity<>("This account has already been verified, please, login.",
-                    HttpStatus.BAD_REQUEST);
         } else if (validateToken(confirmationToken) == VerificationResult.EXPIRED) {
             return new ResponseEntity<>("Verification token already expired.", HttpStatus.BAD_REQUEST);
         } else if (validateToken(confirmationToken) == VerificationResult.VALID) {
+            SecureToken token = secureTokenRepository.findByToken(confirmationToken);
+            User user = token.getUser();
+
+            user.setVerified(true);
+            userRepository.save(user);
+
+            secureTokenService.removeToken(token);
+
             return new ResponseEntity<>("Email verified successfully!", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Error: Couldn't verify email", HttpStatus.BAD_REQUEST);
@@ -152,7 +169,14 @@ public class UserServiceImpl implements UserService {
             token.setToken(UUID.randomUUID().toString());
             token.setExpireTime(new SecureToken().getTokenExpirationTime());
 
-            emailService.sendEmailVerification(user, token);
+             SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setFrom("no-reply@tourbooking.com");
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setSubject("Complete Registration!");
+            mailMessage.setText("To confirm your account, please click here: "
+                                +"http://localhost:1337/api/confirm-account?token="+token.getToken());
+
+            emailService.sendEmail(mailMessage);
             return new ResponseEntity<>("A new verification link hs been sent to your email, "
                                         + "please, check to complete your registration", HttpStatus.OK);
         }
@@ -160,6 +184,58 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseEntity<String> forgotPassword(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return new ResponseEntity<>("User not found for email: " + email, HttpStatus.NOT_FOUND);
+        }
+        
+        SecureToken token = new SecureToken(user);
+        secureTokenRepository.save(token);
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("no-reply@tourbooking.com");
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Reset Password");
+        mailMessage.setText("To reset password your account, please click here: "
+                            +"http://localhost:1337/api/reset-password?token="+token.getToken());
+
+        emailService.sendEmail(mailMessage);
+        
+        return new ResponseEntity<>("Password reset email sent to " + email, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> resetPassword(ResetPasswordDTO resetPasswordDTO) {
+        SecureToken token = secureTokenRepository.findByToken(resetPasswordDTO.getToken());
+
+        if (validateToken(token.getToken()) == VerificationResult.INVALID_TOKEN) {
+            return new ResponseEntity<>("Invalid reset token", HttpStatus.BAD_REQUEST);
+        } else if (validateToken(token.getToken()) == VerificationResult.EXPIRED) {
+            return new ResponseEntity<>("Reset token has expired", HttpStatus.BAD_REQUEST);
+        }
+        
+        User user = userRepository.findByEmail(resetPasswordDTO.getEmail()).orElse(null);
+        if (user == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+        }
+
+        // Check if the new password and repeat password match
+        String newPassword = resetPasswordDTO.getPassword();
+        String repeatPassword = resetPasswordDTO.getRepeatPassword();
+        if (!newPassword.equals(repeatPassword)) {
+            return new ResponseEntity<>("Passwords do not match", HttpStatus.BAD_REQUEST);
+        }
+        
+        // Set the new password and save the user
+        user.setPassword(passwordEncoder.encode(newPassword)); // Hash the password
+        userRepository.save(user);
+        
+        secureTokenService.removeToken(token);
+        
+        return new ResponseEntity<>("Password reset successful", HttpStatus.OK);
+    }
+
     public VerificationResult validateToken(String confirmationToken) {
         SecureToken token = secureTokenRepository.findByToken(confirmationToken);
 
@@ -167,19 +243,11 @@ public class UserServiceImpl implements UserService {
             return VerificationResult.INVALID_TOKEN;
         }
 
-        User user = token.getUser();
         Calendar calendar = Calendar.getInstance();
 
         if ((token.getExpireTime().getTime() - calendar.getTime().getTime()) <= 0) {
             return VerificationResult.EXPIRED;
         }
-
-        if (user.isVerified()) {
-            return VerificationResult.VERIFIED;
-        }
-
-        user.setVerified(true);
-        userRepository.save(user);
 
         return VerificationResult.VALID;
     }
