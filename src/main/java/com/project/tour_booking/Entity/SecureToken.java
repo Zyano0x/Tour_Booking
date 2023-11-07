@@ -13,9 +13,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "confirmation_tokens")
+@Data
+@NoArgsConstructor
 public class SecureToken {
 
     @Id
@@ -35,10 +39,6 @@ public class SecureToken {
 
     private static final int EXPIRATION_TIME = 15;
 
-    public SecureToken() {
-
-    }
-
     public SecureToken(User user) {
         super();
         this.token = UUID.randomUUID().toString();
@@ -57,37 +57,5 @@ public class SecureToken {
         calendar.setTimeInMillis(new Date().getTime());
         calendar.add(Calendar.MINUTE, EXPIRATION_TIME);
         return new Date(calendar.getTime().getTime());
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getToken() {
-        return this.token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Date getExpireTime() {
-        return this.expireTime;
-    }
-
-    public void setExpireTime(Date expireTime) {
-        this.expireTime = expireTime;
-    }
-
-    public User getUser() {
-        return this.user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
