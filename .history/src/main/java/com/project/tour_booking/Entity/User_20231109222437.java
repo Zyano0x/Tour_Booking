@@ -1,6 +1,6 @@
 package com.project.tour_booking.Entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -52,7 +53,7 @@ public class User {
     @Column(name = "birthday", nullable = false)
     @Temporal(TemporalType.DATE)
     @NotNull(message = "Birthday is required")
-    private LocalDate birthday;
+    private Date birthday;
 
     @Column(name = "gender", length = 10, nullable = false)
     private String gender;
@@ -69,12 +70,15 @@ public class User {
     private Long cid;
 
     @Column(name = "phone", nullable = false)
-    private String phone;
+    @Digits(integer = 10, fraction = 0, message = "Phone number must be a 10-digit number")
+    private Long phone;
 
     @Column(name = "verified", nullable = false)
     private boolean verified;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 }

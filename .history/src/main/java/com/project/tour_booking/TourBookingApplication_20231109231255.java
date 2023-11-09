@@ -1,5 +1,9 @@
 package com.project.tour_booking;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +16,7 @@ import lombok.*;
 @SpringBootApplication
 @AllArgsConstructor
 public class TourBookingApplication implements CommandLineRunner {
-	private RoleService roleService;
+	RoleService roleService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TourBookingApplication.class, args);
@@ -26,7 +30,7 @@ public class TourBookingApplication implements CommandLineRunner {
 		};
 
 		for (Role role : roles) {
-			roleService.saveRole(role);
+
 		}
 	}
 }

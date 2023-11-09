@@ -1,6 +1,6 @@
 package com.project.tour_booking.DTO;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.Data;
 
@@ -10,9 +10,9 @@ public class SignUpDTO {
     private String username;
     private String email;
     private String password;
-    private LocalDate birthday;
+    private Date birthday;
     private String gender;
     private String address;
     private Long cid;
-    private String phone;
+    private Long phone;
 }

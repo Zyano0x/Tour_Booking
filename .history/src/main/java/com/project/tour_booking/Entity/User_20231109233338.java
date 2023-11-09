@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -69,7 +70,8 @@ public class User {
     private Long cid;
 
     @Column(name = "phone", nullable = false)
-    private String phone;
+    @Digits(integer = 10, fraction = 0, message = "Phone number must be a 10-digit number")
+    private Long phone;
 
     @Column(name = "verified", nullable = false)
     private boolean verified;
