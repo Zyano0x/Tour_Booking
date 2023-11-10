@@ -12,4 +12,5 @@ public interface UserService {
     ResponseEntity<String> resendEmailVerification(String oldToken);
     ResponseEntity<String> forgotPassword(String email);
     ResponseEntity<String> resetPassword(ResetPasswordDTO resetPasswordDTO);
+    ResponseEntity<String> updateUserRole(String username, Long roleId);
 }

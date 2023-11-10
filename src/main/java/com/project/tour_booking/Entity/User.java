@@ -1,6 +1,6 @@
 package com.project.tour_booking.Entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -16,7 +16,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -53,7 +52,7 @@ public class User {
     @Column(name = "birthday", nullable = false)
     @Temporal(TemporalType.DATE)
     @NotNull(message = "Birthday is required")
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(name = "gender", length = 10, nullable = false)
     private String gender;
@@ -66,12 +65,12 @@ public class User {
     private String address;
 
     @Column(name = "cid", length = 20, nullable = false)
-    @NotNull(message = "CID is required")
-    private Long cid;
+    @NotBlank(message = "CID is required")
+    private String cid;
 
     @Column(name = "phone", nullable = false)
-    @Digits(integer = 10, fraction = 0, message = "Phone number must be a 10-digit number")
-    private Long phone;
+    @NotBlank(message = "Phone is required")
+    private String phone;
 
     @Column(name = "verified", nullable = false)
     private boolean verified;

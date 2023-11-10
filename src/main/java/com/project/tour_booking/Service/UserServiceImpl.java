@@ -25,7 +25,11 @@ import com.project.tour_booking.Repository.RoleRepository;
 import com.project.tour_booking.Repository.SecureTokenRepository;
 import com.project.tour_booking.Repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -53,17 +57,6 @@ public class UserServiceImpl implements UserService {
         VALID,
         INVALID_TOKEN,
         EXPIRED,
-    }
-
-    public UserServiceImpl(AuthenticationManager authenticationManager, EmailService emailService, SecureTokenService secureTokenService,UserRepository userRepository,
-                            RoleRepository roleRepository, SecureTokenRepository secureTokenRepository, PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
-        this.secureTokenService = secureTokenService;
-        this.emailService = emailService;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.secureTokenRepository = secureTokenRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -106,7 +99,7 @@ public class UserServiceImpl implements UserService {
             user.setCid(signUpDTO.getCid());
             user.setPhone(signUpDTO.getPhone());
 
-            Role roles = roleRepository.findByName("ROLE_USER")
+            Role roles = roleRepository.findByName("USER")
                     .orElseThrow(() -> new IllegalStateException("Default role not found"));
             user.setRoles(Collections.singleton(roles));
 
@@ -169,7 +162,7 @@ public class UserServiceImpl implements UserService {
             token.setToken(UUID.randomUUID().toString());
             token.setExpireTime(new SecureToken().getTokenExpirationTime());
 
-             SimpleMailMessage mailMessage = new SimpleMailMessage();
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setFrom("no-reply@tourbooking.com");
             mailMessage.setTo(user.getEmail());
             mailMessage.setSubject("Complete Registration!");
@@ -234,6 +227,21 @@ public class UserServiceImpl implements UserService {
         secureTokenService.removeToken(token);
         
         return new ResponseEntity<>("Password reset successful", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> updateUserRole(String username, Long roleId) {
+        User user = userRepository.findByUsername(username)
+                        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + username));
+    
+        Role role = roleRepository.findById(roleId)
+                        .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId));
+
+        user.getRoles().clear();
+        user.getRoles().add(role);
+        userRepository.save(user);
+
+        return new ResponseEntity<>("Update user role succeed", HttpStatus.OK);
     }
 
     public VerificationResult validateToken(String confirmationToken) {
