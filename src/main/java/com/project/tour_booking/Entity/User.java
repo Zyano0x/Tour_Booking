@@ -1,7 +1,6 @@
 package com.project.tour_booking.Entity;
 
 import java.time.LocalDate;
-import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -53,7 +52,6 @@ public class User {
     @Column(name = "birthday", nullable = false)
     @Temporal(TemporalType.DATE)
     @NotNull(message = "Birthday is required")
-    private LocalDate birthday;
     private LocalDate birthday;
 
     @Column(name = "gender", length = 10, nullable = false)
