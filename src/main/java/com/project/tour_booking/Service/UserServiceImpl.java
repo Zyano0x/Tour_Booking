@@ -23,6 +23,8 @@ import com.project.tour_booking.Entity.User;
 import com.project.tour_booking.Repository.RoleRepository;
 import com.project.tour_booking.Repository.SecureTokenRepository;
 import com.project.tour_booking.Repository.UserRepository;
+import com.project.tour_booking.Service.Admin.Email.EmailService;
+import com.project.tour_booking.Service.Admin.SecureToken.SecureTokenService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -231,10 +233,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<String> updateUserRole(String username, Long roleId) {
         User user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + username));
-    
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + username));
+
         Role role = roleRepository.findById(roleId)
-                        .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId));
+                .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId));
 
         user.setRole(role); // Set the new role directly
         userRepository.save(user);

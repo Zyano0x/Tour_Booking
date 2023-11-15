@@ -21,17 +21,19 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    
+
     @Autowired
     UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: "+ usernameOrEmail));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "User not found with username or email: " + usernameOrEmail));
 
         if (!user.isVerified()) {
-            // If the user is not verified, you can choose to throw an exception or handle it as needed.
+            // If the user is not verified, you can choose to throw an exception or handle
+            // it as needed.
             // In this example, an exception is thrown.
             throw new DisabledException("User account is not verified.");
         }
@@ -41,6 +43,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(role.getName()));
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isVerified(), true,true, true, authorities);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
+                user.isVerified(), true, true, true, authorities);
     }
 }
