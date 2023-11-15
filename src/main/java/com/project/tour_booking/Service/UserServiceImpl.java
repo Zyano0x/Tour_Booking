@@ -1,7 +1,6 @@
 package com.project.tour_booking.Service;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,9 +98,9 @@ public class UserServiceImpl implements UserService {
             user.setCid(signUpDTO.getCid());
             user.setPhone(signUpDTO.getPhone());
 
-            Role roles = roleRepository.findByName("USER")
+            Role role = roleRepository.findByName("USER")
                     .orElseThrow(() -> new IllegalStateException("Default role not found"));
-            user.setRoles(Collections.singleton(roles));
+            user.setRole(role);
 
             userRepository.save(user);
 
@@ -237,8 +236,7 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.findById(roleId)
                         .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId));
 
-        user.getRoles().clear();
-        user.getRoles().add(role);
+        user.setRole(role); // Set the new role directly
         userRepository.save(user);
 
         return new ResponseEntity<>("Update user role succeed", HttpStatus.OK);
