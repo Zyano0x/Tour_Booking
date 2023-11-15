@@ -1,7 +1,7 @@
 package com.project.tour_booking.Service;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
@@ -12,18 +12,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.project.tour_booking.Entity.Role;
 import com.project.tour_booking.Entity.User;
 import com.project.tour_booking.Repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
-
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
@@ -38,11 +38,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new DisabledException("User account is not verified.");
         }
 
-        Set<GrantedAuthority> authorities = user
-                .getRoles()
-                .stream()
-                .map((role) -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toSet());
+        Role role = user.getRole();
+
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 user.isVerified(), true, true, true, authorities);
