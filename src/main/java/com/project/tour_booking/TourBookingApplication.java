@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.project.tour_booking.Entity.Role;
-import com.project.tour_booking.Service.Admin.Role.RoleService;
+import com.project.tour_booking.Service.Role.RoleService;
 
 import lombok.AllArgsConstructor;
 

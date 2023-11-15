@@ -23,8 +23,8 @@ import com.project.tour_booking.Entity.User;
 import com.project.tour_booking.Repository.RoleRepository;
 import com.project.tour_booking.Repository.SecureTokenRepository;
 import com.project.tour_booking.Repository.UserRepository;
-import com.project.tour_booking.Service.Admin.Email.EmailService;
-import com.project.tour_booking.Service.Admin.SecureToken.SecureTokenService;
+import com.project.tour_booking.Service.Email.EmailService;
+import com.project.tour_booking.Service.SecureToken.SecureTokenService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
