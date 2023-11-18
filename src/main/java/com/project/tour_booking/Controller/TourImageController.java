@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.tour_booking.DTO.TourImageDTO;
 import com.project.tour_booking.Entity.TourImage;
 import com.project.tour_booking.Service.TourImage.TourImageService;
 
@@ -26,8 +27,8 @@ public class TourImageController {
   private TourImageService tourImageService;
 
   @PostMapping("/admin/tour-image")
-  public ResponseEntity<String> saveTourImage(@Valid @RequestBody TourImage tourImage) {
-    tourImageService.saveTourImage(tourImage);
+  public ResponseEntity<String> saveTourImage(@Valid @RequestBody TourImageDTO tourImageDTO) {
+    tourImageService.saveTourImage(tourImageDTO);
     return new ResponseEntity<>("THÊM ẢNH THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
@@ -47,9 +48,9 @@ public class TourImageController {
   }
 
   @PutMapping("/admin/update-tour-image/{tourImageId}")
-  public ResponseEntity<TourImage> updateTourImage(@Valid @RequestBody TourImage tourImage,
+  public ResponseEntity<TourImage> updateTourImage(@Valid @RequestBody TourImageDTO tourImageDTO,
       @PathVariable Long tourImageId) {
-    return new ResponseEntity<>(tourImageService.updateTourImage(tourImage, tourImageId), HttpStatus.OK);
+    return new ResponseEntity<>(tourImageService.updateTourImage(tourImageDTO, tourImageId), HttpStatus.OK);
   }
 
   @DeleteMapping("/admin/delete-tour-image/{tourImageId}")

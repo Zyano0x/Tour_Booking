@@ -1,11 +1,14 @@
 package com.project.tour_booking.Service.Post;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.project.tour_booking.DTO.PostDTO;
 import com.project.tour_booking.Entity.Post;
+import com.project.tour_booking.Entity.User;
+import com.project.tour_booking.Exception.UserNotFoundException;
 import com.project.tour_booking.Repository.PostRepository;
 import com.project.tour_booking.Repository.UserRepository;
 
@@ -24,7 +27,11 @@ public class PostServiceImpl implements PostService {
     post.setTitle(postDTO.getTitle());
     post.setDateOfPosting(LocalDate.now());
     post.setStatus(true);
-    post.setUser(userRepository.findById(postDTO.getUserId()).get());
+    Optional<User> userOptional = userRepository.findById(postDTO.getUserId());
+    if (userOptional.isPresent())
+      post.setUser(userOptional.get());
+    else
+      throw new UserNotFoundException(postDTO.getUserId());
     postRepository.save(post);
   }
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.project.tour_booking.DTO.TourImageDTO;
 import com.project.tour_booking.Entity.Tour;
 import com.project.tour_booking.Entity.TourImage;
 import com.project.tour_booking.Exception.TourImageNotFoundException;
@@ -21,23 +22,13 @@ public class TourImageServiceImpl implements TourImageService {
   private TourRepository tourRepository;
 
   @Override
-  public void saveTourImageFromTour(List<String> tourImages, Long tourId) {
-    Tour tour = tourRepository.findById(tourId).get();
-    for (String image : tourImages) {
-      TourImage tourImage = new TourImage(image, tourId);
-      tourImage.setTour(tour);
-      tourImageRepository.save(tourImage);
-    }
-  }
-
-  @Override
-  public void saveTourImage(TourImage tourImage) {
-    TourImage newTourImage = new TourImage(tourImage.getPath(), tourImage.getTourIdForCrud());
-    Optional<Tour> tourOptional = tourRepository.findById(tourImage.getTourIdForCrud());
+  public void saveTourImage(TourImageDTO tourImageDTO) {
+    TourImage newTourImage = new TourImage(tourImageDTO.getPath());
+    Optional<Tour> tourOptional = tourRepository.findById(tourImageDTO.getTourId());
     if (tourOptional.isPresent())
       newTourImage.setTour(tourOptional.get());
     else
-      throw new TourNotFoundException(tourImage.getTourIdForCrud());
+      throw new TourNotFoundException(tourImageDTO.getTourId());
     tourImageRepository.save(newTourImage);
   }
 
@@ -61,17 +52,21 @@ public class TourImageServiceImpl implements TourImageService {
   }
 
   @Override
-  public TourImage updateTourImage(TourImage tourImage, Long tourImageId) {
-    Optional<TourImage> updateTourImage = tourImageRepository.findById(tourImageId);
-    if (updateTourImage.isPresent()) {
-      TourImage updateTourImage2 = updateTourImage.get();
-      updateTourImage2.setPath(tourImage.getPath());
-      Optional<Tour> tourOptional = tourRepository.findById(tourImage.getTourIdForCrud());
+  public TourImage updateTourImage(TourImageDTO tourImageDTO, Long tourImageId) {
+    // Kiểm tra tồn tại
+    Optional<TourImage> TourImageOptional = tourImageRepository.findById(tourImageId);
+    if (TourImageOptional.isPresent()) {
+      TourImage updateTourImage = TourImageOptional.get();
+
+      updateTourImage.setPath(tourImageDTO.getPath());
+
+      // Kiểm tra tồn tại
+      Optional<Tour> tourOptional = tourRepository.findById(tourImageDTO.getTourId());
       if (tourOptional.isPresent())
-        updateTourImage2.setTour(tourOptional.get());
+        updateTourImage.setTour(tourOptional.get());
       else
-        throw new TourNotFoundException(tourImage.getTourIdForCrud());
-      return tourImageRepository.save(updateTourImage2);
+        throw new TourNotFoundException(tourImageDTO.getTourId());
+      return tourImageRepository.save(updateTourImage);
     } else
       throw new TourImageNotFoundException(tourImageId);
   }
