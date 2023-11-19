@@ -59,13 +59,8 @@ public class UserController {
         return userService.updateUserRole(username, updateUserRoleDTO.getRoleId());
     }
 
-    @PutMapping("/admin/lock")
+    @PutMapping("/admin/update-account")
     public ResponseEntity<String> lockUserAccount(@RequestBody String email) {
-        return userService.lockUserAccount(email);
-    }
-
-    @PutMapping("/admin/unlock")
-    public ResponseEntity<String> unlockUserAccount(@RequestBody String email) {
-        return userService.unlockUserAccount(email);
+        return userService.updateUserAccount(email);
     }
 }

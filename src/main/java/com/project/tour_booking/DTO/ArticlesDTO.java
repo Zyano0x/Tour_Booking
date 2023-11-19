@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class PostDTO {
+public class ArticlesDTO {
   @NotBlank(message = "Tiêu đề không được để trống!")
   private String title;
 

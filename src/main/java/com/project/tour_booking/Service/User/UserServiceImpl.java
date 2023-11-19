@@ -245,25 +245,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<String> lockUserAccount(String email) {
+    public ResponseEntity<String> updateUserAccount(String email) {
         User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        
+        if (user.isLocked()) user.setLocked(false);
+        else user.setLocked(true);
 
-        user.setLocked(true);
         userRepository.save(user);
 
-        return new ResponseEntity<>("Locked account succeed", HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<String> unlockUserAccount(String email) {
-        User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-
-        user.setLocked(false);
-        userRepository.save(user);
-
-        return new ResponseEntity<>("Locked account succeed", HttpStatus.OK);
+        return new ResponseEntity<>("Updated account succeed", HttpStatus.OK);
     }
 
     public VerificationResult validateToken(String confirmationToken) {

@@ -20,7 +20,5 @@ public interface UserService {
 
     ResponseEntity<String> updateUserRole(String username, Long roleId);
 
-    ResponseEntity<String> lockUserAccount(String email);
-
-    ResponseEntity<String> unlockUserAccount(String email);
+    ResponseEntity<String> updateUserAccount(String email);
 }

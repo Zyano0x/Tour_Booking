@@ -14,12 +14,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
-@Table(name = "post")
+@Table(name = "articles")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class Articles {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", unique = true)
