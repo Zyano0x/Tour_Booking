@@ -31,12 +31,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "User not found with username or email: " + usernameOrEmail));
 
-        if (!user.isVerified()) {
-            // If the user is not verified, you can choose to throw an exception or handle
-            // it as needed.
-            // In this example, an exception is thrown.
-            throw new DisabledException("User account is not verified.");
-        }
+        if (!user.isVerified()) throw new DisabledException("User account is not verified.");
+
+        if (user.isLocked()) throw new DisabledException("User account is locked.");
 
         Role role = user.getRole();
 

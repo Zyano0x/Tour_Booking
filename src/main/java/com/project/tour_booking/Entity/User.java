@@ -74,6 +74,9 @@ public class User {
     @Column(name = "verified", nullable = false)
     private boolean verified;
 
+    @Column(name = "locked", nullable = false)
+    private boolean locked;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;

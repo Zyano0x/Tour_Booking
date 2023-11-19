@@ -15,7 +15,7 @@ import com.project.tour_booking.DTO.ResetPasswordDTO;
 import com.project.tour_booking.DTO.SignInDTO;
 import com.project.tour_booking.DTO.SignUpDTO;
 import com.project.tour_booking.DTO.UpdateUserRoleDTO;
-import com.project.tour_booking.Service.UserService;
+import com.project.tour_booking.Service.User.UserService;
 
 @RestController
 @RequestMapping("/api")
@@ -54,8 +54,18 @@ public class UserController {
         return userService.resetPassword(resetPasswordDTO);
     }
 
-    @PutMapping("update-role/{username}")
+    @PutMapping("/admin/update-role/{username}")
     public ResponseEntity<String> updateUserRole(@PathVariable String username, @RequestBody UpdateUserRoleDTO updateUserRoleDTO) {
         return userService.updateUserRole(username, updateUserRoleDTO.getRoleId());
+    }
+
+    @PutMapping("/admin/lock")
+    public ResponseEntity<String> lockUserAccount(@RequestBody String email) {
+        return userService.lockUserAccount(email);
+    }
+
+    @PutMapping("/admin/unlock")
+    public ResponseEntity<String> unlockUserAccount(@RequestBody String email) {
+        return userService.unlockUserAccount(email);
     }
 }

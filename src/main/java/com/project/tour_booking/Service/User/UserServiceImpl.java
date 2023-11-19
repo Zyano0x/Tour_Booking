@@ -1,4 +1,4 @@
-package com.project.tour_booking.Service;
+package com.project.tour_booking.Service.User;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -231,17 +231,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<String> updateUserRole(String username, Long roleId) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + username));
+    public ResponseEntity<String> updateUserRole(String email, Long roleId) {
+        User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
         Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId));
+                    .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId));
 
         user.setRole(role); // Set the new role directly
         userRepository.save(user);
 
         return new ResponseEntity<>("Update user role succeed", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> lockUserAccount(String email) {
+        User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        user.setLocked(true);
+        userRepository.save(user);
+
+        return new ResponseEntity<>("Locked account succeed", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> unlockUserAccount(String email) {
+        User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        user.setLocked(false);
+        userRepository.save(user);
+
+        return new ResponseEntity<>("Locked account succeed", HttpStatus.OK);
     }
 
     public VerificationResult validateToken(String confirmationToken) {

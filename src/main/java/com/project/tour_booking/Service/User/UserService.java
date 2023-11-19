@@ -1,4 +1,4 @@
-package com.project.tour_booking.Service;
+package com.project.tour_booking.Service.User;
 
 import org.springframework.http.ResponseEntity;
 
@@ -19,4 +19,8 @@ public interface UserService {
     ResponseEntity<String> resetPassword(ResetPasswordDTO resetPasswordDTO);
 
     ResponseEntity<String> updateUserRole(String username, Long roleId);
+
+    ResponseEntity<String> lockUserAccount(String email);
+
+    ResponseEntity<String> unlockUserAccount(String email);
 }
