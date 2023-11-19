@@ -36,25 +36,36 @@ public class BookingController {
     return new ResponseEntity<>(bookingService.getBooking(bookingId), HttpStatus.OK);
   }
 
-  @GetMapping("/admin/booking/user/{userId}/tour/{tourId}")
-  public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId,
-      @PathVariable Long tourId) {
-    return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId), HttpStatus.OK);
-  }
+  // @GetMapping("/admin/booking/user/{userId}/tour/{tourId}")
+  // public ResponseEntity<List<Booking>>
+  // getBookingByUserIdAndTourId(@PathVariable Long userId,
+  // @PathVariable Long tourId) {
+  // return new
+  // ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId),
+  // HttpStatus.OK);
+  // }
 
   @GetMapping("/booking/user/{userId}")
   public ResponseEntity<List<Booking>> getAllBookingByUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(bookingService.getAllBookingByUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/booking/tour/{tourId}")
-  public ResponseEntity<List<Booking>> getAllBookingByTourId(@PathVariable Long tourId) {
-    return new ResponseEntity<>(bookingService.getAllBookingByTourId(tourId), HttpStatus.OK);
-  }
+  // @GetMapping("/booking/tour/{tourId}")
+  // public ResponseEntity<List<Booking>> getAllBookingByTourId(@PathVariable Long
+  // tourId) {
+  // return new ResponseEntity<>(bookingService.getAllBookingByTourId(tourId),
+  // HttpStatus.OK);
+  // }
 
   @PutMapping("/admin/update-status-booking/{bookingId}")
   public ResponseEntity<String> updateStatusBooking(@PathVariable Long bookingId) {
     bookingService.updateStatusBooking(bookingId);
     return new ResponseEntity<>("CẬP NHẬT TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
+  }
+
+  @PutMapping("/update-booking/{bookingId}")
+  public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingDTO bookingDTO, @PathVariable Long bookingId) {
+    bookingService.updateBooking(bookingDTO, bookingId);
+    return new ResponseEntity<>("CẬP NHẬT ĐƠN ĐẶT TOUR THÀNH CÔNG!", HttpStatus.OK);
   }
 }

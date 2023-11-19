@@ -31,7 +31,7 @@ public class TypeOfTourController {
     return new ResponseEntity<>("THÊM LOẠI TOUR THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/admin/type-of-tour/{totId}")
+  @GetMapping("/type-of-tour/{totId}")
   public ResponseEntity<TypeOfTour> getTOT(@PathVariable Long totId) {
     return new ResponseEntity<>(typeOfTourService.getTOT(totId), HttpStatus.OK);
   }

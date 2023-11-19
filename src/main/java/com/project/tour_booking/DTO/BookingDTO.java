@@ -10,5 +10,5 @@ public class BookingDTO {
 
   private Long userId;
 
-  private Long tourId;
+  private Long departureDayId;
 }
