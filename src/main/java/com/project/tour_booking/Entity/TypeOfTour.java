@@ -19,7 +19,7 @@ import lombok.*;
 @Table(name = "types_of_tours")
 @Setter
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 public class TypeOfTour {
   @Id
@@ -27,13 +27,19 @@ public class TypeOfTour {
   @Column(name = "id", unique = true)
   private Long id;
 
+  @NonNull
   @NotBlank(message = "Tên loại tour không được để trống")
   @Column(name = "name", nullable = false)
   private String name;
 
+  @NonNull
   @NotBlank(message = "Mô tả loại tour không được để trống")
   @Column(name = "description", nullable = false)
   private String description;
+
+  @NonNull
+  @Column(name = "status", nullable = false)
+  private Boolean status;
 
   @JsonIgnore
   @OneToMany(mappedBy = "typeOfTour", cascade = CascadeType.ALL)

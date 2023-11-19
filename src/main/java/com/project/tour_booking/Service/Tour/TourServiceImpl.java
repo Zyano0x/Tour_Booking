@@ -76,6 +76,11 @@ public class TourServiceImpl implements TourService {
   }
 
   @Override
+  public List<Tour> getTourByTypeOfTourId(Long totId) {
+    return tourRepository.findByTypeOfTourId(totId);
+  }
+
+  @Override
   public Tour updateTour(TourDTO tourDTO, Long tourId) {
     Optional<Tour> tourOptional = tourRepository.findById(tourId);
     if (tourOptional.isPresent()) {
@@ -118,7 +123,7 @@ public class TourServiceImpl implements TourService {
 
               departureDay.setStatus(false);
 
-              // Hủy các booking liên quan và cập nhật trường số lược của departureDay
+              // Hủy các booking liên quan và cập nhật trường số lượng của departureDay
               List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId());
               Integer totalQuantity = 0;
               for (Booking booking : bookings) {
@@ -137,11 +142,11 @@ public class TourServiceImpl implements TourService {
             if (departureDay.getDepartureDay().isAfter(LocalDate.now()) &&
                 departureDay.getStatus() == false) {
               departureDay.setStatus(true);
+              departureDayRepository.save(departureDay);
             }
           }
         }
       }
-
       return tourRepository.save(updateTour);
     } else
       throw new TourNotFoundException(tourId);
@@ -163,7 +168,7 @@ public class TourServiceImpl implements TourService {
 
             departureDay.setStatus(false);
 
-            // Hủy các booking liên quan và cập nhật trường số lược của departureDay
+            // Hủy các booking liên quan và cập nhật trường số lượng của departureDay
             List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId());
             Integer totalQuantity = 0;
             for (Booking booking : bookings) {
@@ -184,6 +189,7 @@ public class TourServiceImpl implements TourService {
           if (departureDay.getDepartureDay().isAfter(LocalDate.now()) &&
               departureDay.getStatus() == false) {
             departureDay.setStatus(true);
+            departureDayRepository.save(departureDay);
           }
         }
       }

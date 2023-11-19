@@ -47,7 +47,7 @@ public class TourImageServiceImpl implements TourImageService {
   }
 
   @Override
-  public List<TourImage> geAlltTourImage() {
+  public List<TourImage> getTourImages() {
     return (List<TourImage>) tourImageRepository.findAll();
   }
 

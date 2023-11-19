@@ -41,6 +41,11 @@ public class TourController {
     return new ResponseEntity<>(tourService.getTours(), HttpStatus.OK);
   }
 
+  @GetMapping("/tour/type-of-tour/{typeOfTourId}")
+  public ResponseEntity<List<Tour>> getTourByTypeOfTourId(@PathVariable Long typeOfTourId) {
+    return new ResponseEntity<>(tourService.getTourByTypeOfTourId(typeOfTourId), HttpStatus.OK);
+  }
+
   @PutMapping("/admin/update-tour/{tourId}")
   public ResponseEntity<Tour> updateTour(@Valid @RequestBody TourDTO tourDTO, @PathVariable Long tourId) {
     return new ResponseEntity<>(tourService.updateTour(tourDTO, tourId), HttpStatus.OK);
