@@ -12,7 +12,7 @@ public interface TourImageService {
 
   List<TourImage> getTourImageByTourId(Long tourId);
 
-  List<TourImage> geAlltTourImage();
+  List<TourImage> getTourImages();
 
   TourImage updateTourImage(TourImageDTO tourImageDTO, Long tourImageId);
 

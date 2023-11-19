@@ -36,26 +36,33 @@ public class BookingController {
     return new ResponseEntity<>(bookingService.getBooking(bookingId), HttpStatus.OK);
   }
 
-  // @GetMapping("/admin/booking/user/{userId}/tour/{tourId}")
-  // public ResponseEntity<List<Booking>>
-  // getBookingByUserIdAndTourId(@PathVariable Long userId,
-  // @PathVariable Long tourId) {
-  // return new
-  // ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId),
-  // HttpStatus.OK);
-  // }
+  @GetMapping("/booking/all")
+  public ResponseEntity<List<Booking>> getBookings() {
+    return new ResponseEntity<>(bookingService.getBookings(), HttpStatus.OK);
+  }
 
   @GetMapping("/booking/user/{userId}")
   public ResponseEntity<List<Booking>> getAllBookingByUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(bookingService.getAllBookingByUserId(userId), HttpStatus.OK);
   }
 
-  // @GetMapping("/booking/tour/{tourId}")
-  // public ResponseEntity<List<Booking>> getAllBookingByTourId(@PathVariable Long
-  // tourId) {
-  // return new ResponseEntity<>(bookingService.getAllBookingByTourId(tourId),
-  // HttpStatus.OK);
-  // }
+  @GetMapping("/booking-valid/user/{userId}")
+  public ResponseEntity<List<Booking>> getBookingIsValidOfUserId(@PathVariable Long userId) {
+    return new ResponseEntity<>(bookingService.getBookingIsValidOfUserId(userId), HttpStatus.OK);
+  }
+
+  @GetMapping("/admin/booking/tour/{tourId}")
+  public ResponseEntity<List<Booking>> getAllBookingByTourId(@PathVariable Long tourId) {
+    return new ResponseEntity<>(bookingService.getAllBookingByTourId(tourId),
+        HttpStatus.OK);
+  }
+
+  @GetMapping("/admin/booking/user/{userId}/tour/{tourId}")
+  public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId,
+      @PathVariable Long tourId) {
+    return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId),
+        HttpStatus.OK);
+  }
 
   @PutMapping("/admin/update-status-booking/{bookingId}")
   public ResponseEntity<String> updateStatusBooking(@PathVariable Long bookingId) {

@@ -10,11 +10,15 @@ public interface BookingService {
 
   Booking getBooking(Long bookingId);
 
-  // List<Booking> getBookingByUserIdAndTourId(Long userId, Long tourId);
-
-  // List<Booking> getAllBookingByTourId(Long tourId);
+  List<Booking> getBookings();
 
   List<Booking> getAllBookingByUserId(Long userId);
+
+  List<Booking> getBookingIsValidOfUserId(Long userId);
+
+  List<Booking> getAllBookingByTourId(Long tourId);
+
+  List<Booking> getBookingByUserIdAndTourId(Long userId, Long tourId);
 
   void updateBooking(BookingDTO bookingDTO, Long bookingId);
 

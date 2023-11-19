@@ -10,11 +10,11 @@ public interface DepartureDayService {
 
   DepartureDay getDepartureDay(Long departureDayId);
 
+  List<DepartureDay> getDepartureDays();
+
   List<DepartureDay> getDepartureDaysByTourId(Long tourId);
 
   DepartureDay updateDepartureDay(DepartureDayDTO departureDayDTO, Long departureDayId);
 
   DepartureDay updateStatusDepartureDay(Long departureDayId);
-
-  // void deleteDepartureDay(Long departureDayId);
 }

@@ -36,6 +36,11 @@ public class DepartureDayController {
     return new ResponseEntity<>(departureDayService.getDepartureDay(departureDayId), HttpStatus.OK);
   }
 
+  @GetMapping("/departure-day/all")
+  public ResponseEntity<List<DepartureDay>> getDepartureDays() {
+    return new ResponseEntity<>(departureDayService.getDepartureDays(), HttpStatus.OK);
+  }
+
   @GetMapping("/tour/{tourId}/departure-day")
   public ResponseEntity<List<DepartureDay>> getDepartureDaysByTourId(@PathVariable Long tourId) {
     return new ResponseEntity<>(departureDayService.getDepartureDaysByTourId(tourId), HttpStatus.OK);

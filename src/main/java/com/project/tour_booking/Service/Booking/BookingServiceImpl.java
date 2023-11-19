@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,19 +104,35 @@ public class BookingServiceImpl implements BookingService {
   }
 
   @Override
+  public List<Booking> getBookings() {
+    return (List<Booking>) bookingRepository.findAll();
+  }
+
+  @Override
   public List<Booking> getAllBookingByUserId(Long userId) {
     return bookingRepository.findAllByUserId(userId);
   }
 
-  // @Override
-  // public List<Booking> getAllBookingByTourId(Long tourId) {
-  // return bookingRepository.findAllByTourId(tourId);
-  // }
+  @Override
+  public List<Booking> getBookingIsValidOfUserId(Long userId) {
+    return bookingRepository.findAllByUserId(userId).stream()
+        .filter(booking -> booking.getStatus())
+        .collect(Collectors.toList());
+  }
 
-  // @Override
-  // public List<Booking> getBookingByUserIdAndTourId(Long userId, Long tourId) {
-  // return bookingRepository.findAllByUserIdAndTourId(userId, tourId);
-  // }
+  @Override
+  public List<Booking> getAllBookingByTourId(Long tourId) {
+    List<Booking> bookings = (List<Booking>) bookingRepository.findAll();
+    return bookings.stream().filter(booking -> booking.getDepartureDay().getTour().getId().equals(tourId))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<Booking> getBookingByUserIdAndTourId(Long userId, Long tourId) {
+    List<Booking> bookings = bookingRepository.findAllByUserId(userId);
+    return bookings.stream().filter(booking -> booking.getDepartureDay().getTour().getId().equals(tourId))
+        .collect(Collectors.toList());
+  }
 
   @Override
   public void updateBooking(BookingDTO bookingDTO, Long bookingId) {

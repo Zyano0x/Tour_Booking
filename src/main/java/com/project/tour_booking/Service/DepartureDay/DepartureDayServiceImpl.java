@@ -49,6 +49,11 @@ public class DepartureDayServiceImpl implements DepartureDayService {
   }
 
   @Override
+  public List<DepartureDay> getDepartureDays() {
+    return (List<DepartureDay>) departureDayRepository.findAll();
+  }
+
+  @Override
   public List<DepartureDay> getDepartureDaysByTourId(Long tourId) {
     return departureDayRepository.findAllByTourId(tourId);
   }

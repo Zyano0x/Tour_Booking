@@ -43,8 +43,8 @@ public class TourImageController {
   }
 
   @GetMapping("/tour-image/all")
-  public ResponseEntity<List<TourImage>> getAllTourImage() {
-    return new ResponseEntity<>(tourImageService.geAlltTourImage(), HttpStatus.OK);
+  public ResponseEntity<List<TourImage>> getTourImages() {
+    return new ResponseEntity<>(tourImageService.getTourImages(), HttpStatus.OK);
   }
 
   @PutMapping("/admin/update-tour-image/{tourImageId}")
