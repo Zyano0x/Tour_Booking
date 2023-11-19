@@ -21,38 +21,38 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin/tour-image")
+@RequestMapping("/api")
 public class TourImageController {
   private TourImageService tourImageService;
 
-  @PostMapping("")
+  @PostMapping("/admin/tour-image")
   public ResponseEntity<String> saveTourImage(@Valid @RequestBody TourImage tourImage) {
     tourImageService.saveTourImage(tourImage);
     return new ResponseEntity<>("THÊM ẢNH THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/{tourImageId}")
+  @GetMapping("/tour-image/{tourImageId}")
   public ResponseEntity<TourImage> getTourImage(@PathVariable Long tourImageId) {
     return new ResponseEntity<>(tourImageService.getTourImage(tourImageId), HttpStatus.OK);
   }
 
-  @GetMapping("/tour/{tourId}")
+  @GetMapping("/tour/{tourId}/tour-image")
   public ResponseEntity<List<TourImage>> getTourImageByTourId(@PathVariable Long tourId) {
     return new ResponseEntity<>(tourImageService.getTourImageByTourId(tourId), HttpStatus.OK);
   }
 
-  @GetMapping("/all")
+  @GetMapping("/tour-image/all")
   public ResponseEntity<List<TourImage>> getAllTourImage() {
     return new ResponseEntity<>(tourImageService.geAlltTourImage(), HttpStatus.OK);
   }
 
-  @PutMapping("/{tourImageId}")
+  @PutMapping("/admin/update-tour-image/{tourImageId}")
   public ResponseEntity<TourImage> updateTourImage(@Valid @RequestBody TourImage tourImage,
       @PathVariable Long tourImageId) {
     return new ResponseEntity<>(tourImageService.updateTourImage(tourImage, tourImageId), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{tourImageId}")
+  @DeleteMapping("/admin/delete-tour-image/{tourImageId}")
   public ResponseEntity<String> deleteTourImage(@PathVariable Long tourImageId) {
     tourImageService.deleteTourImage(tourImageId);
     return new ResponseEntity<>("XÓA ẢNH THÀNH CÔNG!", HttpStatus.OK);

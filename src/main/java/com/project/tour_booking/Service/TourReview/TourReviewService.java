@@ -2,10 +2,11 @@ package com.project.tour_booking.Service.TourReview;
 
 import java.util.List;
 
+import com.project.tour_booking.DTO.TourReviewDTO;
 import com.project.tour_booking.Entity.TourReview;
 
 public interface TourReviewService {
-  void saveTourReview(TourReview tourReview, Long userId, Long tourId);
+  void saveTourReview(TourReviewDTO tourReviewDTO);
 
   TourReview getTourReview(Long tourReviewId);
 
@@ -14,6 +15,8 @@ public interface TourReviewService {
   List<TourReview> getAllTourReviewByTourId(Long tourId);
 
   List<TourReview> getAllTourReviewByUserId(Long userId);
+
+  TourReview updateTourReview(TourReview tourReview, Long tourReviewId);
 
   void deleteTourReview(Long tourReviewId);
 }

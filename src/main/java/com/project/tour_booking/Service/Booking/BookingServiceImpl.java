@@ -2,16 +2,19 @@ package com.project.tour_booking.Service.Booking;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Entity.Tour;
+import com.project.tour_booking.Entity.User;
 import com.project.tour_booking.Exception.BookingNotFoundException;
+import com.project.tour_booking.Exception.TourNotFoundException;
+import com.project.tour_booking.Exception.UserNotFoundException;
 import com.project.tour_booking.Repository.BookingRepository;
 import com.project.tour_booking.Repository.TourRepository;
 import com.project.tour_booking.Repository.UserRepository;
@@ -26,29 +29,38 @@ public class BookingServiceImpl implements BookingService {
   private UserRepository userRepository;
 
   @Override
-  public void saveBooking(Booking booking, Long userId, Long tourId) {
-    Tour tour = tourRepository.findById(tourId).get();
-    booking.setUser(userRepository.findById(userId).get());
+  public void saveBooking(BookingDTO bookingDTO) {
+    Booking booking = new Booking();
+    booking.setQuantityOfAdult(bookingDTO.getQuantityOfAdult());
+    booking.setQuantityOfChild(bookingDTO.getQuantityOfChild());
+
+    Optional<User> userOptional = userRepository.findById(bookingDTO.getUserId());
+    if (userOptional.isPresent())
+      booking.setUser(userOptional.get());
+    else
+      throw new UserNotFoundException(bookingDTO.getUserId());
+
+    Optional<Tour> tourOptional = tourRepository.findById(bookingDTO.getTourId());
+    if (tourOptional.isPresent()) {
+      booking.setTour(tourOptional.get());
+    } else
+      throw new TourNotFoundException(bookingDTO.getTourId());
+
+    Tour tour = tourOptional.get();
     booking.setTour(tour);
     booking.setBookingDate(LocalDate.now());
     booking.setStatus(true);
     booking.setTotalPrice((new BigDecimal(booking.getQuantityOfAdult()).multiply(tour.getPriceForAdult()))
         .add(new BigDecimal(booking.getQuantityOfChild()).multiply(tour.getPriceForChildren())));
 
-    Tour updateTour = tourRepository.findById(tourId).get();
     Integer total = booking.getQuantityOfAdult() +
         booking.getQuantityOfChild();
-    updateTour.setQuantity(updateTour.getQuantity() - total);
+    tour.setQuantity(tour.getQuantity() - total);
 
-    List<String> images = new ArrayList<>();
-    images.add("image");
-    updateTour.setImages(images);
+    tour.setImages(List.of("image"));
+    tour.setDepartureDays(List.of(LocalDate.now()));
 
-    List<LocalDate> departureDays = new ArrayList<>();
-    departureDays.add(LocalDate.now());
-    updateTour.setDepartureDays(departureDays);
-    tourRepository.save(updateTour);
-
+    tourRepository.save(tour);
     bookingRepository.save(booking);
   }
 

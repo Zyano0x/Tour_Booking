@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Service.Booking.BookingService;
 
@@ -19,48 +20,41 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin/booking")
+@RequestMapping("/api")
 @AllArgsConstructor
 public class BookingController {
   private BookingService bookingService;
 
-  @PostMapping("/user/{userId}/tour/{tourId}")
-  public ResponseEntity<String> saveBooking(@Valid @RequestBody Booking booking, @PathVariable Long userId,
-      @PathVariable Long tourId) {
-    bookingService.saveBooking(booking, userId, tourId);
+  @PostMapping("/booking")
+  public ResponseEntity<String> saveBooking(@Valid @RequestBody BookingDTO bookingDTO) {
+    bookingService.saveBooking(bookingDTO);
     return new ResponseEntity<>("ĐẶT TOUR THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/{bookingId}")
+  @GetMapping("/booking/{bookingId}")
   public ResponseEntity<Booking> getBooking(@PathVariable Long bookingId) {
     return new ResponseEntity<>(bookingService.getBooking(bookingId), HttpStatus.OK);
   }
 
-  @GetMapping("/user/{userId}/tour/{tourId}")
+  @GetMapping("/admin/booking/user/{userId}/tour/{tourId}")
   public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId,
       @PathVariable Long tourId) {
     return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId), HttpStatus.OK);
   }
 
-  @GetMapping("/user/{userId}")
+  @GetMapping("/booking/user/{userId}")
   public ResponseEntity<List<Booking>> getAllBookingByUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(bookingService.getAllBookingByUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/tour/{tourId}")
+  @GetMapping("/booking/tour/{tourId}")
   public ResponseEntity<List<Booking>> getAllBookingByTourId(@PathVariable Long tourId) {
     return new ResponseEntity<>(bookingService.getAllBookingByTourId(tourId), HttpStatus.OK);
   }
 
-  @PutMapping("/{bookingId}")
+  @PutMapping("/admin/update-status-booking/{bookingId}")
   public ResponseEntity<String> updateStatusBooking(@PathVariable Long bookingId) {
     bookingService.updateStatusBooking(bookingId);
     return new ResponseEntity<>("CẬP NHẬT TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
   }
-
-  // @DeleteMapping("/{bookingId}")
-  // public ResponseEntity<String> deleteBooking(@PathVariable Long bookingId) {
-  // bookingService.deleteBooking(bookingId);
-  // return new ResponseEntity<>("XÓA ĐON ĐẶT TOUR THÀNH CÔNG!", HttpStatus.OK);
-  // }
 }

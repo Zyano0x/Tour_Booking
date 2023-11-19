@@ -88,7 +88,6 @@ public class Tour {
   @Column(name = "edit_date")
   private LocalDate editDate;
 
-  @NonNull
   @Column(name = "status")
   private Boolean status;
 

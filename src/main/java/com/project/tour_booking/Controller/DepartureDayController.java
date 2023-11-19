@@ -21,33 +21,33 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin/departure-day")
+@RequestMapping("/api")
 public class DepartureDayController {
   private DepartureDayService departureDayService;
 
-  @PostMapping("")
+  @PostMapping("/admin/departure-day")
   public ResponseEntity<String> saveDepartureDay(@Valid @RequestBody DepartureDay departureDay) {
     departureDayService.saveDepartureDay(departureDay);
     return new ResponseEntity<>("THÊM NGÀY KHỞI HÀNH THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/{departureDayId}")
+  @GetMapping("/departure-day/{departureDayId}")
   public ResponseEntity<DepartureDay> getDepartureDay(@PathVariable Long departureDayId) {
     return new ResponseEntity<>(departureDayService.getDepartureDay(departureDayId), HttpStatus.OK);
   }
 
-  @GetMapping("/tour/{tourId}")
+  @GetMapping("/tour/{tourId}/departure-day")
   public ResponseEntity<List<DepartureDay>> getDepartureDaysByTourId(@PathVariable Long tourId) {
     return new ResponseEntity<>(departureDayService.getDepartureDaysByTourId(tourId), HttpStatus.OK);
   }
 
-  @PutMapping("/{departureDayId}")
+  @PutMapping("/admin/update-departure-day/{departureDayId}")
   public ResponseEntity<DepartureDay> updateDepartureDay(@Valid @RequestBody DepartureDay departureDay,
       @PathVariable Long departureDayId) {
     return new ResponseEntity<>(departureDayService.updateDepartureDay(departureDay, departureDayId), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{departureDayId}")
+  @DeleteMapping("/admin/delete-departure-day/{departureDayId}")
   public ResponseEntity<String> deleteDepartureDay(@PathVariable Long departureDayId) {
     departureDayService.deleteDepartureDay(departureDayId);
     return new ResponseEntity<>("XÓA NGÀY KHỞI HÀNG THÀNH CÔNG!", HttpStatus.OK);

@@ -7,11 +7,13 @@ import com.project.tour_booking.Entity.Tour;
 public interface TourService {
   void saveTour(Tour tour);
 
-  Tour getTour(Long id);
+  Tour getTour(Long tourId);
 
   List<Tour> getTours();
 
-  Tour updateTour(Tour tour, Long id);
+  Tour updateTour(Tour tour, Long tourId);
 
-  void deleteTour(Long id);
+  void updateTourStatus(Long tourId);
+
+  void deleteTour(Long tourId);
 }

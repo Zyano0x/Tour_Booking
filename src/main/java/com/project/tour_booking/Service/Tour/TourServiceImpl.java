@@ -29,6 +29,7 @@ public class TourServiceImpl implements TourService {
 
   @Override
   public void saveTour(Tour tour) {
+    tour.setStatus(true);
     tour.setDateOfPosting(LocalDate.now());
     Optional<TypeOfTour> tOTOptional = typeOfTourRepository.findById(tour.getTotId());
     if (tOTOptional.isPresent())
@@ -99,6 +100,22 @@ public class TourServiceImpl implements TourService {
       }
 
       return tourRepository.save(updateTour2);
+    } else
+      throw new TourNotFoundException(tourId);
+  }
+
+  @Override
+  public void updateTourStatus(Long tourId) {
+    Optional<Tour> tourOptional = tourRepository.findById(tourId);
+    if (tourOptional.isPresent()) {
+      Tour updateTour = tourOptional.get();
+      if (updateTour.getStatus())
+        updateTour.setStatus(false);
+      else
+        updateTour.setStatus(true);
+      updateTour.setImages(List.of("image"));
+      updateTour.setDepartureDays(List.of(LocalDate.now()));
+      tourRepository.save(updateTour);
     } else
       throw new TourNotFoundException(tourId);
   }

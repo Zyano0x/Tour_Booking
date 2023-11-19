@@ -22,14 +22,14 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin/tour")
+@RequestMapping("/api")
 @AllArgsConstructor
 public class TourController {
   private TourService tourService;
   private TourImageService tourImageService;
   private DepartureDayService departureDayService;
 
-  @PostMapping("")
+  @PostMapping("admin/tour")
   public ResponseEntity<String> saveTour(@Valid @RequestBody Tour tour) {
     tourService.saveTour(tour);
     departureDayService.saveDepartureDayFromTour(tour.getDepartureDays(), tour.getId());
@@ -37,22 +37,28 @@ public class TourController {
     return new ResponseEntity<>("THÊM TOUR THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/{tourId}")
+  @GetMapping("/tour/{tourId}")
   public ResponseEntity<Tour> getTour(@PathVariable Long tourId) {
     return new ResponseEntity<>(tourService.getTour(tourId), HttpStatus.OK);
   }
 
-  @GetMapping("/all")
+  @GetMapping("/tour/all")
   public ResponseEntity<List<Tour>> getTours() {
     return new ResponseEntity<>(tourService.getTours(), HttpStatus.OK);
   }
 
-  @PutMapping("/{tourId}")
+  @PutMapping("/admin/update-tour/{tourId}")
   public ResponseEntity<Tour> updateTour(@Valid @RequestBody Tour tour, @PathVariable Long tourId) {
     return new ResponseEntity<>(tourService.updateTour(tour, tourId), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{tourId}")
+  @PutMapping("/admin/update-status-tour/{tourId}")
+  public ResponseEntity<String> updateTourStatus(@Valid @RequestBody Tour tour, @PathVariable Long tourId) {
+    tourService.updateTourStatus(tourId);
+    return new ResponseEntity<>("CHUYỂN ĐỔI TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
+  }
+
+  @DeleteMapping("/admin/delete-tour/{tourId}")
   public ResponseEntity<String> deleteTour(@PathVariable Long tourId) {
     tourService.deleteTour(tourId);
     return new ResponseEntity<>("XÓA TOUR THÀNH CÔNG!", HttpStatus.OK);

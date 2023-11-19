@@ -2,10 +2,11 @@ package com.project.tour_booking.Service.Booking;
 
 import java.util.List;
 
+import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Entity.Booking;
 
 public interface BookingService {
-  void saveBooking(Booking booking, Long userId, Long tourId);
+  void saveBooking(BookingDTO bookingDTO);
 
   Booking getBooking(Long bookingId);
 
