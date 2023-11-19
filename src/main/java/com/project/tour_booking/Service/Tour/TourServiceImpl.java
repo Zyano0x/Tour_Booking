@@ -6,12 +6,15 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.project.tour_booking.DTO.TourDTO;
+import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Entity.DepartureDay;
 import com.project.tour_booking.Entity.Tour;
 import com.project.tour_booking.Entity.TourImage;
 import com.project.tour_booking.Entity.TypeOfTour;
 import com.project.tour_booking.Exception.TourNotFoundException;
 import com.project.tour_booking.Exception.TypeOfTourNotFoundException;
+import com.project.tour_booking.Repository.BookingRepository;
 import com.project.tour_booking.Repository.DepartureDayRepository;
 import com.project.tour_booking.Repository.TourImageRepository;
 import com.project.tour_booking.Repository.TourRepository;
@@ -26,17 +29,36 @@ public class TourServiceImpl implements TourService {
   private TypeOfTourRepository typeOfTourRepository;
   private TourImageRepository tourImageRepository;
   private DepartureDayRepository departureDayRepository;
+  private BookingRepository bookingRepository;
 
   @Override
-  public void saveTour(Tour tour) {
+  public void saveTour(TourDTO tourDTO) {
+    Tour tour = new Tour();
     tour.setStatus(true);
     tour.setDateOfPosting(LocalDate.now());
-    Optional<TypeOfTour> tOTOptional = typeOfTourRepository.findById(tour.getTotId());
+    tour.setName(tourDTO.getName());
+    tour.setDescription(tourDTO.getDescription());
+    tour.setService(tourDTO.getService());
+    tour.setTime(tourDTO.getTime());
+    tour.setSchedule(tourDTO.getSchedule());
+    tour.setPriceForAdult(tourDTO.getPriceForAdult());
+    tour.setPriceForChildren(tourDTO.getPriceForChildren());
+    tour.setDeparturePoint(tourDTO.getDeparturePoint());
+    tour.setIsHot(tourDTO.getIsHot());
+    Optional<TypeOfTour> tOTOptional = typeOfTourRepository.findById(tourDTO.getTotId());
     if (tOTOptional.isPresent())
       tour.setTypeOfTour(tOTOptional.get());
     else
-      throw new TypeOfTourNotFoundException(tour.getTotId());
+      throw new TypeOfTourNotFoundException(tourDTO.getTotId());
+
     tourRepository.save(tour);
+
+    // Tạo dữ liệu trong bảng ảnh
+    for (String path : tourDTO.getImages()) {
+      TourImage tourImage = new TourImage(path);
+      tourImage.setTour(tour);
+      tourImageRepository.save(tourImage);
+    }
   }
 
   @Override
@@ -54,52 +76,73 @@ public class TourServiceImpl implements TourService {
   }
 
   @Override
-  public Tour updateTour(Tour tour, Long tourId) {
-    Optional<Tour> updateTour = tourRepository.findById(tourId);
-    if (updateTour.isPresent()) {
-      Tour updateTour2 = updateTour.get();
-      updateTour2.setName(tour.getName());
-      updateTour2.setDescription(tour.getDescription());
-      updateTour2.setService(tour.getService());
-      updateTour2.setTime(tour.getTime());
-      updateTour2.setSchedule(tour.getSchedule());
-      updateTour2.setQuantity(tour.getQuantity());
-      updateTour2.setPriceForAdult(tour.getPriceForAdult());
-      updateTour2.setPriceForChildren(tour.getPriceForChildren());
-      updateTour2.setDepartureDays(tour.getDepartureDays());
-      updateTour2.setDeparturePoint(tour.getDeparturePoint());
-      updateTour2.setEditDate(LocalDate.now());
-      updateTour2.setStatus(tour.getStatus());
-      updateTour2.setIsHot(tour.getIsHot());
-      updateTour2.setImages(tour.getImages());
-      updateTour2.setTotId(tour.getTotId());
+  public Tour updateTour(TourDTO tourDTO, Long tourId) {
+    Optional<Tour> tourOptional = tourRepository.findById(tourId);
+    if (tourOptional.isPresent()) {
+      Tour updateTour = tourOptional.get();
+      updateTour.setName(tourDTO.getName());
+      updateTour.setDescription(tourDTO.getDescription());
+      updateTour.setService(tourDTO.getService());
+      updateTour.setTime(tourDTO.getTime());
+      updateTour.setSchedule(tourDTO.getSchedule());
+      updateTour.setPriceForAdult(tourDTO.getPriceForAdult());
+      updateTour.setPriceForChildren(tourDTO.getPriceForChildren());
+      updateTour.setDeparturePoint(tourDTO.getDeparturePoint());
+      updateTour.setEditDate(LocalDate.now());
+      updateTour.setIsHot(tourDTO.getIsHot());
 
-      Optional<TypeOfTour> tOTOptional = typeOfTourRepository.findById(tour.getTotId());
+      Optional<TypeOfTour> tOTOptional = typeOfTourRepository.findById(tourDTO.getTotId());
       if (tOTOptional.isPresent())
-        updateTour2.setTypeOfTour(tOTOptional.get());
+        updateTour.setTypeOfTour(tOTOptional.get());
       else
-        throw new TypeOfTourNotFoundException(tour.getTotId());
-
-      Tour tour2 = tourRepository.findById(tourId).get();
-      // Cần tối ưu hơn về thuật toán
-      List<LocalDate> departureDays = updateTour2.getDepartureDays();
-      departureDayRepository.deleteAllByTourId(tourId);
-      for (LocalDate departureDay : departureDays) {
-        DepartureDay newDepartureDay = new DepartureDay(departureDay, tourId);
-        newDepartureDay.setTour(tour2);
-        departureDayRepository.save(newDepartureDay);
-      }
+        throw new TypeOfTourNotFoundException(tourDTO.getTotId());
 
       // Cần tối ưu hơn về thuật toán
-      List<String> tourImageStrings = updateTour2.getImages();
+      List<String> tourImageStrings = tourDTO.getImages();
       tourImageRepository.deleteAllByTourId(tourId);
       for (String path : tourImageStrings) {
-        TourImage tourImage = new TourImage(path, tourId);
-        tourImage.setTour(tour2);
+        TourImage tourImage = new TourImage(path);
+        tourImage.setTour(updateTour);
         tourImageRepository.save(tourImage);
       }
 
-      return tourRepository.save(updateTour2);
+      if (updateTour.getStatus() != tourDTO.getStatus()) {
+        updateTour.setStatus(tourDTO.getStatus());
+
+        if (tourDTO.getStatus() == false) {
+          List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tourId);
+          for (DepartureDay departureDay : departureDays) {
+            // Chỉ hủy các departureDay còn hiệu lực
+            if (departureDay.getDepartureDay().isAfter(LocalDate.now()) &&
+                departureDay.getStatus() == true) {
+
+              departureDay.setStatus(false);
+
+              // Hủy các booking liên quan và cập nhật trường số lược của departureDay
+              List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId());
+              Integer totalQuantity = 0;
+              for (Booking booking : bookings) {
+                if (booking.getStatus() == true) {
+                  booking.setStatus(false);
+                  totalQuantity += booking.getQuantityOfAdult() + booking.getQuantityOfChild();
+                }
+              }
+              departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
+              departureDayRepository.save(departureDay);
+            }
+          }
+        } else {
+          List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tourId);
+          for (DepartureDay departureDay : departureDays) {
+            if (departureDay.getDepartureDay().isAfter(LocalDate.now()) &&
+                departureDay.getStatus() == false) {
+              departureDay.setStatus(true);
+            }
+          }
+        }
+      }
+
+      return tourRepository.save(updateTour);
     } else
       throw new TourNotFoundException(tourId);
   }
@@ -109,23 +152,43 @@ public class TourServiceImpl implements TourService {
     Optional<Tour> tourOptional = tourRepository.findById(tourId);
     if (tourOptional.isPresent()) {
       Tour updateTour = tourOptional.get();
-      if (updateTour.getStatus())
+      if (updateTour.getStatus()) {
         updateTour.setStatus(false);
-      else
+
+        List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tourId);
+        for (DepartureDay departureDay : departureDays) {
+          // Chỉ hủy các departureDay còn hiệu lực
+          if (departureDay.getDepartureDay().isAfter(LocalDate.now()) &&
+              departureDay.getStatus() == true) {
+
+            departureDay.setStatus(false);
+
+            // Hủy các booking liên quan và cập nhật trường số lược của departureDay
+            List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId());
+            Integer totalQuantity = 0;
+            for (Booking booking : bookings) {
+              if (booking.getStatus() == true) {
+                booking.setStatus(false);
+                totalQuantity += booking.getQuantityOfAdult() + booking.getQuantityOfChild();
+              }
+            }
+            departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
+            departureDayRepository.save(departureDay);
+          }
+        }
+      } else {
         updateTour.setStatus(true);
-      updateTour.setImages(List.of("image"));
-      updateTour.setDepartureDays(List.of(LocalDate.now()));
+
+        List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tourId);
+        for (DepartureDay departureDay : departureDays) {
+          if (departureDay.getDepartureDay().isAfter(LocalDate.now()) &&
+              departureDay.getStatus() == false) {
+            departureDay.setStatus(true);
+          }
+        }
+      }
       tourRepository.save(updateTour);
     } else
-      throw new TourNotFoundException(tourId);
-  }
-
-  @Override
-  public void deleteTour(Long tourId) {
-    Optional<Tour> tourOptional = tourRepository.findById(tourId);
-    if (tourOptional.isPresent())
-      tourRepository.deleteById(tourId);
-    else
       throw new TourNotFoundException(tourId);
   }
 }

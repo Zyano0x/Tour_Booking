@@ -2,10 +2,8 @@ package com.project.tour_booking.Entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -19,9 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -57,10 +53,10 @@ public class Tour {
   @Column(name = "time")
   private String time;
 
-  @NonNull
-  @NotNull(message = "Số lượng khách không được để trống!")
-  @Column(name = "quantity")
-  private Integer quantity;
+  // @NonNull
+  // @NotNull(message = "Số lượng khách không được để trống!")
+  // @Column(name = "quantity")
+  // private Integer quantity;
 
   @NonNull
   @NotBlank(message = "Lịch trình của tour không được để trống!")
@@ -95,32 +91,14 @@ public class Tour {
   @Column(name = "is_hot")
   private Boolean isHot;
 
-  @Transient // Không tạo thành cột trong bảng
-  @NonNull
-  @JsonInclude(JsonInclude.Include.NON_EMPTY) // Chỉ hiện các trường không rỗng khi get
-  @JsonFormat(pattern = "dd-MM-yyyy")
-  @NotEmpty(message = "Ngày khởi hành không được để trống!")
-  private List<LocalDate> departureDays = new ArrayList<>();
-
   @JsonIgnore
   @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
   private List<DepartureDay> departureDay;
-
-  @Transient // Không tạo thành cột trong bảng
-  @NonNull
-  @JsonInclude(JsonInclude.Include.NON_EMPTY) // Chỉ hiện các trường không rỗng khi get
-  @NotEmpty(message = "Ảnh tour không được để trống!")
-  private List<String> images = new ArrayList<>();
 
   @JsonIgnore
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
   private List<TourImage> tourImages;
-
-  @Transient // Không tạo thành cột trong bảng
-  @NonNull
-  @JsonInclude(JsonInclude.Include.NON_EMPTY) // Chỉ hiện các trường không rỗng khi get
-  private Long totId;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "type_of_tour_id", referencedColumnName = "id")
@@ -129,8 +107,4 @@ public class Tour {
   @JsonIgnore
   @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
   private List<TourReview> tourReviews;
-
-  @JsonIgnore
-  @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
-  private List<Booking> bookings;
 }

@@ -17,7 +17,7 @@ import lombok.*;
 @Table(name = "booking")
 @Setter
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 public class Booking {
   @Id
@@ -46,8 +46,8 @@ public class Booking {
   private LocalDate bookingDate;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "tour_id", referencedColumnName = "id")
-  private Tour tour;
+  @JoinColumn(name = "departure_id", referencedColumnName = "id")
+  private DepartureDay departureDay;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "user_id", referencedColumnName = "id")
