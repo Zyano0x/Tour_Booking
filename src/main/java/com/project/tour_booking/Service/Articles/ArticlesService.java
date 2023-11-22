@@ -1,4 +1,4 @@
-package com.project.tour_booking.Service.Post;
+package com.project.tour_booking.Service.Articles;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface ArticlesService {
 
   List<Articles> getAllArticles();
 
-  Articles updateArticles(ArticlesDTO articlesDTO, Long articlesId);
+  Articles updateArticles(Articles articles, Long articlesId);
 
   void updateArticlesStatus(Long articlesId);
 }

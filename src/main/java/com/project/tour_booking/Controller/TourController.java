@@ -51,8 +51,8 @@ public class TourController {
     return new ResponseEntity<>(tourService.updateTour(tourDTO, tourId), HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-status-tour/{tourId}")
-  public ResponseEntity<String> updateTourStatus(@Valid @RequestBody Tour tour, @PathVariable Long tourId) {
+  @PutMapping("/admin/update-tour-status/{tourId}")
+  public ResponseEntity<String> updateTourStatus(@PathVariable Long tourId) {
     tourService.updateTourStatus(tourId);
     return new ResponseEntity<>("CHUYỂN ĐỔI TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
   }

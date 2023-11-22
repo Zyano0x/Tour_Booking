@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -34,16 +35,18 @@ public class DepartureDay {
 
   @NonNull
   @NotNull(message = "Số lượng khách không được để trống!")
+  @Min(value = 1, message = "Số lượng khách phải lớn hơn '0'!")
   @Column(name = "quantity")
   private Integer quantity;
 
   @NonNull
   @JsonFormat(pattern = "dd-MM-yyyy")
   @Column(name = "departure_day")
-  @ValidDepartureDay(message = "Ngày khởi hành phải lớn hơn thời điểm tạo tour!")
+  @ValidDepartureDay(message = "Ngày khởi hành phải lớn hơn thời điểm khởi tạo!")
   private LocalDate departureDay;
 
   @NonNull
+  @NotNull(message = "Trạng thái không được để trống!")
   @Column(name = "status")
   private Boolean status;
 

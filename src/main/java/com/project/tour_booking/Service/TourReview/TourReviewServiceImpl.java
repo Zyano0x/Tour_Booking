@@ -68,12 +68,20 @@ public class TourReviewServiceImpl implements TourReviewService {
 
   @Override
   public List<TourReview> getAllTourReviewByTourId(Long tourId) {
-    return tourReviewRepository.findAllByTourId(tourId);
+    Optional<Tour> tourOptional = tourRepository.findById(tourId);
+    if (tourOptional.isPresent())
+      return tourReviewRepository.findAllByTourId(tourId);
+    else
+      throw new TourNotFoundException(tourId);
   }
 
   @Override
   public List<TourReview> getAllTourReviewByUserId(Long userId) {
-    return tourReviewRepository.findAllByUserId(userId);
+    Optional<User> userOptional = userRepository.findById(userId);
+    if (userOptional.isPresent())
+      return tourReviewRepository.findAllByUserId(userId);
+    else
+      throw new UserNotFoundException(userId);
   }
 
   @Override

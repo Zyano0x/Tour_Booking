@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import com.project.tour_booking.Entity.Role;
 import com.project.tour_booking.Service.Role.RoleService;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 
 @SpringBootApplication
 @AllArgsConstructor
+@EntityScan("com.project.tour_booking.Entity")
 public class TourBookingApplication implements CommandLineRunner {
 
 	@Autowired

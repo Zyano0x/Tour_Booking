@@ -19,6 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Entity
@@ -53,11 +54,6 @@ public class Tour {
   @Column(name = "time")
   private String time;
 
-  // @NonNull
-  // @NotNull(message = "Số lượng khách không được để trống!")
-  // @Column(name = "quantity")
-  // private Integer quantity;
-
   @NonNull
   @NotBlank(message = "Lịch trình của tour không được để trống!")
   @Column(name = "schedule")
@@ -65,11 +61,13 @@ public class Tour {
 
   @NonNull
   @NotNull(message = "Giá tiền cho người lớn không được để trống!")
+  @PositiveOrZero(message = "Giá tiền cho người lớn phải là số dương hoặc bằng 0!")
   @Column(name = "price_for_adult")
   private BigDecimal priceForAdult;
 
   @NonNull
   @NotNull(message = "Giá tiền cho trẻ em không được để trống!")
+  @PositiveOrZero(message = "Giá tiền cho trẻ em phải là số dương hoặc bằng 0!")
   @Column(name = "price_for_children")
   private BigDecimal priceForChildren;
 
@@ -78,16 +76,20 @@ public class Tour {
   @Column(name = "departure_point")
   private String departurePoint;
 
+  @NonNull
   @Column(name = "date_of_posting")
   private LocalDate dateOfPosting;
 
   @Column(name = "edit_date")
   private LocalDate editDate;
 
+  @NonNull
+  @NotNull(message = "Trạng thái không được để trống!")
   @Column(name = "status")
   private Boolean status;
 
   @NonNull
+  @NotNull(message = "Hot không được để trống!")
   @Column(name = "is_hot")
   private Boolean isHot;
 

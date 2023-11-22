@@ -64,9 +64,9 @@ public class BookingController {
         HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-status-booking/{bookingId}")
-  public ResponseEntity<String> updateStatusBooking(@PathVariable Long bookingId) {
-    bookingService.updateStatusBooking(bookingId);
+  @PutMapping("/admin/update-booking-status/{bookingId}")
+  public ResponseEntity<String> updateBookingStatus(@PathVariable Long bookingId) {
+    bookingService.updateBookingStatus(bookingId);
     return new ResponseEntity<>("CẬP NHẬT TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
   }
 

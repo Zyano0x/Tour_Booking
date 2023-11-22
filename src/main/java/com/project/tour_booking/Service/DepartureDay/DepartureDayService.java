@@ -16,5 +16,5 @@ public interface DepartureDayService {
 
   DepartureDay updateDepartureDay(DepartureDayDTO departureDayDTO, Long departureDayId);
 
-  DepartureDay updateStatusDepartureDay(Long departureDayId);
+  DepartureDay updateDepartureDayStatus(Long departureDayId);
 }

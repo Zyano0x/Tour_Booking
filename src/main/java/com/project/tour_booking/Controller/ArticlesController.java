@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.tour_booking.DTO.ArticlesDTO;
 import com.project.tour_booking.Entity.Articles;
-import com.project.tour_booking.Service.Post.ArticlesService;
+import com.project.tour_booking.Service.Articles.ArticlesService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -42,12 +42,13 @@ public class ArticlesController {
   }
 
   @PutMapping("/admin/update-articles/{articlesId}")
-  public ResponseEntity<Articles> updateArticles(@Valid @RequestBody ArticlesDTO articlesDTO, @PathVariable Long articlesId) {
-    return new ResponseEntity<>(articlesService.updateArticles(articlesDTO, articlesId), HttpStatus.OK);
+  public ResponseEntity<Articles> updateArticles(@Valid @RequestBody Articles articles,
+      @PathVariable Long articlesId) {
+    return new ResponseEntity<>(articlesService.updateArticles(articles, articlesId), HttpStatus.OK);
   }
 
   @PutMapping("/admin/update-articles-status/{articlesId}")
-  public ResponseEntity<String> updateArticlesStatus(@Valid @RequestBody ArticlesDTO articlesDTO, @PathVariable Long articlesId) {
+  public ResponseEntity<String> updateArticlesStatus(@PathVariable Long articlesId) {
     articlesService.updateArticlesStatus(articlesId);
     return new ResponseEntity<String>("Updated articles status", HttpStatus.OK);
   }

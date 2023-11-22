@@ -3,6 +3,7 @@ package com.project.tour_booking.Service.DepartureDay;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.project.tour_booking.Entity.DepartureDay;
 import com.project.tour_booking.Entity.Tour;
 import com.project.tour_booking.Exception.DepartureDayCannotEnableException;
 import com.project.tour_booking.Exception.DepartureDayNotFoundException;
+import com.project.tour_booking.Exception.TourNotEnableException;
 import com.project.tour_booking.Exception.TourNotFoundException;
 import com.project.tour_booking.Repository.BookingRepository;
 import com.project.tour_booking.Repository.DepartureDayRepository;
@@ -29,7 +31,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
   @Override
   public void saveDepartureDay(DepartureDayDTO departureDayDTO) {
     DepartureDay newDepartureDay = new DepartureDay(departureDayDTO.getQuantity(), departureDayDTO.getDepartureDay(),
-        true);
+        departureDayDTO.getStatus());
 
     Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
     if (tourOptional.isPresent())
@@ -65,43 +67,60 @@ public class DepartureDayServiceImpl implements DepartureDayService {
     if (departureDayOptional.isPresent()) {
       DepartureDay updateDepartureDay = departureDayOptional.get();
 
-      // Kiểm tra departureDay có còn hiệu lực
+      // Kiểm tra ngày khởi hành có hết hạn chưa
       if (updateDepartureDay.getDepartureDay().isAfter(LocalDate.now())) {
         updateDepartureDay.setQuantity(departureDayDTO.getQuantity());
         updateDepartureDay.setDepartureDay(departureDayDTO.getDepartureDay());
 
         // Kiểm tra có thay đổi status không
         if (departureDayDTO.getStatus() != updateDepartureDay.getStatus()) {
-          // Set status cho departure
-          updateDepartureDay.setStatus(departureDayDTO.getStatus());
-
-          // Hủy status của booking và trường số lượng của departureDay
-          if (departureDayDTO.getStatus() == false) {
-            List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDayId);
-            Integer totalQuantity = 0;
-            for (Booking booking : bookings) {
-              booking.setStatus(false);
-              totalQuantity += booking.getQuantityOfAdult() + booking.getQuantityOfChild();
-              bookingRepository.save(booking);
+          // Hủy status của booking
+          if (!departureDayDTO.getStatus()) {
+            updateDepartureDay.setStatus(false);
+            List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDayId).stream()
+                .filter(booking -> booking.getStatus()).collect(Collectors.toList());
+            if (!bookings.isEmpty()) {
+              Integer totalQuantity = 0;
+              for (Booking booking : bookings) {
+                booking.setStatus(false);
+                bookingRepository.save(booking);
+                totalQuantity += booking.getQuantityOfAdult() + booking.getQuantityOfChild();
+              }
+              // Cập nhật trường số lượng của ngày khởi hành
+              updateDepartureDay.setQuantity(updateDepartureDay.getQuantity() + totalQuantity);
             }
-            updateDepartureDay.setQuantity(updateDepartureDay.getQuantity() + totalQuantity);
+          } else {
+            if (tourRepository.findById(departureDayDTO.getTourId()).get().getStatus())
+              updateDepartureDay.setStatus(true);
+            else
+              throw new TourNotEnableException(departureDayDTO.getTourId());
           }
         }
 
-        Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
-        if (tourOptional.isPresent())
-          updateDepartureDay.setTour(tourOptional.get());
-        else
-          throw new TourNotFoundException(departureDayDTO.getTourId());
+        if (updateDepartureDay.getTour().getId() != departureDayDTO.getTourId()) {
+          Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
+          if (tourOptional.isPresent()) {
+            if (updateDepartureDay.getStatus()) {
+              if (tourRepository.findById(departureDayDTO.getTourId()).get().getStatus())
+                updateDepartureDay.setTour(tourOptional.get());
+              else
+                throw new TourNotEnableException(departureDayDTO.getTourId());
+            } else {
+              updateDepartureDay.setTour(tourOptional.get());
+            }
+          } else
+            throw new TourNotFoundException(departureDayDTO.getTourId());
+        }
         return departureDayRepository.save(updateDepartureDay);
       } else
         throw new DepartureDayCannotEnableException(updateDepartureDay.getDepartureDay());
     } else
       throw new DepartureDayNotFoundException(departureDayId);
+
   }
 
   @Override
-  public DepartureDay updateStatusDepartureDay(Long departureDayId) {
+  public DepartureDay updateDepartureDayStatus(Long departureDayId) {
     // Kiểm tra tồn tại
     Optional<DepartureDay> departureDayOptional = departureDayRepository.findById(departureDayId);
     if (departureDayOptional.isPresent()) {
@@ -110,21 +129,27 @@ public class DepartureDayServiceImpl implements DepartureDayService {
       if (departureDay.getStatus()) {
         departureDay.setStatus(false);
 
-        // Hủy các booking liên quan và cập nhật số lượng cho departureDay
-        List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDayId);
-        Integer totalQuantity = 0;
-        for (Booking booking : bookings) {
-          booking.setStatus(false);
-          totalQuantity += booking.getQuantityOfAdult() + booking.getQuantityOfChild();
-          bookingRepository.save(booking);
+        // Hủy các booking liên quan
+        List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDayId).stream()
+            .filter(booking -> booking.getStatus()).collect(Collectors.toList());
+        if (!bookings.isEmpty()) {
+          Integer totalQuantity = 0;
+          for (Booking booking : bookings) {
+            booking.setStatus(false);
+            bookingRepository.save(booking);
+            totalQuantity += booking.getQuantityOfAdult() + booking.getQuantityOfChild();
+          }
+          // Cập nhật số lượng cho ngày khởi hành
+          departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
         }
-        departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
-      } else {
+      } else if (departureDay.getTour().getStatus()) {
+        // Chỉ kích hoạt các ngày khởi hành còn hạn
         if (departureDay.getDepartureDay().isAfter(LocalDate.now())) {
           departureDay.setStatus(true);
         } else
           throw new DepartureDayCannotEnableException(departureDay.getDepartureDay());
-      }
+      } else
+        throw new TourNotEnableException(departureDay.getTour().getId());
       return departureDayRepository.save(departureDay);
     } else
       throw new DepartureDayNotFoundException(departureDayId);

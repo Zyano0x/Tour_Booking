@@ -7,6 +7,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 @Data
@@ -27,14 +28,17 @@ public class TourDTO {
   private String schedule;
 
   @NotNull(message = "Giá tiền cho người lớn không được để trống!")
+  @PositiveOrZero(message = "Giá tiền cho người lớn phải là số dương hoặc bằng 0!")
   private BigDecimal priceForAdult;
 
   @NotNull(message = "Giá tiền cho trẻ em không được để trống!")
+  @PositiveOrZero(message = "Giá tiền cho trẻ em phải là số dương hoặc bằng 0!")
   private BigDecimal priceForChildren;
 
   @NotBlank(message = "Điểm khởi hành không được để trống!")
   private String departurePoint;
 
+  @NotNull(message = "Trạng thái không được để trống!")
   private Boolean status;
 
   @NotNull(message = "Điểm khởi hành không được để trống!")
