@@ -10,14 +10,18 @@ import org.springframework.stereotype.Service;
 import com.project.tour_booking.DTO.TourDTO;
 import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Entity.DepartureDay;
+import com.project.tour_booking.Entity.Destination;
 import com.project.tour_booking.Entity.Tour;
 import com.project.tour_booking.Entity.TourImage;
 import com.project.tour_booking.Entity.TypeOfTour;
+import com.project.tour_booking.Exception.DesnationNotEnableException;
+import com.project.tour_booking.Exception.DestinationNotFoundException;
 import com.project.tour_booking.Exception.TourNotFoundException;
 import com.project.tour_booking.Exception.TypeOfTourNotEnableException;
 import com.project.tour_booking.Exception.TypeOfTourNotFoundException;
 import com.project.tour_booking.Repository.BookingRepository;
 import com.project.tour_booking.Repository.DepartureDayRepository;
+import com.project.tour_booking.Repository.DestinationRepository;
 import com.project.tour_booking.Repository.TourImageRepository;
 import com.project.tour_booking.Repository.TourRepository;
 import com.project.tour_booking.Repository.TypeOfTourRepository;
@@ -32,6 +36,7 @@ public class TourServiceImpl implements TourService {
   private TourImageRepository tourImageRepository;
   private DepartureDayRepository departureDayRepository;
   private BookingRepository bookingRepository;
+  private DestinationRepository destinationRepository;
 
   @Override
   public void saveTour(TourDTO tourDTO) {
@@ -39,6 +44,7 @@ public class TourServiceImpl implements TourService {
     tour.setStatus(tourDTO.getStatus());
     tour.setDateOfPosting(LocalDate.now());
     tour.setName(tourDTO.getName());
+    tour.setThumbnail(tourDTO.getThumbnail());
     tour.setDescription(tourDTO.getDescription());
     tour.setService(tourDTO.getService());
     tour.setTime(tourDTO.getTime());
@@ -48,10 +54,24 @@ public class TourServiceImpl implements TourService {
     tour.setDeparturePoint(tourDTO.getDeparturePoint());
     tour.setIsHot(tourDTO.getIsHot());
     Optional<TypeOfTour> tOTOptional = typeOfTourRepository.findById(tourDTO.getTotId());
-    if (tOTOptional.isPresent())
-      tour.setTypeOfTour(tOTOptional.get());
-    else
+    if (tOTOptional.isPresent()) {
+      if (tOTOptional.get().getStatus()) {
+        tour.setTypeOfTour(tOTOptional.get());
+      } else {
+        throw new TypeOfTourNotEnableException(tourDTO.getTotId());
+      }
+    } else
       throw new TypeOfTourNotFoundException(tourDTO.getTotId());
+
+    Optional<Destination> destinationOptional = destinationRepository.findById(tourDTO.getDestinationId());
+    if (destinationOptional.isPresent())
+      if (destinationOptional.get().getStatus()) {
+        tour.setDestination(destinationOptional.get());
+      } else {
+        throw new DesnationNotEnableException(tourDTO.getDestinationId());
+      }
+    else
+      throw new DestinationNotFoundException(tourDTO.getDestinationId());
 
     tourRepository.save(tour);
 
@@ -79,7 +99,7 @@ public class TourServiceImpl implements TourService {
 
   @Override
   public List<Tour> getTourByTypeOfTourId(Long totId) {
-    return tourRepository.findByTypeOfTourId(totId);
+    return tourRepository.findAllByTypeOfTourId(totId);
   }
 
   @Override
@@ -88,6 +108,7 @@ public class TourServiceImpl implements TourService {
     if (tourOptional.isPresent()) {
       Tour updateTour = tourOptional.get();
       updateTour.setName(tourDTO.getName());
+      updateTour.setThumbnail(tourDTO.getThumbnail());
       updateTour.setDescription(tourDTO.getDescription());
       updateTour.setService(tourDTO.getService());
       updateTour.setTime(tourDTO.getTime());
@@ -136,10 +157,16 @@ public class TourServiceImpl implements TourService {
               departureDayRepository.save(departureDay);
             }
           }
-        } else if (typeOfTourRepository.findById(tourDTO.getTotId()).get().getStatus()) {
-          updateTour.setStatus(true);
-        } else
-          throw new TypeOfTourNotEnableException(tourDTO.getTotId());
+        } else {
+          if (typeOfTourRepository.findById(tourDTO.getTotId()).get().getStatus()
+              && destinationRepository.findById(tourDTO.getDestinationId()).get().getStatus()) {
+            updateTour.setStatus(true);
+          } else if (!typeOfTourRepository.findById(tourDTO.getTotId()).get().getStatus()) {
+            throw new TypeOfTourNotEnableException(tourDTO.getTotId());
+          } else if (!destinationRepository.findById(tourDTO.getDestinationId()).get().getStatus()) {
+            throw new DesnationNotEnableException(tourDTO.getDestinationId());
+          }
+        }
       }
 
       if (updateTour.getTypeOfTour().getId() != tourDTO.getTotId()) {
@@ -154,6 +181,20 @@ public class TourServiceImpl implements TourService {
             updateTour.setTypeOfTour(tOTOptional.get());
         } else
           throw new TypeOfTourNotFoundException(tourDTO.getTotId());
+      }
+
+      if (updateTour.getDestination().getId() != tourDTO.getDestinationId()) {
+        Optional<Destination> destinationOptional = destinationRepository.findById(tourDTO.getDestinationId());
+        if (destinationOptional.isPresent()) {
+          if (updateTour.getStatus()) {
+            if (destinationRepository.findById(tourDTO.getDestinationId()).get().getStatus()) {
+              updateTour.setDestination(destinationOptional.get());
+            } else
+              throw new DesnationNotEnableException(tourDTO.getTotId());
+          } else
+            updateTour.setDestination(destinationOptional.get());
+        } else
+          throw new DestinationNotFoundException(tourDTO.getDestinationId());
       }
 
       return tourRepository.save(updateTour);
@@ -194,10 +235,16 @@ public class TourServiceImpl implements TourService {
             departureDayRepository.save(departureDay);
           }
         }
-      } else if (updateTour.getTypeOfTour().getStatus()) {
-        updateTour.setStatus(true);
-      } else
-        throw new TypeOfTourNotEnableException(updateTour.getTypeOfTour().getId());
+      } else {
+        if (updateTour.getTypeOfTour().getStatus()
+            && updateTour.getDestination().getStatus()) {
+          updateTour.setStatus(true);
+        } else if (!updateTour.getTypeOfTour().getStatus()) {
+          throw new TypeOfTourNotEnableException(updateTour.getTypeOfTour().getId());
+        } else if (!updateTour.getDestination().getStatus()) {
+          throw new DesnationNotEnableException(updateTour.getDestination().getId());
+        }
+      }
       tourRepository.save(updateTour);
     } else
       throw new TourNotFoundException(tourId);

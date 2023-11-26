@@ -40,6 +40,11 @@ public class Tour {
   private String name;
 
   @NonNull
+  @Column(name = "thumbnail")
+  @NotBlank(message = "thumnail tour không được để trống!")
+  private String thumbnail;
+
+  @NonNull
   @NotBlank(message = "Nội dung của tour không được để trống!")
   @Column(name = "content")
   private String description;
@@ -109,4 +114,8 @@ public class Tour {
   @JsonIgnore
   @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
   private List<TourReview> tourReviews;
+
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "destination_id", referencedColumnName = "id")
+  private Destination destination;
 }

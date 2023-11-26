@@ -34,9 +34,13 @@ public class DepartureDayServiceImpl implements DepartureDayService {
         departureDayDTO.getStatus());
 
     Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
-    if (tourOptional.isPresent())
-      newDepartureDay.setTour(tourOptional.get());
-    else
+    if (tourOptional.isPresent()) {
+      if (tourOptional.get().getStatus()) {
+        newDepartureDay.setTour(tourOptional.get());
+      } else {
+        throw new TourNotEnableException(departureDayDTO.getTourId());
+      }
+    } else
       throw new TourNotFoundException(departureDayDTO.getTourId());
     departureDayRepository.save(newDepartureDay);
   }

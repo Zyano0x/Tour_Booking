@@ -2,6 +2,7 @@ package com.project.tour_booking.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,11 +19,12 @@ import com.project.tour_booking.DTO.UpdateUserRoleDTO;
 import com.project.tour_booking.Service.User.UserService;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api")
 public class UserController {
 
     @Autowired
-    private UserService userService;    
+    private UserService userService;
 
     @PostMapping("/signin")
     public ResponseEntity<String> loginUser(@RequestBody SignInDTO signInDTO) {
@@ -31,16 +33,16 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignUpDTO signUpDTO) {
-       return userService.signUp(signUpDTO);
+        return userService.signUp(signUpDTO);
     }
 
-    @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<String> confirmUserAccount(@RequestParam("token")String confirmationToken) {
+    @RequestMapping(value = "/confirm-account", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) {
         return userService.confirmEmailVerification(confirmationToken);
     }
 
-    @RequestMapping(value = "/resend-verification", method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<String> reconfirmUserAccount(@RequestParam("token")String oldToken) {
+    @RequestMapping(value = "/resend-verification", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<String> reconfirmUserAccount(@RequestParam("token") String oldToken) {
         return userService.resendEmailVerification(oldToken);
     }
 
@@ -55,7 +57,8 @@ public class UserController {
     }
 
     @PutMapping("/admin/update-role/{username}")
-    public ResponseEntity<String> updateUserRole(@PathVariable String username, @RequestBody UpdateUserRoleDTO updateUserRoleDTO) {
+    public ResponseEntity<String> updateUserRole(@PathVariable String username,
+            @RequestBody UpdateUserRoleDTO updateUserRoleDTO) {
         return userService.updateUserRole(username, updateUserRoleDTO.getRoleId());
     }
 

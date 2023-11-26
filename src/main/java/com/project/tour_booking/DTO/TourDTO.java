@@ -15,6 +15,9 @@ public class TourDTO {
   @NotBlank(message = "Tên của tour không được để trống!")
   private String name;
 
+  @NotBlank(message = "thumnail tour không được để trống!")
+  private String thumbnail;
+
   @NotBlank(message = "Nội dung của tour không được để trống!")
   private String description;
 
@@ -49,4 +52,7 @@ public class TourDTO {
 
   @NotNull(message = "Loại tour không được để trống không được để trống!")
   private Long totId;
+
+  @NotNull(message = "Địa điểm không được để trống không được để trống!")
+  private Long destinationId;
 }

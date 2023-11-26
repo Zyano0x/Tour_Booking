@@ -59,8 +59,8 @@ public class TypeOfTourServiceImpl implements TypeOfTourService {
       if (updateTOT.getStatus()) {
         updateTOT.setStatus(false);
 
-        // Tìm và disable các tour thuộc typeOfTour
-        List<Tour> tours = tourRepository.findByTypeOfTourId(totId).stream()
+        // Tìm và disable các tour thuộc loại tour
+        List<Tour> tours = tourRepository.findAllByTypeOfTourId(totId).stream()
             .filter(
                 tour -> tour.getStatus())
             .collect(Collectors.toList());
@@ -100,33 +100,11 @@ public class TypeOfTourServiceImpl implements TypeOfTourService {
         }
       } else {
         updateTOT.setStatus(true);
-
-        // List<Tour> tours = tourRepository.findByTypeOfTourId(totId);
-        // if (!tours.isEmpty()) {
-        // for (Tour tour : tours) {
-        // tour.setStatus(true);
-
-        // List<DepartureDay> departureDays =
-        // departureDayRepository.findAllByTourId(tour.getId()).stream()
-        // .filter(departureDay ->
-        // departureDay.getDepartureDay().isAfter(LocalDate.now()))
-        // .collect(Collectors.toList());
-        // if (!departureDays.isEmpty()) {
-        // for (DepartureDay departureDay : departureDays) {
-        // departureDay.setStatus(true);
-        // departureDayRepository.save(departureDay);
-        // }
-        // }
-
-        // tourRepository.save(tour);
-        // }
-        // }
       }
 
       return typeOfTourRepository.save(updateTOT);
     } else
       throw new TypeOfTourNotFoundException(totId);
-
   }
 
   @Override
@@ -142,8 +120,8 @@ public class TypeOfTourServiceImpl implements TypeOfTourService {
         updateTOT.setStatus(typeOfTour.getStatus());
 
         if (!updateTOT.getStatus()) {
-          // Tìm và disable các tour thuộc typeOfTour
-          List<Tour> tours = tourRepository.findByTypeOfTourId(totId).stream()
+          // Tìm và disable các tour thuộc loại tour
+          List<Tour> tours = tourRepository.findAllByTypeOfTourId(totId).stream()
               .filter(
                   tour -> tour.getStatus())
               .collect(Collectors.toList());
@@ -180,27 +158,6 @@ public class TypeOfTourServiceImpl implements TypeOfTourService {
             }
           }
         }
-        // else {
-        // List<Tour> tours = tourRepository.findByTypeOfTourId(totId);
-        // if (!tours.isEmpty()) {
-        // for (Tour tour : tours) {
-        // tour.setStatus(true);
-
-        // List<DepartureDay> departureDays =
-        // departureDayRepository.findAllByTourId(tour.getId()).stream()
-        // .filter(departureDay ->
-        // departureDay.getDepartureDay().isAfter(LocalDate.now()))
-        // .collect(Collectors.toList());
-        // if (!departureDays.isEmpty()) {
-        // for (DepartureDay departureDay : departureDays) {
-        // departureDay.setStatus(true);
-        // departureDayRepository.save(departureDay);
-        // }
-        // }
-        // tourRepository.save(tour);
-        // }
-        // }
-        // }
       }
 
       return typeOfTourRepository.save(updateTOT);
