@@ -1,18 +1,19 @@
 package com.project.tour_booking.Service.Articles;
 
-import java.util.List;
-
 import com.project.tour_booking.DTO.ArticlesDTO;
 import com.project.tour_booking.Entity.Articles;
 
+import java.util.List;
+
 public interface ArticlesService {
-  void saveArticles(ArticlesDTO articlesDTO);
 
-  Articles getArticles(Long articlesId);
+    void saveArticles(ArticlesDTO articlesDTO);
 
-  List<Articles> getAllArticles();
+    Articles getArticles(Long articlesId);
 
-  Articles updateArticles(Articles articles, Long articlesId);
+    List<Articles> getAllArticles();
 
-  void updateArticlesStatus(Long articlesId);
+    Articles updateArticles(ArticlesDTO articlesDTO, Long articlesId);
+
+    void updateArticlesStatus(Long articlesId);
 }

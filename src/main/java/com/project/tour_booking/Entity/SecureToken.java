@@ -15,11 +15,23 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 
-@Entity
-@Table(name = "confirmation_tokens")
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
+
 @Data
+@Entity
+@Table(name = "secure_token")
+@AllArgsConstructor
 @NoArgsConstructor
 public class SecureToken {
+
+    private static final int EXPIRATION_TIME = 15;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +47,6 @@ public class SecureToken {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
-
-    private static final int EXPIRATION_TIME = 15;
 
     public SecureToken(User user) {
         super();

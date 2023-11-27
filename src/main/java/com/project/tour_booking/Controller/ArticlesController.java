@@ -17,13 +17,14 @@ import com.project.tour_booking.Entity.Articles;
 import com.project.tour_booking.Service.Articles.ArticlesService;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArticlesController {
-  private ArticlesService articlesService;
+
+  private final ArticlesService articlesService;
 
   @PostMapping("/post-articles")
   public ResponseEntity<String> saveArticles(@Valid @RequestBody ArticlesDTO articlesDTO) {

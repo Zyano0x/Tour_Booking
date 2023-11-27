@@ -1,4 +1,4 @@
-package com.project.tour_booking.CustomValidator;
+package com.project.tour_booking.Validator;
 
 import java.time.LocalDate;
 

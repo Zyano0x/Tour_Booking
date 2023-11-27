@@ -14,13 +14,13 @@ import com.project.tour_booking.Repository.ArticlesRepository;
 import com.project.tour_booking.Repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArticlesServiceImpl implements ArticlesService {
-  private ArticlesRepository articlesRepository;
-  private UserRepository userRepository;
+  private final ArticlesRepository articlesRepository;
+  private final UserRepository userRepository;
 
   @Override
   public void saveArticles(ArticlesDTO articlesDTO) {

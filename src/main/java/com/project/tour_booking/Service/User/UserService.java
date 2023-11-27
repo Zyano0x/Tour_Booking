@@ -1,24 +1,31 @@
 package com.project.tour_booking.Service.User;
 
+import com.project.tour_booking.Entity.User;
 import org.springframework.http.ResponseEntity;
 
+import com.project.tour_booking.DTO.AuthenticationResponse;
 import com.project.tour_booking.DTO.ResetPasswordDTO;
+import com.project.tour_booking.DTO.SignInDTO;
 import com.project.tour_booking.DTO.SignUpDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
+
 public interface UserService {
-    ResponseEntity<String> signIn(String usernameOrEmail, String password);
+    
+    ResponseEntity<?> signIn(SignInDTO signInDTO, HttpServletResponse response);
 
-    ResponseEntity<String> signUp(SignUpDTO signUpDTO);
+    ResponseEntity<?> signUp(SignUpDTO signUpDTO);
 
-    ResponseEntity<String> confirmEmailVerification(String confirmationToken);
+    ResponseEntity<?> confirmEmailVerification(String confirmationToken);
 
-    ResponseEntity<String> resendEmailVerification(String oldToken);
+    ResponseEntity<?> resendEmailVerification(String oldToken);
 
-    ResponseEntity<String> forgotPassword(String email);
+    ResponseEntity<?> forgotPassword(String email);
 
-    ResponseEntity<String> resetPassword(ResetPasswordDTO resetPasswordDTO);
+    ResponseEntity<?> resetPassword(ResetPasswordDTO resetPasswordDTO);
 
-    ResponseEntity<String> updateUserRole(String username, Long roleId);
-
-    ResponseEntity<String> updateUserAccount(String email);
+    List<User> listUsers();
 }
