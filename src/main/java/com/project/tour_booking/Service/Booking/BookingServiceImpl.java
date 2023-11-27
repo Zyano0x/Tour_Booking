@@ -157,7 +157,7 @@ public class BookingServiceImpl implements BookingService {
             // Kiểm tra ngày khởi hành đã hết hạn chưa
             if (newDepartureDay.getDepartureDay().isAfter(LocalDate.now())) {
               // Kiểm tra status của departureDay
-              if (newDepartureDay.getStatus() == true) {
+              if (newDepartureDay.getStatus()) {
                 Integer totalQuantityOfPresentBooking = presentBooking.getQuantityOfAdult()
                     + presentBooking.getQuantityOfChild();
 
