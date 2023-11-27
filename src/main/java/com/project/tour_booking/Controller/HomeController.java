@@ -1,12 +1,10 @@
 package com.project.tour_booking.Controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@CrossOrigin("*")
 @RequestMapping("/")
 public class HomeController {
 
@@ -18,5 +16,10 @@ public class HomeController {
     @GetMapping("/register")
     public String RegisterPage() {
         return "user/register";
+    }
+
+    @GetMapping
+    public String Home() {
+        return "user/index";
     }
 }

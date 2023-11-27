@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -15,38 +15,38 @@
     <title>CITY TOURS - City tours and travel site template by Ansonika</title>
 
     <!-- Favicons-->
-    <link rel="shortcut icon" href="../../static/images/user/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../../static/user/images/favicon.ico" type="image/x-icon" />
     <link
       rel="apple-touch-icon"
       type="image/x-icon"
-      href="../../static/images/user/apple-touch-icon-57x57-precomposed.png"
+      href="../../static/user/images/apple-touch-icon-57x57-precomposed.png"
     />
     <link
       rel="apple-touch-icon"
       type="image/x-icon"
       sizes="72x72"
-      href="../../static/images/user/apple-touch-icon-72x72-precomposed.png"
+      href="../../static/user/images/apple-touch-icon-72x72-precomposed.png"
     />
     <link
       rel="apple-touch-icon"
       type="image/x-icon"
       sizes="114x114"
-      href="../../static/images/user/apple-touch-icon-114x114-precomposed.png"
+      href="../../static/user/images/apple-touch-icon-114x114-precomposed.png"
     />
     <link
       rel="apple-touch-icon"
       type="image/x-icon"
       sizes="144x144"
-      href="../../static/images/user/apple-touch-icon-144x144-precomposed.png"
+      href="../../static/user/images/apple-touch-icon-144x144-precomposed.png"
     />
 
     <!-- COMMON CSS -->
-    <link href="../../static/css/user/bootstrap.min.css" rel="stylesheet" />
-    <link href="../../static/css/user/style.css" rel="stylesheet" />
-    <link href="../../static/css/user/vendors.css" rel="stylesheet" />
+    <link href="../../static/user/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../static/user/css/style.css" rel="stylesheet" />
+    <link href="../../static/user/css/vendors.css" rel="stylesheet" />
 
     <!-- CUSTOM CSS -->
-    <link href="../../static/css/user/custom.css" rel="stylesheet" />
+    <link href="../../static/user/css/custom.css" rel="stylesheet" />
   </head>
   <body>
     <div id="preloader">
@@ -104,7 +104,7 @@
             <div class="main-menu">
               <div id="header_menu">
                 <img
-                  src="../../static/images/user/logo_sticky.png"
+                  src="../../static/user/images/logo_sticky.png"
                   width="160"
                   height="34"
                   alt="City tours"
@@ -597,7 +597,7 @@
                     <select class="ddslick destination" name="destination">
                       <option
                         value="0"
-                        data-imagesrc="../../static/images/user/icons_search/walking.png"
+                        data-imagesrc="../../static/user/images/icons_search/walking.png"
                         selected
                       >
                         Tất cả
@@ -614,7 +614,7 @@
                     <select class="ddslick typeOfTour" name="category">
                       <option
                         value="0"
-                        data-imagesrc="../../static/images/user/icons_search/all_tours.png"
+                        data-imagesrc="../../static/user/images/icons_search/all_tours.png"
                         selected
                       >
                         Tất cả
@@ -1313,7 +1313,7 @@
         <div class="row">
           <div class="col-md-6">
             <img
-              src="../../static/images/user/laptop.png"
+              src="../../static/user/images/laptop.png"
               alt="Laptop"
               class="img-fluid laptop"
             />
@@ -1506,13 +1506,13 @@
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <script src="../../static/js/user/jquery-2.2.4.min.js"></script>
-    <script src="../../static/js/user/common_scripts_min.js"></script>
-    <script src="../../static/js/user/functions.js"></script>
+    <script src="../../static/user/js/jquery-2.2.4.min.js"></script>
+    <script src="../../static/user/js/common_scripts_min.js"></script>
+    <script src="../../static/user/js/functions.js"></script>
 
     <!-- Video header scripts -->
-    <script src="../../static/js/user/modernizr.js"></script>
-    <script src="../../static/js/user/video_header.js"></script>
+    <script src="../../static/user/js/modernizr.js"></script>
+    <script src="../../static/user/js/video_header.js"></script>
 
     <!-- index_7  -->
     <script>
@@ -1525,7 +1525,7 @@
 
 
     <!-- Destination -->
-    <script src="../../static/js/user/jquery.ddslick.js"></script>
+    <script src="../../static/user/js/jquery.ddslick.js"></script>
     
     <script>
       $(document).ready(function () {
@@ -1597,7 +1597,7 @@
                   const template = `
                   <option
                     value="${item.id}"
-                    data-imagesrc="../../static/images/user/icons_search/walking.png">
+                    data-imagesrc="../../static/user/images/icons_search/walking.png">
                     ${item.name}
                   </option>`;
                   if (item.status) {
@@ -1639,7 +1639,7 @@
                   const template = `
                   <option
                     value="${item.id}"
-                    data-imagesrc="../../static/images/user/icons_search/all_tours.png">
+                    data-imagesrc="../../static/user/images/icons_search/all_tours.png">
                     ${item.name}
                   </option>`;
                   if (item.status) {

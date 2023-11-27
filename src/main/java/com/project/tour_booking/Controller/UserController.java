@@ -2,7 +2,6 @@ package com.project.tour_booking.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,7 +18,6 @@ import com.project.tour_booking.DTO.UpdateUserRoleDTO;
 import com.project.tour_booking.Service.User.UserService;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api")
 public class UserController {
 
