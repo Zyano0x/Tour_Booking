@@ -1,53 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta
-      name="description"
-      content="Citytours - Premium site template for city tours agencies, transfers and tickets."
-    />
-    <meta name="author" content="Ansonika" />
-    <title>CITY TOURS - City tours and travel site template by Ansonika</title>
-
-    <!-- Favicons-->
-    <link rel="shortcut icon" href="../../static/user/images/favicon.ico" type="image/x-icon" />
-    <link
-      rel="apple-touch-icon"
-      type="image/x-icon"
-      href="../../static/user/images/apple-touch-icon-57x57-precomposed.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      type="image/x-icon"
-      sizes="72x72"
-      href="../../static/user/images/apple-touch-icon-72x72-precomposed.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      type="image/x-icon"
-      sizes="114x114"
-      href="../../static/user/images/apple-touch-icon-114x114-precomposed.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      type="image/x-icon"
-      sizes="144x144"
-      href="../../static/user/images/apple-touch-icon-144x144-precomposed.png"
-    />
-
-    <!-- COMMON CSS -->
-    <link href="../../static/user/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../../static/user/css/style.css" rel="stylesheet" />
-    <link href="../../static/user/css/vendors.css" rel="stylesheet" />
-
-    <!-- CUSTOM CSS -->
-    <link href="../../static/user/css/custom.css" rel="stylesheet" />
-  </head>
+<th:block th:replace="~{user/layout::header}"></th:block>
   <body>
     <div id="preloader">
       <div class="sk-spinner sk-spinner-wave">
@@ -104,7 +57,7 @@
             <div class="main-menu">
               <div id="header_menu">
                 <img
-                  src="../../static/user/images/logo_sticky.png"
+                  th:src="@{assets/user/images/logo_sticky.png}"
                   width="160"
                   height="34"
                   alt="City tours"
@@ -546,7 +499,7 @@
               >Liên hệ</a
             >
             <a
-              href="https://www.youtube.com/watch?v=Zz5cu72Gv5Y"
+              th:href="@{https://www.youtube.com/watch?v=Zz5cu72Gv5Y}"
               class="video animated fadeInUp button_intro outline"
               >Play video</a
             >
@@ -688,7 +641,7 @@
               <div class="img_container">
                 <a href="single_tour.html">
                   <img
-                    src="https://images.unsplash.com/photo-1682686581551-867e0b208bd1?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    th:src="@{https://images.unsplash.com/photo-1682686581551-867e0b208bd1?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D}"
                     width="800"
                     height="533"
                     
@@ -1313,7 +1266,7 @@
         <div class="row">
           <div class="col-md-6">
             <img
-              src="../../static/user/images/laptop.png"
+              th:src="@{assets/user/images/laptop.png}"
               alt="Laptop"
               class="img-fluid laptop"
             />
@@ -1338,90 +1291,7 @@
     </main>
     <!-- End main -->
 
-    <footer class="revealed">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h3>Need help?</h3>
-            <a href="tel://004542344599" id="phone">+45 423 445 99</a>
-            <a href="mailto:help@citytours.com" id="email_footer"
-              >help@citytours.com</a
-            >
-          </div>
-          <div class="col-md-3">
-            <h3>About</h3>
-            <ul>
-              <li><a href="#">About us</a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Login</a></li>
-              <li><a href="#">Register</a></li>
-              <li><a href="#">Terms and condition</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <h3>Discover</h3>
-            <ul>
-              <li><a href="#">Community blog</a></li>
-              <li><a href="#">Tour guide</a></li>
-              <li><a href="#">Wishlist</a></li>
-              <li><a href="#">Gallery</a></li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h3>Settings</h3>
-            <div class="styled-select">
-              <select name="lang" id="lang">
-                <option value="English" selected>English</option>
-                <option value="French">French</option>
-                <option value="Spanish">Spanish</option>
-                <option value="Russian">Russian</option>
-              </select>
-            </div>
-            <div class="styled-select">
-              <select name="currency" id="currency">
-                <option value="USD" selected>USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="RUB">RUB</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <!-- End row -->
-        <div class="row">
-          <div class="col-md-12">
-            <div id="social_footer">
-              <ul>
-                <li>
-                  <a href="#"><i class="icon-facebook"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-twitter"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-google"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-instagram"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-pinterest"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-vimeo"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-youtube-play"></i></a>
-                </li>
-              </ul>
-              <p>© Citytours 2018</p>
-            </div>
-          </div>
-        </div>
-        <!-- End row -->
-      </div>
-      <!-- End container -->
-    </footer>
+    <th:block th:replace="~{user/layout::footer}"></th:block>
     <!-- End footer -->
 
     <div id="toTop"></div>
@@ -1506,13 +1376,13 @@
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <script src="../../static/user/js/jquery-2.2.4.min.js"></script>
-    <script src="../../static/user/js/common_scripts_min.js"></script>
-    <script src="../../static/user/js/functions.js"></script>
+    <script th:src="@{assets/user/js/jquery-2.2.4.min.js}"></script>
+    <script th:src="@{assets/user/js/common_scripts_min.js}"></script>
+    <script th:src="@{assets/user/js/functions.js}"></script>
 
     <!-- Video header scripts -->
-    <script src="../../static/user/js/modernizr.js"></script>
-    <script src="../../static/user/js/video_header.js"></script>
+    <script th:src="@{assets/user/js/modernizr.js}"></script>
+    <script th:src="@{assets/user/js/video_header.js}"></script>
 
     <!-- index_7  -->
     <script>
@@ -1525,7 +1395,7 @@
 
 
     <!-- Destination -->
-    <script src="../../static/user/js/jquery.ddslick.js"></script>
+    <script th:src="@{assets/user/js/jquery.ddslick.js}"></script>
     
     <script>
       $(document).ready(function () {

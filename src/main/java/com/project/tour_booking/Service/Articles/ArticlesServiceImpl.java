@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.project.tour_booking.Entity.Role;
 import org.springframework.stereotype.Service;
 
 import com.project.tour_booking.DTO.ArticlesDTO;
@@ -28,11 +29,7 @@ public class ArticlesServiceImpl implements ArticlesService {
     post.setContent(articlesDTO.getContent());
     post.setTitle(articlesDTO.getTitle());
     post.setDateOfPosting(LocalDate.now());
-    if (userRepository.findById(articlesDTO.getUserId()).get().getRole().getName() == "ADMIN") {
-      post.setStatus(true);
-    } else {
-      post.setStatus(false);
-    }
+    post.setStatus(userRepository.findById(articlesDTO.getUserId()).get().getRole() == Role.ADMIN);
     Optional<User> userOptional = userRepository.findById(articlesDTO.getUserId());
     if (userOptional.isPresent())
       post.setUser(userOptional.get());
@@ -43,15 +40,13 @@ public class ArticlesServiceImpl implements ArticlesService {
 
   @Override
   public Articles getArticles(Long articlesId) {
-    Articles articles = articlesRepository.findById(articlesId)
+      return articlesRepository.findById(articlesId)
         .orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
-
-    return articles;
   }
 
   @Override
   public List<Articles> getAllArticles() {
-    return (List<Articles>) articlesRepository.findAll();
+    return articlesRepository.findAll();
   }
 
   @Override
@@ -72,10 +67,7 @@ public class ArticlesServiceImpl implements ArticlesService {
     Articles articles = articlesRepository.findById(articlesId)
         .orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
 
-    if (articles.getStatus())
-      articles.setStatus(false);
-    else
-      articles.setStatus(true);
+    articles.setStatus(!articles.getStatus());
 
     articlesRepository.save(articles);
   }
