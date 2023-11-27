@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -26,9 +27,11 @@ public class TourReview {
   private String content;
 
   @NonNull
+  @NotNull(message = "Vote không được để trống!")
   @Column(name = "vote")
   private Integer vote;
 
+  @NonNull
   @Column(name = "date_of_posting")
   private LocalDate dateOfPosting;
 

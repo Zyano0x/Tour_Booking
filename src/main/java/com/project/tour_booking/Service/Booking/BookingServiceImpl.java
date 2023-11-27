@@ -14,8 +14,9 @@ import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Entity.DepartureDay;
 import com.project.tour_booking.Entity.Tour;
 import com.project.tour_booking.Entity.User;
+import com.project.tour_booking.Exception.BookingInvalidQuantityException;
+import com.project.tour_booking.Exception.BookingNotEnoughQuantityException;
 import com.project.tour_booking.Exception.BookingNotFoundException;
-import com.project.tour_booking.Exception.BookingQuantityException;
 import com.project.tour_booking.Exception.BookingStatusException;
 import com.project.tour_booking.Exception.DepartureDayCannotEnableException;
 import com.project.tour_booking.Exception.DepartureDayNotFoundException;
@@ -50,39 +51,41 @@ public class BookingServiceImpl implements BookingService {
       Optional<DepartureDay> departureDayOptional = departureDayRepository.findById(bookingDTO.getDepartureDayId());
       if (departureDayOptional.isPresent()) {
         DepartureDay departureDay = departureDayOptional.get();
-        // Kiểm tra status của departureDay
+        // Kiểm tra status của ngày khởi hành
         if (departureDay.getDepartureDay().isAfter(LocalDate.now())) {
-          if (departureDay.getStatus() == true) {
+          if (departureDay.getStatus()) {
             booking.setDepartureDay(departureDay);
+            if (bookingDTO.getQuantityOfAdult() + bookingDTO.getQuantityOfChild() > 0) {
+              if ((bookingDTO.getQuantityOfAdult() + bookingDTO.getQuantityOfChild()) <= departureDay.getQuantity()) {
+                booking.setQuantityOfAdult(bookingDTO.getQuantityOfAdult());
+                booking.setQuantityOfChild(bookingDTO.getQuantityOfChild());
 
-            if ((bookingDTO.getQuantityOfAdult() + bookingDTO.getQuantityOfChild()) <= departureDay.getQuantity()) {
-              booking.setQuantityOfAdult(bookingDTO.getQuantityOfAdult());
-              booking.setQuantityOfChild(bookingDTO.getQuantityOfChild());
+                // Cập nhật số lượng của ngày khởi hành
+                departureDay.setQuantity(departureDay.getQuantity() - (booking.getQuantityOfAdult() +
+                    booking.getQuantityOfChild()));
 
-              // Cập nhật số lượng của departureDay
-              departureDay.setQuantity(departureDay.getQuantity() - (booking.getQuantityOfAdult() +
-                  booking.getQuantityOfChild()));
+                // Kiểm tra tồn tại
+                Optional<Tour> tourOptional = tourRepository.findById(departureDay.getTour().getId());
+                if (tourOptional.isPresent()) {
+                  Tour tour = tourOptional.get();
 
-              // Kiểm tra tồn tại
-              Optional<Tour> tourOptional = tourRepository.findById(departureDay.getTour().getId());
-              if (tourOptional.isPresent()) {
-                Tour tour = tourOptional.get();
+                  // Set tổng tiền cho booking
+                  booking.setTotalPrice((new BigDecimal(booking.getQuantityOfAdult()).multiply(tour.getPriceForAdult())
+                      .add(new BigDecimal(booking.getQuantityOfChild()).multiply(tour.getPriceForChildren()))));
 
-                // Set tổng tiền cho booking
-                booking.setTotalPrice((new BigDecimal(booking.getQuantityOfAdult()).multiply(tour.getPriceForAdult())
-                    .add(new BigDecimal(booking.getQuantityOfChild()).multiply(tour.getPriceForChildren()))));
+                  // Set các trường khác
+                  booking.setBookingDate(LocalDate.now());
+                  booking.setStatus(true);
 
-                // Set các trường khác
-                booking.setBookingDate(LocalDate.now());
-                booking.setStatus(true);
-
-                // Lưu vào csdl
-                departureDayRepository.save(departureDay);
-                bookingRepository.save(booking);
+                  // Lưu vào csdl
+                  departureDayRepository.save(departureDay);
+                  bookingRepository.save(booking);
+                } else
+                  throw new TourNotFoundException(departureDay.getTour().getId());
               } else
-                throw new TourNotFoundException(departureDay.getTour().getId());
+                throw new BookingNotEnoughQuantityException(departureDay.getDepartureDay());
             } else
-              throw new BookingQuantityException();
+              throw new BookingInvalidQuantityException();
           } else
             throw new DepartureDayNotEnableStatusException(departureDay.getDepartureDay());
         } else
@@ -151,11 +154,13 @@ public class BookingServiceImpl implements BookingService {
           // Kiểm tra tồn tại của departureDay mới
           if (departureDayOptional.isPresent()) {
             DepartureDay newDepartureDay = departureDayOptional.get();
+            // Kiểm tra ngày khởi hành đã hết hạn chưa
             if (newDepartureDay.getDepartureDay().isAfter(LocalDate.now())) {
               // Kiểm tra status của departureDay
               if (newDepartureDay.getStatus() == true) {
                 Integer totalQuantityOfPresentBooking = presentBooking.getQuantityOfAdult()
                     + presentBooking.getQuantityOfChild();
+
                 // Trả lại số lượng cho ngày khởi hàng cũ
                 DepartureDay presentDepartureDay = departureDayRepository.findById(presentDepartureId).get();
                 presentDepartureDay.setQuantity(presentDepartureDay.getQuantity() + totalQuantityOfPresentBooking);
@@ -165,6 +170,12 @@ public class BookingServiceImpl implements BookingService {
 
                 // Cập nhật departure mới cho booking
                 presentBooking.setDepartureDay(newDepartureDay);
+                presentBooking.setTotalPrice((new BigDecimal(presentBooking.getQuantityOfAdult())
+                    .multiply(tourRepository.findById(newDepartureDay.getTour().getId()).get()
+                        .getPriceForAdult()))
+                    .add(new BigDecimal(presentBooking.getQuantityOfChild())
+                        .multiply(tourRepository.findById(newDepartureDay.getTour().getId()).get()
+                            .getPriceForChildren())));
               } else
                 throw new DepartureDayNotEnableStatusException(newDepartureDay.getDepartureDay());
             } else
@@ -181,31 +192,32 @@ public class BookingServiceImpl implements BookingService {
 
         // Bắt đầu kiểm tra và cập nhật trường số lượng người lớn ở booking
         Integer departureQuantity = updateDepartureDay.getQuantity();
-        if (updateTotalQuantity <= departureQuantity) {
+        if (updateTotalQuantity != 0) {
+          if (updateTotalQuantity <= departureQuantity) {
 
-          // Cập nhật trường số lượng người lớn của booking
-          presentBooking.setQuantityOfAdult(bookingDTO.getQuantityOfAdult());
+            // Cập nhật trường số lượng người lớn của booking
+            presentBooking.setQuantityOfAdult(bookingDTO.getQuantityOfAdult());
 
-          // Cập nhật trường số lượng trẻ con của booking
-          presentBooking.setQuantityOfChild(bookingDTO.getQuantityOfChild());
+            // Cập nhật trường số lượng trẻ con của booking
+            presentBooking.setQuantityOfChild(bookingDTO.getQuantityOfChild());
 
-          // Cập nhật trường số lượng của departureDay
-          updateDepartureDay.setQuantity(departureQuantity - updateTotalQuantity);
-          departureDayRepository.save(updateDepartureDay);
+            // Cập nhật trường số lượng của departureDay
+            updateDepartureDay.setQuantity(departureQuantity - updateTotalQuantity);
+            departureDayRepository.save(updateDepartureDay);
 
-          // Cập nhật tổng tiền của booking
-          presentBooking.setTotalPrice(
-              presentBooking.getTotalPrice()
-                  .add((new BigDecimal(updateQuantityOfAdult)
-                      .multiply(tourRepository.findById(updateDepartureDay.getTour().getId()).get()
-                          .getPriceForAdult()))
-                      .add(new BigDecimal(updateQuantityOfChild)
-                          .multiply(tourRepository.findById(updateDepartureDay.getTour().getId()).get()
-                              .getPriceForChildren()))));
-
-          bookingRepository.save(presentBooking);
-        } else
-          throw new BookingQuantityException();
+            // Cập nhật tổng tiền của booking
+            presentBooking.setTotalPrice(
+                presentBooking.getTotalPrice()
+                    .add((new BigDecimal(updateQuantityOfAdult)
+                        .multiply(tourRepository.findById(updateDepartureDay.getTour().getId()).get()
+                            .getPriceForAdult()))
+                        .add(new BigDecimal(updateQuantityOfChild)
+                            .multiply(tourRepository.findById(updateDepartureDay.getTour().getId()).get()
+                                .getPriceForChildren()))));
+          } else
+            throw new BookingNotEnoughQuantityException(updateDepartureDay.getDepartureDay());
+        }
+        bookingRepository.save(presentBooking);
       } else
         throw new BookingStatusException();
     } else
@@ -214,12 +226,13 @@ public class BookingServiceImpl implements BookingService {
 
   @Transactional
   @Override
-  public void updateStatusBooking(Long bookingId) {
+  public void updateBookingStatus(Long bookingId) {
     Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
     if (bookingOptional.isPresent()) {
 
       Booking updateStatusBooking = bookingOptional.get();
-      // Lấy departureDay để cập nhật
+
+      // Lấy ngày khởi hành để cập nhật
       DepartureDay updateQuantityDepartureDay = departureDayRepository
           .findById(updateStatusBooking.getDepartureDay().getId()).get();
 
@@ -232,9 +245,10 @@ public class BookingServiceImpl implements BookingService {
         updateStatusBooking.setStatus(false);
         updateQuantityDepartureDay.setQuantity(updateQuantityDepartureDay.getQuantity() + total);
       } else {
-        // Kiểm tra xem departure có còn hiệu lực
+        // Kiểm tra xem ngày khởi hành có hết hạn chưa
         if (updateStatusBooking.getDepartureDay().getDepartureDay().isAfter(LocalDate.now())) {
-          if (updateStatusBooking.getDepartureDay().getStatus() == true) {
+          // Kiểm tra trạng thái ngày khởi hành
+          if (updateStatusBooking.getDepartureDay().getStatus()) {
             updateStatusBooking.setStatus(true);
             updateQuantityDepartureDay.setQuantity(updateQuantityDepartureDay.getQuantity() - total);
           } else

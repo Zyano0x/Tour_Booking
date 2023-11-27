@@ -41,9 +41,9 @@ public class TypeOfTourController {
     return new ResponseEntity<>(typeOfTourService.getTOTS(), HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-status-type-of-tour/{totId}")
-  public ResponseEntity<TypeOfTour> updateStatusTOT(@PathVariable Long totId) {
-    return new ResponseEntity<>(typeOfTourService.updateStatusTOT(totId), HttpStatus.OK);
+  @PutMapping("/admin/update-type-of-tour-status/{totId}")
+  public ResponseEntity<TypeOfTour> updateTOTStatus(@PathVariable Long totId) {
+    return new ResponseEntity<>(typeOfTourService.updateTOTStatus(totId), HttpStatus.OK);
   }
 
   @PutMapping("/admin/update-type-of-tour/{totId}")

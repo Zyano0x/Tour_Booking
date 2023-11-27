@@ -9,6 +9,18 @@ import lombok.NonNull;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
 @Data
 @Entity
 @Table(name = "articles")
@@ -34,7 +46,11 @@ public class Articles {
     @Column(name = "date_of_posting")
     private LocalDate dateOfPosting;
 
+    @Column(name = "edit_date")
+    private LocalDate editDate;
+
     @NonNull
+    @NotNull(message = "Trạng thái không được để trống")
     @Column(name = "status")
     private Boolean status;
 

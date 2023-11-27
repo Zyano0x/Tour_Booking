@@ -43,12 +43,13 @@ public class ArticlesController {
   }
 
   @PutMapping("/admin/update-articles/{articlesId}")
-  public ResponseEntity<Articles> updateArticles(@Valid @RequestBody ArticlesDTO articlesDTO, @PathVariable Long articlesId) {
-    return new ResponseEntity<>(articlesService.updateArticles(articlesDTO, articlesId), HttpStatus.OK);
+  public ResponseEntity<Articles> updateArticles(@Valid @RequestBody Articles articles,
+      @PathVariable Long articlesId) {
+    return new ResponseEntity<>(articlesService.updateArticles(articles, articlesId), HttpStatus.OK);
   }
 
   @PutMapping("/admin/update-articles-status/{articlesId}")
-  public ResponseEntity<String> updateArticlesStatus(@Valid @RequestBody ArticlesDTO articlesDTO, @PathVariable Long articlesId) {
+  public ResponseEntity<String> updateArticlesStatus(@PathVariable Long articlesId) {
     articlesService.updateArticlesStatus(articlesId);
     return new ResponseEntity<String>("Updated articles status", HttpStatus.OK);
   }

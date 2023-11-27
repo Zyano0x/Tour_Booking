@@ -6,6 +6,6 @@ public class TourReviewNotFoundException extends RuntimeException {
   }
 
   public TourReviewNotFoundException(Long tourId, Long userId) {
-    super("Đánh giá của tour id '" + tourId + "' và user id '" + userId + "' không tồn tại!");
+    super("Đánh giá của người dùng có mã '" + userId + "' cho tour có mã  '" + tourId + "' không tồn tại!");
   }
 }

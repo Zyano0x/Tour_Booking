@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -38,6 +39,7 @@ public class TypeOfTour {
   private String description;
 
   @NonNull
+  @NotNull(message = "Trạng thái không được để trống!")
   @Column(name = "status", nullable = false)
   private Boolean status;
 

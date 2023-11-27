@@ -53,9 +53,9 @@ public class DepartureDayController {
         HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-status-departure-day/{departureDayId}")
-  public ResponseEntity<DepartureDay> updateDepartureDay(@PathVariable Long departureDayId) {
-    return new ResponseEntity<>(departureDayService.updateStatusDepartureDay(departureDayId),
+  @PutMapping("/admin/update-departure-day-status/{departureDayId}")
+  public ResponseEntity<DepartureDay> updateDepartureDayStatus(@PathVariable Long departureDayId) {
+    return new ResponseEntity<>(departureDayService.updateDepartureDayStatus(departureDayId),
         HttpStatus.OK);
   }
 }

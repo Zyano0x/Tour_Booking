@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Entity
@@ -26,10 +28,14 @@ public class Booking {
   private Long id;
 
   @NonNull
+  @PositiveOrZero(message = "Số lượng người lớn phải là số nguyên dương hoặc bằng 0!")
+  @NotNull(message = "Số lượng người lớn không được để trống!")
   @Column(name = "quantity_of_adult")
   private Integer quantityOfAdult;
 
   @NonNull
+  @PositiveOrZero(message = "Số lượng trẻ em phải là số nguyên dương hoặc bằng 0!")
+  @NotNull(message = "Số lượng trẻ em không được để trống!")
   @Column(name = "quantity_of_child")
   private Integer quantityOfChild;
 
