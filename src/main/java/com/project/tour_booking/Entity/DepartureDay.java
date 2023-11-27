@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.tour_booking.CustomValidator.ValidDepartureDay;
+import com.project.tour_booking.Validator.ValidDepartureDay;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

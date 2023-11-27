@@ -7,15 +7,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/panel")
 public class AdminController {
-    
-    @GetMapping("/dashboard")
-    public String Dashboard() {
+
+    @GetMapping
+    public String adminDashboard() {
         return "admin/index";
     }
 
     @GetMapping("/login")
-    public String LoginPage() {
+    public String login() {
         return "admin/login";
     }
 
+    @GetMapping("/user-manage")
+    public String userManage() {
+        return "admin/user-manage";
+    }
 }

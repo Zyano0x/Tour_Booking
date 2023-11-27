@@ -3,7 +3,7 @@ package com.project.tour_booking.DTO;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.tour_booking.CustomValidator.ValidDepartureDay;
+import com.project.tour_booking.Validator.ValidDepartureDay;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
