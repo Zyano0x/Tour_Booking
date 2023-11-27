@@ -34,6 +34,11 @@ public class Destination {
   private String name;
 
   @NonNull
+  @NotBlank(message = "Thumnail địa điểm không được để trống!")
+  @Column(name = "thumbnail")
+  private String thumbnail;
+
+  @NonNull
   @NotNull(message = "Trạng thái không được để trống!")
   @Column(name = "status")
   private Boolean status;

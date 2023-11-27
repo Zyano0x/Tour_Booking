@@ -41,7 +41,7 @@ public class Tour {
 
   @NonNull
   @Column(name = "thumbnail")
-  @NotBlank(message = "thumnail tour không được để trống!")
+  @NotBlank(message = "Thumnail tour không được để trống!")
   private String thumbnail;
 
   @NonNull

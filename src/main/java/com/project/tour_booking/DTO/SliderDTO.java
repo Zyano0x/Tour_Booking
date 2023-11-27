@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class SliderDTO {
-    @NotBlank(message = "Đường dẫn hình ảnh không được để trống!")
+    @NotBlank(message = "Đường dẫn không được để trống!")
     private String path;
 }

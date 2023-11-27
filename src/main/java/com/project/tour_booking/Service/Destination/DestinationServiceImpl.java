@@ -33,6 +33,7 @@ public class DestinationServiceImpl implements DestinationService {
   public void saveDestination(DestinationDTO destinationDTO) {
     Destination destination = new Destination();
     destination.setName(destinationDTO.getName());
+    destination.setThumbnail(destinationDTO.getThumbnail());
     destination.setStatus(true);
     destinationRepository.save(destination);
   }
@@ -59,6 +60,7 @@ public class DestinationServiceImpl implements DestinationService {
       Destination updateDestination = destinationOptional.get();
 
       updateDestination.setName(destination.getName());
+      updateDestination.setThumbnail(destination.getThumbnail());
 
       if (updateDestination.getStatus() != destination.getStatus()) {
         updateDestination.setStatus(destination.getStatus());

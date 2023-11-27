@@ -15,7 +15,7 @@ public class TourDTO {
   @NotBlank(message = "Tên của tour không được để trống!")
   private String name;
 
-  @NotBlank(message = "thumnail tour không được để trống!")
+  @NotBlank(message = "Thumnail tour không được để trống!")
   private String thumbnail;
 
   @NotBlank(message = "Nội dung của tour không được để trống!")

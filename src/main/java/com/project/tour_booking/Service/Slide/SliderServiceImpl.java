@@ -57,6 +57,13 @@ public class SliderServiceImpl implements SliderService {
     public void updateSliderStatus(Long sliderId) {
         Optional<Slider> sliderOptional = sliderRepository.findById(sliderId);
         if (sliderOptional.isPresent()) {
+            if (!sliderOptional.get().getStatus()) {
+                List<Slider> sliders = (List<Slider>) sliderRepository.findAll();
+                for (Slider slider : sliders) {
+                    slider.setStatus(false);
+                    sliderRepository.save(slider);
+                }
+            }
             sliderOptional.get().setStatus(!sliderOptional.get().getStatus());
             sliderRepository.save(sliderOptional.get());
         } else {

@@ -20,7 +20,7 @@ public class Slider {
     private Long id;
 
     @NonNull
-    @NotBlank(message = "Đường dẫn hình ảnh không được để trống!")
+    @NotBlank(message = "Đường dẫn không được để trống!")
     @Column(name = "path")
     private String path;
 
