@@ -22,12 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
             row.innerHTML = `
                 <th scope="row">${user.id}</th>
                 <td>${user.name}</td>
-                <td>${user.email}</td>
+                <td>${user.username}</td>
                 <td>${user.birthday}</td>
                 <td>${user.phone}</td>
                 <td><span class="badge ${badgeClass}">${accountStatus}</span></td>
                 <td>
-                    <a href="#" data-toggle="modal" data-target="#exampleModal" onclick="fetchUserDetails('${user.email}')"><i data-feather="eye"></i></a>
+                    <a href="#" data-toggle="modal" data-target="#exampleModal" onclick="fetchUserDetails('${user.username}')"><i data-feather="eye"></i></a>
                     <a href="#" class="lock-icon"><i data-feather="lock"></i></a>
                 </td>
             `;
@@ -85,8 +85,8 @@ function fetchUserDetails(email) {
 
 function getDataToModal(data) {
     document.getElementById('name').value = data.name;
-    document.getElementById('username').value = data.username;
-    document.getElementById('email').value = data.email;
+    document.getElementById('username').value = data.email;
+    document.getElementById('email').value = data.username;
     document.getElementById('gender').value = data.gender;
     document.getElementById('birthday').value = data.birthday;
     document.getElementById('address').value = data.address;

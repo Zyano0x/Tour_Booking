@@ -9,16 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/panel")
 public class AdminController {
 
+    @GetMapping("/login")
+    public String login() {
+        return "admin/login";
+    }
+
     @GetMapping
     public String adminDashboard(Model model) {
         model.addAttribute("path", "/panel");
         return "admin/index";
-    }
-
-    @GetMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("path", "/login");
-        return "admin/login";
     }
 
     @GetMapping("/user-manage")
@@ -31,5 +30,11 @@ public class AdminController {
     public String tourManage(Model model) {
         model.addAttribute("path", "/panel/tour-manage");
         return "admin/tour-manage";
+    }
+
+    @GetMapping("/booking-manage")
+    public String bookingManage(Model model) {
+        model.addAttribute("path", "/panel/booking-manage");
+        return "admin/booking-manage";
     }
 }
