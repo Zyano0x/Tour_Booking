@@ -24,6 +24,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -164,7 +165,7 @@ public class UserServiceImpl implements UserService {
             mailMessage.setTo(user.getEmail());
             mailMessage.setSubject("Complete Registration!");
             mailMessage.setText("To confirm your account, please click here: "
-                    + "http://localhost:1337/api/confirm-account?token=" + token.getToken());
+                    + "http://localhost:1337/api/auth/confirm-account?token=" + token.getToken());
 
             emailService.sendEmail(mailMessage);
             return new ResponseEntity<>("A new verification link hs been sent to your email, "
@@ -188,7 +189,7 @@ public class UserServiceImpl implements UserService {
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Reset Password");
         mailMessage.setText("To reset password your account, please click here: "
-                + "http://localhost:1337/api/reset-password?token=" + token.getToken());
+                + "http://localhost:1337/api/auth/reset-password?token=" + token.getToken());
 
         emailService.sendEmail(mailMessage);
 
@@ -224,6 +225,18 @@ public class UserServiceImpl implements UserService {
         secureTokenService.removeToken(token);
 
         return new ResponseEntity<>("Password reset successful", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> updateUserStatus(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        user.setLocked(!user.isLocked());
+        return ResponseEntity.ok().body(userRepository.save(user));
+    }
+
+    @Override
+    public User user(String email) {
+        return ResponseEntity.ok(userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"))).getBody();
     }
 
     @Override

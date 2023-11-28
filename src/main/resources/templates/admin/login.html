@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:replace="~{admin/layout::header}"></th:block>
+<th:block th:replace="~{admin/index::header}"></th:block>
 <body class="login-page">
 <div class='loader'>
     <div class='spinner-grow text-primary' role='status'>
@@ -51,12 +51,12 @@
     </div>
 </div>
 
-<script th:src="@{/assets/plugins/jquery/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
 <script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
-<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
 <script th:src="@{https://unpkg.com/feather-icons}"></script>
-<script th:src="@{/assets/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
-<script th:src="@{/assets/js/main.min.js}"></script>
-<script th:src="@{/assets/js/pages/login.js}"></script>
+<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/assets/admin/js/main.min.js}"></script>
+<script th:src="@{/assets/admin/js/pages/login.js}"></script>
 </body>
 </html>

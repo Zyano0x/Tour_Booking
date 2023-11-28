@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:replace="~{admin/layout::header}"></th:block>
+<th:block th:replace="~{admin/index::header}"></th:block>
 <body>
 <div class="page-container">
-    <th:block th:replace="~{admin/layout::page-header}"></th:block>
-    <th:block th:replace="~{admin/layout::page-sidebar}"></th:block>
+    <th:block th:replace="~{admin/index::page-header}"></th:block>
+    <th:block th:replace="~{admin/index::page-sidebar}"></th:block>
     <div class="page-content">
         <div class="main-wrapper">
             <div class="row">
@@ -26,6 +26,7 @@
                                             <th scope="col">Email</th>
                                             <th scope="col">Birthday</th>
                                             <th scope="col">Phone</th>
+                                            <th scope="col">Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                         </thead>
@@ -42,13 +43,36 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">User Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" disabled>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Javascripts -->
-<script th:src="@{/assets/plugins/jquery/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
 <script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
-<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
 <script th:src="@{https://unpkg.com/feather-icons}"></script>
-<script th:src="@{/assets/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
-<script th:src="@{/assets/js/main.min.js}"></script>
-<script th:src="@{/assets/js/pages/user-data.js}"></script>
+<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/assets/admin/js/main.min.js}"></script>
+<script th:src="@{/assets/admin/js/pages/user-data.js}"></script>
 </body>
 </html>
