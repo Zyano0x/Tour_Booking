@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 fetchTable(data);
                 feather.replace();
-                lockListeners();
+                lockAction();
             })
             .catch(error => console.error('Error fetching data:', error));
     }
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${user.phone}</td>
                 <td><span class="badge ${badgeClass}">${accountStatus}</span></td>
                 <td>
-                    <a href="#" data-toggle="modal" data-target="#exampleModal"><i data-feather="edit"></i></a>
+                    <a href="#" data-toggle="modal" data-target="#exampleModal" onclick="fetchUserDetails('${user.email}')"><i data-feather="eye"></i></a>
                     <a href="#" class="lock-icon"><i data-feather="lock"></i></a>
                 </td>
             `;
@@ -35,41 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function fetchUserDetails(email) {
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "text/plain");
-
-        let requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            body: email,
-            redirect: 'follow'
-        };
-
-        fetch("/api/admin/user")
-            .then(response => response.json())
-            .then(data => {
-                populateModal(data);
-                $('#editModal').modal('show'); // Show the modal
-            })
-            .catch(error => console.error('Error fetching user details:', error));
-    }
-
-    function populateModal(userDetails) {
-        document.getElementById('name').value = userDetails[0].name;
-    }
-
-    function viewListeners() {
-        document.querySelectorAll('[data-toggle="modal"]').forEach(item => {
-            item.addEventListener('click', event => {
-                event.preventDefault();
-                let email = item.parentElement.parentElement.querySelector('td:nth-child(3)').innerText;
-                fetchUserDetails(email);
-            });
-        });
-    }
-
-    function lockListeners() {
+    function lockAction() {
         document.querySelectorAll('.lock-icon').forEach(item => {
             item.addEventListener('click', event => {
                 event.preventDefault();
@@ -79,25 +45,54 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function updateStatus(email) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "text/plain");
+
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: email,
+            redirect: 'follow'
+        };
+
+        fetch("/api/admin/update-user-status", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('Error updating user status:', error));
+    }
+
     fetchData();
     setInterval(fetchData, 1000);
-
-    viewListeners();
 });
 
-function updateStatus(email) {
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "text/plain");
+function fetchUserDetails(email) {
+    const url = `/api/admin/user?email=${encodeURIComponent(email)}`;
+    console.log('Requesting user details:', url);
 
-    let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: email,
-        redirect: 'follow'
-    };
+    fetch(url)
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Received data:', data);
+            getDataToModal(data);
+            $('#exampleModal').modal('show'); // Show the modal
+        })
+        .catch(error => console.error('Error fetching user details:', error));
+}
 
-    fetch("/api/admin/update-user-status", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('Error updating user status:', error));
+function getDataToModal(data) {
+    document.getElementById('name').value = data.name;
+    document.getElementById('username').value = data.username;
+    document.getElementById('email').value = data.email;
+    document.getElementById('gender').value = data.gender;
+    document.getElementById('birthday').value = data.birthday;
+    document.getElementById('address').value = data.address;
+    document.getElementById('cid').value = data.cid;
+}
+
+function closeModal() {
+    $('#exampleModal').modal('hide');
 }

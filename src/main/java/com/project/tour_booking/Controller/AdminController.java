@@ -1,6 +1,5 @@
 package com.project.tour_booking.Controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,5 +25,11 @@ public class AdminController {
     public String userManage(Model model) {
         model.addAttribute("path", "/panel/user-manage");
         return "admin/user-manage";
+    }
+
+    @GetMapping("/tour-manage")
+    public String tourManage(Model model) {
+        model.addAttribute("path", "/panel/tour-manage");
+        return "admin/tour-manage";
     }
 }

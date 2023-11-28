@@ -13,7 +13,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/admin/user")
-    public ResponseEntity<?> user(@RequestBody String email) {
+    public ResponseEntity<?> user(@RequestParam String email) {
         return ResponseEntity.ok(userService.user(email));
     }
 

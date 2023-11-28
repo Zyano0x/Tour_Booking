@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="header">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -105,16 +105,16 @@
                 Management
             </li>
             <li th:class="${path == '/panel/user-manage'} ? 'active-page' : ''">
-                <a href="/panel/user-manage"><i data-feather="inbox"></i>User</a>
+                <a href="/panel/user-manage"><i data-feather="user"></i>User</a>
             </li>
             <li th:class="${path == '/panel/articles-manage'} ? 'active-page' : ''">
-                <a href="/panel/articles-manage"><i data-feather="calendar"></i>Articles</a>
+                <a href="/panel/articles-manage"><i data-feather="book"></i>Articles</a>
+            </li>
+            <li th:class="${path == '/panel/tour-manage'} ? 'active-page' : ''">
+                <a href="/panel/tour-manage"><i data-feather="compass"></i>Tour</a>
             </li>
             <li>
-                <a href="social.html"><i data-feather="user"></i>Social</a>
-            </li>
-            <li>
-                <a href="file-manager.html"><i data-feather="message-circle"></i>File Manager</a>
+                <a href="file-manager.html"><i data-feather="shopping-cart"></i>Booking</a>
             </li>
             <li class="sidebar-title">
                 Elements
