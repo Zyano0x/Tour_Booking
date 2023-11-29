@@ -7,5 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import com.project.tour_booking.Entity.Tour;
 
 public interface TourRepository extends CrudRepository<Tour, Long> {
-  List<Tour> findByTypeOfTourId(Long totId);
+  List<Tour> findAllByTypeOfTourId(Long totId);
+
+  List<Tour> findAllByDestinationId(Long destinationId);
 }

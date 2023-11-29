@@ -27,5 +27,8 @@ public interface UserService {
 
     ResponseEntity<?> resetPassword(ResetPasswordDTO resetPasswordDTO);
 
+    ResponseEntity<?> updateUserStatus(String email);
+
+    User user(String email);
     List<User> listUsers();
 }

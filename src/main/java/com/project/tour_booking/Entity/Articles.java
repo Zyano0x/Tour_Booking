@@ -2,6 +2,7 @@ package com.project.tour_booking.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,11 @@ public class Articles {
     @Column(name = "date_of_posting")
     private LocalDate dateOfPosting;
 
+    @Column(name = "edit_date")
+    private LocalDate editDate;
+
     @NonNull
+    @NotNull(message = "Trạng thái không được để trống")
     @Column(name = "status")
     private Boolean status;
 

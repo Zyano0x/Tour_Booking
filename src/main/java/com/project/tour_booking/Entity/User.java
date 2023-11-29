@@ -1,35 +1,22 @@
 package com.project.tour_booking.Entity;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -40,44 +27,45 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     private Long id;
 
-    @Column(name = "username", length = 50, unique = true, nullable = false)
-    @NotBlank(message = "Username is required")
-    @Size(min = 1, max = 50, message = "Username must be between 1 and 50 characters")
+    @Column(name = "username", unique = true, nullable = false)
+    @NotBlank(message = "Tên người dùng không được để trống!")
+    @Size(min = 6, max = 50, message = "Tên người dùng phải từ 6 đến 50 kí tự!")
     private String username;
 
-    @Column(name = "password", length = 250, nullable = false)
-    @NotBlank(message = "Password is required")
+    @Column(name = "password", nullable = false)
+    @NotBlank(message = "Mật khẩu không được để trống!")
+    @Length(max = 250, message = "Mật khẩu phải ít hơn 250 kí tự!")
     private String password;
 
-    @Column(name = "name", length = 50, nullable = false)
-    @Size(max = 50, message = "Your name must be less than 50 characters")
-    @NotBlank(message = "Your name is required")
+    @Column(name = "name", nullable = false)
+    @NotBlank(message = "Tên của bạn không được để trống!")
     private String name;
 
     @Column(name = "birthday", nullable = false)
     @Temporal(TemporalType.DATE)
-    @NotNull(message = "Birthday is required")
+    @NotNull(message = "Ngày sinh không được để trống!")
     private LocalDate birthday;
 
     @Column(name = "gender", length = 10, nullable = false)
     private String gender;
 
     @Column(name = "email", length = 100, unique = true, nullable = false)
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email không được để trống!")
+    @Email(message = "Email không đúng cú pháp!")
     private String email;
 
     @Column(name = "address", length = 255, nullable = false)
     private String address;
 
     @Column(name = "cid", length = 20, nullable = false)
-    @NotBlank(message = "CID is required")
+    @NotBlank(message = "CCCD không được để trống!")
     private String cid;
 
     @Column(name = "phone", nullable = false)
-    @NotBlank(message = "Phone is required")
+    @NotBlank(message = "Số điện thoại không được để trống!")
     private String phone;
 
     @Column(name = "role", nullable = false)
@@ -135,5 +123,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
        return enabled;
+    }
+
+    public String getEmail() {
+        return username;
     }
 }

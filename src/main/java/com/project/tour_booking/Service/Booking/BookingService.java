@@ -22,7 +22,5 @@ public interface BookingService {
 
   void updateBooking(BookingDTO bookingDTO, Long bookingId);
 
-  void updateStatusBooking(Long bookingId);
-
-  // void deleteBooking(Long bookingId);
+  void updateBookingStatus(Long bookingId);
 }

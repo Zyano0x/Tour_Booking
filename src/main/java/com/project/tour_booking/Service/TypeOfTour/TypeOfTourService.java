@@ -12,7 +12,7 @@ public interface TypeOfTourService {
 
   List<TypeOfTour> getTOTS();
 
-  TypeOfTour updateStatusTOT(Long totId);
+  TypeOfTour updateTOTStatus(Long totId);
 
   TypeOfTour updateTOT(TypeOfTour typeOfTour, Long totId);
 

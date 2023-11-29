@@ -21,11 +21,13 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST = {
             "/assets/**",
             "/api/**",
+            "/",
+            "/panel/login",
     };
 
     private static final String[] BLACK_LIST = {
             "/api/admin/**",
-            "/panel",
+            "/panel/**",
     };
 
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
@@ -40,9 +42,6 @@ public class SecurityConfig {
                         .requestMatchers(WHITE_LIST).permitAll()
                         .requestMatchers(BLACK_LIST).hasAnyAuthority(Role.ADMIN.name())
                         .anyRequest().authenticated())
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/").permitAll())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
