@@ -29,11 +29,11 @@ public class JWTServiceImpl implements JWTService {
     }
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, 1440000);
+        return buildToken(extraClaims, userDetails);
     }
 
     private String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, 604800000);
+        return buildToken(extraClaims, userDetails);
     }
 
     private Key getSignInKey() {
@@ -41,13 +41,13 @@ public class JWTServiceImpl implements JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + (long) 604800000))
                 .signWith(getSignInKey())
                 .compact();
     }

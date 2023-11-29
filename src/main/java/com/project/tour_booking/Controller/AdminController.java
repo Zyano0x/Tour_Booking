@@ -32,6 +32,12 @@ public class AdminController {
         return "admin/tour-manage";
     }
 
+    @GetMapping("/tour-type-manage")
+    public String tourTypeManage(Model model) {
+        model.addAttribute("path", "/panel/tour-type-manage");
+        return "admin/tour-type-manage";
+    }
+
     @GetMapping("/booking-manage")
     public String bookingManage(Model model) {
         model.addAttribute("path", "/panel/booking-manage");

@@ -17,7 +17,7 @@ public class UserController {
         return ResponseEntity.ok(userService.user(email));
     }
 
-    @GetMapping("/admin/list-users")
+    @GetMapping("/admin/all-users")
     public ResponseEntity<?> listUsers() {
         return ResponseEntity.ok(userService.listUsers());
     }
