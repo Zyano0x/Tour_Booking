@@ -38,6 +38,18 @@ public class AdminController {
         return "admin/tour-type-manage";
     }
 
+    @GetMapping("/destination-manage")
+    public String destinationManage(Model model) {
+        model.addAttribute("path", "/panel/destination-manage");
+        return "admin/destination-manage";
+    }
+
+    @GetMapping("/departure-manage")
+    public String departureManage(Model model) {
+        model.addAttribute("path", "/panel/departure-manage");
+        return "admin/departure-manage";
+    }
+
     @GetMapping("/booking-manage")
     public String bookingManage(Model model) {
         model.addAttribute("path", "/panel/booking-manage");

@@ -13,20 +13,20 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-8">
-                                    <h2>Type Tour Manage</h2>
+                                    <h2>Destination Manage</h2>
                                 </div>
                             </div>
                             <div>
-                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#newTypeModalScrollable').modal('show')">New Tour Type</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#newDestinationModalScrollable').modal('show')">New Destination</button>
                             </div>
                             <div class="row">
                                 <div class="table-responsive">
-                                    <table class="table tour-type-table" id="tour-type-table">
+                                    <table class="table destination-table" id="destination-table">
                                         <thead>
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
-                                            <th scope="col">Description</th>
+                                            <th scope="col">Thumbnail</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -45,11 +45,11 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="typeDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+<div class="modal fade" id="destinationDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="typeDetailsModalScrollableTitle">Type Tour Details</h5>
+                <h5 class="modal-title" id="destinationDetailsModalScrollableTitle">Destination Details</h5>
             </div>
             <div class="modal-body">
                 <form id="tour-form">
@@ -64,32 +64,31 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="content">Description</label>
-                        <textarea class="form-control" id="content"></textarea>
-                    </div>
-                    <br>
-                    <div class="form-group">
                         <label for="status">Status</label>
                         <input type="text" class="form-control" id="status">
                     </div>
                     <br>
+                    <div class="form-group">
+                        <label for="thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="thumbnail">
+                    </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateTypeTour(document.getElementById('id').value)">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#typeDetailsModalScrollable').modal('hide');">Close</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateDestination(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#destinationDetailsModalScrollable').modal('hide');">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="newTypeModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+<div class="modal fade" id="newDestinationModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="newTypeModalScrollableTitle">New Type Tour</h5>
+                <h5 class="modal-title" id="newDestinationModalScrollableTitle">New Destination</h5>
             </div>
             <div class="modal-body">
                 <form id="new-tour-form">
@@ -104,15 +103,15 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="_content">Description</label>
-                        <textarea class="form-control" id="_content"></textarea>
+                        <label for="_thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="_thumbnail">
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addTypeTour()">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newTypeModalScrollable').modal('hide')">Close</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addDestination()">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newDestinationModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
@@ -133,7 +132,7 @@
 <script th:src="@{https://unpkg.com/feather-icons}"></script>
 <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/assets/admin/js/main.min.js}"></script>
-<script th:src="@{/assets/admin/js/pages/tour-type-data.js}"></script>
+<script th:src="@{/assets/admin/js/pages/destination-data.js}"></script>
 <script th:src="@{/assets/admin/js/pages/toast.js}"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/type-of-tour/all")
+        fetch("/api/destination/all")
             .then(response => response.json())
             .then(data => {
-                fetchTableTourType(data);
+                fetchTableDestination(data);
                 feather.replace();
                 eyeAction();
                 lockAction();
@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error fetching data:', error));
     }
 
-    function fetchTypeDetails(id) {
-        const url = `/api/type-of-tour?id=${encodeURIComponent(id)}`;
+    function fetchDestinationDetails(id) {
+        const url = `/api/destination?id=${encodeURIComponent(id)}`;
         console.log('Requesting type details:', url);
 
         fetch(url)
@@ -22,25 +22,25 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 console.log('Received data:', data);
-                fetchTourTypeDetailsModal(data);
-                $('#typeDetailsModalScrollable').modal('show'); // Show the modal
+                fetchDestinationDetailsModal(data);
+                $('#destinationDetailsModalScrollable').modal('show'); // Show the modal
             })
             .catch(error => console.error('Error fetching type details:', error));
     }
 
-    function fetchTableTourType(data) {
-        let tableBody = document.querySelector('#tour-type-table tbody');
+    function fetchTableDestination(data) {
+        let tableBody = document.querySelector('#destination-table tbody');
         tableBody.innerHTML = ''; // Clear existing rows
 
-        data.forEach(type => {
+        data.forEach(destination => {
             const row = document.createElement('tr');
-            const badgeClass = type.status ? 'bg-primary' : 'bg-warning';
-            const typeStatus = type.status ? 'Visible' : 'Hidden';
+            const badgeClass = destination.status ? 'bg-primary' : 'bg-warning';
+            const destinationStatus = destination.status ? 'Visible' : 'Hidden';
             row.innerHTML = `
-                <th scope="row">${type.id}</th>
-                <td>${type.name}</td>
-                <td>${type.description}</td>
-                <td><span class="badge ${badgeClass}">${typeStatus}</span></td>
+                <th scope="row">${destination.id}</th>
+                <td>${destination.name}</td>
+                <td><a href="${destination.thumbnail}" target="_blank">${destination.thumbnail}</a></td>
+                <td><span class="badge ${badgeClass}">${destinationStatus}</span></td>
                 <td>
                     <a href="#" class="eye-icon"><i data-feather="eye"></i></a>
                     <a href="#" class="lock-icon"><i data-feather="lock"></i></a>
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', event => {
                 event.preventDefault();
                 let id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                fetchTypeDetails(id);
+                fetchDestinationDetails(id);
             });
         });
     }
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function updateStatus(id) {
-    const url = `/api/admin/update-type-of-tour-status?id=${encodeURIComponent(id)}`;
+    const url = `/api/admin/update-destination-status?id=${encodeURIComponent(id)}`;
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -91,24 +91,22 @@ function updateStatus(id) {
         .catch(error => console.log('Error updating status:', error));
 }
 
-function updateTypeTour(id) {
+function updateDestination(id) {
     event.preventDefault();
 
-    const url = `/api/admin/update-type-of-tour?id=${encodeURIComponent(id)}`;
+    const url = `/api/admin/update-destination?id=${encodeURIComponent(id)}`;
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    // Example: Get values from your form fields
     const name = document.getElementById('name').value;
-    const description = document.getElementById('content').value;
     const status = document.getElementById('status').value;
+    const thumbnail = document.getElementById('thumbnail').value;
 
-    // Construct the request body based on the TourDTO structure
     let raw = JSON.stringify({
         "name": name,
-        "description": description,
         "status": status,
+        "thumbnail": thumbnail
     });
 
     let requestOptions = {
@@ -122,25 +120,27 @@ function updateTypeTour(id) {
     fetch(url, requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log('Type tour updated successfully:', result);
-            showToast('Type tour updated successfully');
-            $('#typeDetailsModalScrollable').modal('hide');
+            console.log('Destination updated successfully:', result);
+            showToast('Destination updated successfully');
+            $('#destinationDetailsModalScrollable').modal('hide');
         })
-        .catch(error => console.log('Error updating type tour:', error));
+        .catch(error => console.log('Error updating destination:', error));
 }
 
-function addTypeTour() {
+function addDestination() {
     event.preventDefault();
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const name = document.getElementById('_name').value;
-    const description = document.getElementById('_content').value;
+    const status = document.getElementById('_status').value;
+    const thumbnail = document.getElementById('_thumbnail').value;
 
     let raw = JSON.stringify({
         "name": name,
-        "description": description,
+        "status": status,
+        "thumbnail": thumbnail,
     });
 
     let requestOptions = {
@@ -151,19 +151,19 @@ function addTypeTour() {
     };
 
     // Make the API request
-    fetch("/api/admin/type-of-tour", requestOptions)
+    fetch("/api/admin/destination", requestOptions)
         .then(response => response.text())
         .then(result => {
-            console.log('Type Tour added successfully:', result);
-            showToast('Type Tour added successfully');
-            $('#newTypeModalScrollable').modal('hide');
+            console.log('Destination added successfully:', result);
+            showToast('Destination added successfully');
+            $('#newDestinationModalScrollable').modal('hide');
         })
-        .catch(error => console.log('Error adding tour type:', error));
+        .catch(error => console.log('Error adding destination:', error));
 }
 
-function fetchTourTypeDetailsModal(data) {
+function fetchDestinationDetailsModal(data) {
     document.getElementById('id').value = data.id;
     document.getElementById('name').value = data.name;
-    document.getElementById('content').value = data.description;
     document.getElementById('status').value = data.status;
+    document.getElementById('thumbnail').value = data.thumbnail;
 }

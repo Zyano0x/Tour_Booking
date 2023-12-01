@@ -77,26 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-function fetchTypeOfTourOptions() {
-    return fetch('/api/type-of-tour/all')
-        .then(response => {
-            if (response.ok) return response.json();
-        })
-        .catch(error => {
-            console.error('Error fetching Destination options:', error);
-        });
-}
-
-function fetchDestinationOptions() {
-    return fetch('/api/destination/all')
-        .then(response => {
-            if (response.ok) return response.json();
-        })
-        .catch(error => {
-            console.error('Error fetching Destination options:', error);
-        });
-}
-
 function fetchImagesByTourId(id) {
     const url = `/api/tour-image/tour?id=${encodeURIComponent(id)}`;
 
@@ -137,7 +117,6 @@ async function updateTour(id) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    // Example: Get values from your form fields
     const name = document.getElementById('name').value;
     const description = document.getElementById('content').value;
     const service = document.getElementById('service').value;
@@ -155,7 +134,6 @@ async function updateTour(id) {
     const thumbnail = document.getElementById('thumbnail').value;
     const images = document.getElementById('images').value.split('\n').filter(Boolean); // Split images into an array
 
-    // Construct the request body based on the TourDTO structure
     let raw = JSON.stringify({
         "name": name,
         "description": description,
@@ -187,12 +165,13 @@ async function updateTour(id) {
         .then(response => response.json())
         .then(result => {
             console.log('Tour updated successfully:', result);
+            showToast('Tour updated successfully');
             $('#tourDetailsModalScrollable').modal('hide');
         })
         .catch(error => console.log('Error updating tour:', error));
 }
 
-async function newTour() {
+async function addTour() {
     event.preventDefault();
 
     let myHeaders = new Headers();
@@ -244,6 +223,7 @@ async function newTour() {
         .then(response => response.text())
         .then(result => {
             console.log('Tour added successfully:', result);
+            showToast('Tour added successfully');
             $('#newTourModalScrollable').modal('hide');
         })
         .catch(error => console.log('Error updating tour:', error));
@@ -252,41 +232,53 @@ async function newTour() {
 function dropdownWithDestination(currentDestination) {
     const dropdownUpdate = document.getElementById('destinationDropdownUpdate');
 
-    fetchDestinationOptions().then(destinations => {
-        dropdownUpdate.innerHTML = "";
+    fetch('/api/destination/all')
+        .then(response => {
+            if (response.ok) return response.json();
+        })
+        .then(destinations => {
+            dropdownUpdate.innerHTML = "";
 
-        destinations.forEach(destination => {
-            const option = document.createElement("option");
-            option.value = destination.name;
-            option.text = destination.name;
+            destinations.forEach(destination => {
+                const option = document.createElement("option");
+                option.value = destination.name;
+                option.text = destination.name;
 
-            // Set the selected attribute for the current destination
-            if (currentDestination && destination.id === currentDestination.id)
-                option.selected = true;
+                if (currentDestination && destination.id === currentDestination.id)
+                    option.selected = true;
 
-            dropdownUpdate.appendChild(option);
+                dropdownUpdate.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching destinations:', error);
         });
-    });
 }
 
 function dropdownWithTypeOfTour(currentType) {
     const dropdownUpdate = document.getElementById('typeOfTourDropdownUpdate');
 
-    fetchTypeOfTourOptions().then(types => {
-        dropdownUpdate.innerHTML = "";
+    fetch('/api/type-of-tour/all')
+        .then(response => {
+            if (response.ok) return response.json();
+        })
+        .then(types => {
+            dropdownUpdate.innerHTML = "";
 
-        types.forEach(type => {
-            const option = document.createElement("option");
-            option.value = type.name;
-            option.text = type.name;
+            types.forEach(type => {
+                const option = document.createElement("option");
+                option.value = type.name;
+                option.text = type.name;
 
-            // Set the selected attribute for the current destination
-            if (currentType && type.id === currentType.id)
-                option.selected = true;
+                if (currentType && type.id === currentType.id)
+                    option.selected = true;
 
-            dropdownUpdate.appendChild(option);
+                dropdownUpdate.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching types:', error);
         });
-    });
 }
 
 function fetchTourDetailsModal(data) {
@@ -311,10 +303,7 @@ function fetchTourDetailsModal(data) {
 async function getTypeOfTourOptions() {
     try {
         const response = await fetch('/api/type-of-tour/all');
-        if (!response.ok) {
-            throw new Error('Failed to fetch Type of Tour options');
-        }
-        return await response.json();
+        if (response.ok) return await response.json();
     } catch (error) {
         console.error('Error fetching Type of Tour options:', error);
         return [];
@@ -324,10 +313,7 @@ async function getTypeOfTourOptions() {
 async function getDestinationOptions() {
     try {
         const response = await fetch('/api/destination/all');
-        if (!response.ok) {
-            throw new Error('Failed to fetch Destination options');
-        }
-        return await response.json();
+        if (response.ok) return await response.json();
     } catch (error) {
         console.error('Error fetching Destination options:', error);
         return [];
@@ -346,29 +332,15 @@ async function getDestinationIdByName(name) {
     return destination ? destination.id : null;
 }
 
-function populateDropdown(dropdownId, options) {
-    const dropdown = document.getElementById(dropdownId);
-
-    dropdown.innerHTML = "";
-
-    options.forEach(option => {
-        const optionElement = document.createElement("option");
-        optionElement.value = option.name; // Assuming name is the property you want to use
-        optionElement.text = option.name;
-        dropdown.appendChild(optionElement);
-    });
-}
-
 async function fetchTypeOfTourAndDestinations() {
     try {
-        const typeOfTourOptions = await fetchTypeOfTourOptions();
-        const destinationOptions = await fetchDestinationOptions();
+        const typeOfTourOptions = await fetch('/api/type-of-tour/all').then(response => response.json());
+        const destinationOptions = await fetch('/api/destination/all').then(response => response.json());
 
-        // Populate the dropdowns with the fetched options
         populateDropdown('typeOfTourDropdownNew', typeOfTourOptions);
         populateDropdown('destinationDropdownNew', destinationOptions);
     } catch (error) {
-        console.error('Error fetching typeOfTour and destination options:', error);
+        console.error('Error fetching data options:', error);
     }
 }
 fetchTypeOfTourAndDestinations();

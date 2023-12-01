@@ -1,5 +1,7 @@
 package com.project.tour_booking.Security;
 
+import com.project.tour_booking.Entity.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,10 +12,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.project.tour_booking.Entity.Role;
-
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -22,7 +20,6 @@ public class SecurityConfig {
             "/assets/**",
             "/api/**",
             "/",
-            "/panel/login",
     };
 
     private static final String[] BLACK_LIST = {
@@ -47,6 +44,9 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+//                .formLogin(login -> login
+//                        .loginPage("/panel/login")
+//                        .defaultSuccessUrl("/panel").permitAll());
         return http.build();
     }
 }
