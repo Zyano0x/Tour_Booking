@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+  <head th:replace="user/fragments/fragment :: head"> </head>
+
+  <body>
+    <div th:replace="user/fragments/fragment :: preloader"></div>
+    <!-- End Preload -->
+
+    <div class="layer"></div>
+    <!-- Mobile menu overlay mask -->
+
+    <!-- Header================================================== -->
+    <header th:replace="user/fragments/fragment :: header"></header>
+    <!-- End Header -->
+
+    <section
+      class="parallax-window"
+      data-parallax="scroll"
+      data-image-src="/assets/user/images/single_tour_bg_1.jpg"
+      data-natural-width="1400"
+      data-natural-height="500"
+    >
+      <div class="grey-layout">
+        <div class="parallax-content-2">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-8">
+                <h1 id="tourName">Name</h1>
+                <span class="caption">...</span>
+                <span class="rating tourRating genarateRating"></span>
+              </div>
+              <div class="col-md-4 line-height-1_5">
+                <div id="price_single_main">
+                  <span>100000000.0</span>
+                  <p>VND / Người lớn</p>
+                </div>
+                <div id="price_single_main_for_children">
+                  <span>100000000.0</span>
+                  <p>VND / Trẻ em</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End section -->
+
+    <main>
+      <div id="position">
+        <div class="container">
+          <ul>
+            <li><a href="">Trang chủ</a></li>
+            <li><a href="/tours">Tours</a></li>
+            <li>1</li>
+          </ul>
+        </div>
+      </div>
+      <!-- End Position -->
+
+      <div class="collapse" id="collapseMap">
+        <div id="map" class="map"></div>
+      </div>
+      <!-- End Map -->
+
+      <div class="container margin_60">
+        <div class="row">
+          <div class="col-lg-8" id="single_tour_desc">
+            <p class="d-none d-md-block d-block d-lg-none">
+              <a
+                class="btn_map"
+                data-toggle="collapse"
+                href="#collapseMap"
+                aria-expanded="false"
+                aria-controls="collapseMap"
+                data-text-swap="Hide map"
+                data-text-original="View on map"
+                >View on map</a
+              >
+            </p>
+            <!-- Map button for tablets/mobiles -->
+
+            <div id="Img_carousel" class="slider-pro">
+              <div class="sp-slides"></div>
+              <div class="sp-thumbnails"></div>
+            </div>
+
+            <hr />
+
+            <div id="description">
+              <div>
+                <h3>MÔ TẢ</h3>
+              </div>
+              <div class="col-lg-12 description-content"></div>
+            </div>
+            <hr />
+            <div id="schedule">
+              <div>
+                <h3>LỊCH TRÌNH</h3>
+              </div>
+              <div class="col-lg-12 schedule-content"></div>
+            </div>
+            <hr />
+            <div id="service">
+              <div>
+                <h3>DỊCH VỤ</h3>
+              </div>
+              <div class="col-lg-12 service-content"></div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-lg-3">
+                <h3>ĐÁNH GIÁ</h3>
+                <a
+                  href="#"
+                  class="btn_1 add_bottom_30"
+                  data-toggle="modal"
+                  data-target="#myReview"
+                  >Thêm đánh giá</a
+                >
+              </div>
+              <div class="col-lg-9">
+                <div id="general_rating">
+                  <div
+                    class="rating tourRating genarateRating footerGenarateRating"
+                  ></div>
+                </div>
+                <!-- End general_rating -->
+                <div id="boxReview"></div>
+              </div>
+            </div>
+
+            <nav aria-label="Page navigation" class="pagination">
+              <ul class="pagination justify-content-center col-lg-9"></ul>
+            </nav>
+            <!-- end pagination-->
+          </div>
+          <!--End  single_tour_desc-->
+
+          <aside class="col-lg-4" id="sidebar">
+            <p class="d-none d-xl-block d-lg-block d-xl-none">
+              <a
+                class="btn_map"
+                data-toggle="collapse"
+                href="#collapseMap"
+                aria-expanded="false"
+                aria-controls="collapseMap"
+                data-text-swap="Hide map"
+                data-text-original="View on map"
+                >View on map</a
+              >
+            </p>
+            <div class="theiaStickySidebar">
+              <div class="box_style_1 expose" id="booking_box">
+                <div class="booking_overlay">
+                  <span>- TOUR NÀY ĐÃ HẾT VÉ -</span>
+                  <img
+                    th:src="@{/assets/user/images/custom/close.png}"
+                    alt="Hết vé"
+                  />
+                  <!-- <a href="/tours"
+                    ><img
+                      th:src="@{/assets/user/images/custom/hand_right.png}"
+                      alt="Danh sách tours"
+                    />
+                    Xem tours khác</a
+                  > -->
+                </div>
+                <h3 class="inner">- ĐẶT VÉ -</h3>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label
+                        ><i class="icon-calendar-7"></i> Ngày khởi hàng</label
+                      >
+                      <select
+                        id="departureDays"
+                        class="ddslick"
+                        name="departureDays"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Người lớn</label>
+                      <div id="adults-numbers-row" class="numbers-row">
+                        <input
+                          type="text"
+                          value="1"
+                          id="adults"
+                          class="qty2 form-control"
+                          name="quantity"
+                        />
+                        <div class="inc button_inc">+</div>
+                        <div class="dec button_inc">-</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 display-right">
+                    <div class="form-group">
+                      <label>Trẻ em</label>
+                      <div id="children-numbers-row" class="numbers-row">
+                        <input
+                          type="text"
+                          value="0"
+                          id="children"
+                          class="qty2 form-control"
+                          name="quantity"
+                        />
+                        <div class="inc button_inc">+</div>
+                        <div class="dec button_inc">-</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br />
+                <table class="table table_summary">
+                  <tbody>
+                    <tr class="remainingQuanity">
+                      <td>Số lượng còn lại</td>
+                      <td class="text-right" id="remainingQuanity">0</td>
+                    </tr>
+                    <tr class="total">
+                      <td>Tổng tiền</td>
+                      <td class="text-right">
+                        <span id="total">0</span><span>.0</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <a class="btn_full" href="cart.html">Đặt vé ngay</a>
+              </div>
+              <!--/box_style_1 -->
+            </div>
+            <!--/sticky -->
+          </aside>
+        </div>
+        <!--End row -->
+      </div>
+      <!--End container -->
+
+      <div id="overlay"></div>
+      <!-- Mask on input focus -->
+    </main>
+    <!-- End main -->
+
+    <footer class="revealed">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h3>Need help?</h3>
+            <a href="tel://004542344599" id="phone">+45 423 445 99</a>
+            <a href="mailto:help@citytours.com" id="email_footer"
+              >help@citytours.com</a
+            >
+          </div>
+          <div class="col-md-3">
+            <h3>About</h3>
+            <ul>
+              <li><a href="#">About us</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Login</a></li>
+              <li><a href="#">Register</a></li>
+              <li><a href="#">Terms and condition</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h3>Discover</h3>
+            <ul>
+              <li><a href="#">Community blog</a></li>
+              <li><a href="#">Tour guide</a></li>
+              <li><a href="#">Wishlist</a></li>
+              <li><a href="#">Gallery</a></li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h3>Settings</h3>
+            <div class="styled-select">
+              <select name="lang" id="lang">
+                <option value="English" selected>English</option>
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+                <option value="Russian">Russian</option>
+              </select>
+            </div>
+            <div class="styled-select">
+              <select name="currency" id="currency">
+                <option value="USD" selected>USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="RUB">RUB</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- End row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div id="social_footer">
+              <ul>
+                <li>
+                  <a href="#"><i class="icon-facebook"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-twitter"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-google"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-instagram"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-pinterest"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-vimeo"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-youtube-play"></i></a>
+                </li>
+              </ul>
+              <p>© Citytours 2018</p>
+            </div>
+          </div>
+        </div>
+        <!-- End row -->
+      </div>
+      <!-- End container -->
+    </footer>
+    <!-- End footer -->
+
+    <div id="toTop"></div>
+    <!-- Back to top button -->
+
+    <!-- Search Menu -->
+    <div class="search-overlay-menu">
+      <span class="search-overlay-close"
+        ><i class="icon_set_1_icon-77"></i
+      ></span>
+      <form role="search" id="searchform" method="get">
+        <input value="" name="q" type="search" placeholder="Search..." />
+        <button type="submit"><i class="icon_set_1_icon-78"></i></button>
+      </form>
+    </div>
+    <!-- End Search Menu -->
+
+    <!-- Sign In Popup -->
+    <div th:replace="user/fragments/fragment :: sign-in-popup"></div>
+    <!-- /Sign In Popup -->
+
+    <!-- Modal Review -->
+    <div
+      class="modal fade"
+      id="myReview"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myReviewLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myReviewLabel">
+              Chia sẽ trải nghiệm của bạn
+            </h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="message-review"></div>
+            <form
+              method="post"
+              action="/assets/review_tour.php"
+              name="review_tour"
+              id="review_tour"
+            >
+              <input
+                name="tour_name"
+                id="tour_name"
+                type="hidden"
+                value="Paris Arch de Triomphe Tour"
+              />
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <select
+                      class="form-control"
+                      name="quality_review"
+                      id="quality_review"
+                    >
+                      <option value="">Mời đánh giá</option>
+                      <option value="Low">Tồi tệ</option>
+                      <option value="Sufficient">Tạm được</option>
+                      <option value="Good">Tốt</option>
+                      <option value="Excellent">Khá tốt</option>
+                      <option value="Superb">Tuyệt vời</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!-- End row -->
+              <div class="form-group">
+                <textarea
+                  name="review_text"
+                  id="review_text"
+                  class="form-control"
+                  style="height: 100px"
+                  placeholder="Viết đánh giá của bạn"
+                ></textarea>
+              </div>
+
+              <input
+                type="submit"
+                value="Gửi đánh giá"
+                class="btn_1"
+                id="submit-review"
+              />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End modal review -->
+
+    <!-- Common scripts -->
+    <div th:replace="user/fragments/fragment :: common_js"></div>
+
+    <script th:src="@{/assets/user/js/jquery.ddslick.js}"></script>
+
+    <!-- Date and time pickers -->
+    <script>
+      $("input.date-pick").datepicker("setDate", "today");
+      $("input.time-pick").timepicker({
+        minuteStep: 15,
+        showInpunts: false,
+      });
+    </script>
+
+    <!--Review modal validation -->
+    <script th:src="@{/assets/user/assets/validate.js}"></script>
+
+    <!-- Map -->
+    <div th:replace="user/fragments/fragment :: map_js"></div>
+
+    <!-- Fixed sidebar -->
+    <script th:src="@{/assets/user/js/theia-sticky-sidebar.js}"></script>
+    <script>
+      jQuery("#sidebar").theiaStickySidebar({
+        additionalMarginTop: 80,
+      });
+    </script>
+
+    <!-- Custom -->
+    <script
+      type="module"
+      th:src="@{/assets/user/js/custom/tour_details.js}"
+      defer
+    ></script>
+  </body>
+</html>

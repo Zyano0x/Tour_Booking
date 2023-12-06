@@ -94,7 +94,7 @@ public class Tour {
   private Boolean status;
 
   @NonNull
-  @NotNull(message = "Hot không được để trống!")
+  @NotNull(message = "Is hot không được để trống!")
   @Column(name = "is_hot")
   private Boolean isHot;
 

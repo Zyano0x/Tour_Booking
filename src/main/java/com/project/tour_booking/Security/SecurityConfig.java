@@ -18,35 +18,37 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITE_LIST = {
-            "/assets/**",
-            "/api/**",
-            "/",
-            "/panel/login",
-    };
+        private static final String[] WHITE_LIST = {
+                        "/assets/**",
+                        "/api/**",
+                        "/tours/*",
+                        "/*",
+                        "/panel/login",
+        };
 
-    private static final String[] BLACK_LIST = {
-            "/api/admin/**",
-            "/panel/**",
-    };
+        private static final String[] BLACK_LIST = {
+                        "/api/admin/**",
+                        "/panel/**",
+        };
 
-    private final JWTAuthenticationFilter jwtAuthenticationFilter;
-    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final AuthenticationProvider authenticationProvider;
+        private final JWTAuthenticationFilter jwtAuthenticationFilter;
+        private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+        private final AuthenticationProvider authenticationProvider;
 
-    @Bean
-    public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(WHITE_LIST).permitAll()
-                        .requestMatchers(BLACK_LIST).hasAnyAuthority(Role.ADMIN.name())
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(request -> request
+                                                .requestMatchers(WHITE_LIST).permitAll()
+                                                .requestMatchers(BLACK_LIST).hasAnyAuthority(Role.ADMIN.name())
+                                                .anyRequest().authenticated())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authenticationProvider(authenticationProvider)
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                .exceptionHandling(exception -> exception
+                                                .authenticationEntryPoint(jwtAuthenticationEntryPoint));
+                return http.build();
+        }
 }

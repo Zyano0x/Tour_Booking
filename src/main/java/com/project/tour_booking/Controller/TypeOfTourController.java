@@ -25,28 +25,28 @@ import lombok.AllArgsConstructor;
 public class TypeOfTourController {
   private TypeOfTourService typeOfTourService;
 
-  @PostMapping("/admin/type-of-tour")
+  @PostMapping("/admin/type-of-tours")
   public ResponseEntity<String> saveTOT(@Valid @RequestBody TypeOfTourDTO typeOfTourDTO) {
     typeOfTourService.saveTOT(typeOfTourDTO);
     return new ResponseEntity<>("THÊM LOẠI TOUR THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/type-of-tour/{totId}")
+  @GetMapping("/type-of-tours/{totId}")
   public ResponseEntity<TypeOfTour> getTOT(@PathVariable Long totId) {
     return new ResponseEntity<>(typeOfTourService.getTOT(totId), HttpStatus.OK);
   }
 
-  @GetMapping("/type-of-tour/all")
+  @GetMapping("/types-of-tours")
   public ResponseEntity<List<TypeOfTour>> getTOTS() {
     return new ResponseEntity<>(typeOfTourService.getTOTS(), HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-type-of-tour-status/{totId}")
+  @PutMapping("/admin/update-type-of-tours-status/{totId}")
   public ResponseEntity<TypeOfTour> updateTOTStatus(@PathVariable Long totId) {
     return new ResponseEntity<>(typeOfTourService.updateTOTStatus(totId), HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-type-of-tour/{totId}")
+  @PutMapping("/admin/update-type-of-tours/{totId}")
   public ResponseEntity<TypeOfTour> updateTOT(@Valid @RequestBody TypeOfTour typeOfTour, @PathVariable Long totId) {
     return new ResponseEntity<>(typeOfTourService.updateTOT(typeOfTour, totId), HttpStatus.OK);
   }

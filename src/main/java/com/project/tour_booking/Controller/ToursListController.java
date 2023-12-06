@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-public class HomeController {
-
-    @GetMapping
-    public String home() {
-        return "user/index";
+public class ToursListController {
+    @GetMapping("tours_list")
+    public String tourList() {
+        return "user/tours_list";
     }
 }

@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class DepartureDayDTO {
   @NotNull(message = "Số lượng khách không được để trống!")
-  @Min(value = 1, message = "Số lượng khách phải lớn hơn '0'!")
+  @Min(value = 0, message = "Số lượng khách không được nhỏ hơn '0'")
   private Integer quantity;
 
   @JsonFormat(pattern = "dd-MM-yyyy")

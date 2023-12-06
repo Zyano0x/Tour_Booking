@@ -14,6 +14,8 @@ public interface TourReviewService {
 
   List<TourReview> getAllTourReviewByTourId(Long tourId);
 
+  // String getRatingByTourId(Long tourId);
+
   List<TourReview> getAllTourReviewByUserId(Long userId);
 
   TourReview updateTourReview(TourReview tourReview, Long tourReviewId);

@@ -35,7 +35,7 @@ public class DepartureDay {
 
   @NonNull
   @NotNull(message = "Số lượng khách không được để trống!")
-  @Min(value = 1, message = "Số lượng khách phải lớn hơn '0'!")
+  @Min(value = 0, message = "Số lượng khách không được nhỏ hơn '0'")
   @Column(name = "quantity")
   private Integer quantity;
 

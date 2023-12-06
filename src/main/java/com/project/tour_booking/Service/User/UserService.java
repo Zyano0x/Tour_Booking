@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface UserService {
-    
+
     ResponseEntity<?> signIn(SignInDTO signInDTO, HttpServletResponse response);
 
     ResponseEntity<?> signUp(SignUpDTO signUpDTO);
@@ -30,5 +30,8 @@ public interface UserService {
     ResponseEntity<?> updateUserStatus(String email);
 
     User user(String email);
+
+    User getUserById(Long id);
+
     List<User> listUsers();
 }

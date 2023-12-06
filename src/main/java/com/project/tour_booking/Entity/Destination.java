@@ -39,6 +39,11 @@ public class Destination {
   private String thumbnail;
 
   @NonNull
+  @NotNull(message = "Is hot không được để trống!")
+  @Column(name = "is_hot")
+  private Boolean isHot;
+
+  @NonNull
   @NotNull(message = "Trạng thái không được để trống!")
   @Column(name = "status")
   private Boolean status;

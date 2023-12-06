@@ -68,9 +68,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> signIn(SignInDTO signInDTO, HttpServletResponse response) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword()));
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword()));
 
-        var user = userRepository.findByEmail(signInDTO.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var user = userRepository.findByEmail(signInDTO.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
         var token = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
@@ -229,14 +231,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> updateUserStatus(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         user.setLocked(!user.isLocked());
         return ResponseEntity.ok().body(userRepository.save(user));
     }
 
     @Override
     public User user(String email) {
-        return ResponseEntity.ok(userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"))).getBody();
+        return ResponseEntity.ok(
+                userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found")))
+                .getBody();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return ResponseEntity
+                .ok(userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found")))
+                .getBody();
     }
 
     @Override

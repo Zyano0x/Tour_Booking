@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.project.tour_booking.DTO.TourDTO;
@@ -37,6 +40,12 @@ public class TourServiceImpl implements TourService {
   private DepartureDayRepository departureDayRepository;
   private BookingRepository bookingRepository;
   private DestinationRepository destinationRepository;
+
+  // @Override
+  // public Page<Tour> getToursForPagination(Integer pageNum) {
+  // Pageable pageable = PageRequest.of(pageNum - 1, 2);
+  // return tourRepository.findAll(pageable);
+  // }
 
   @Override
   public void saveTour(TourDTO tourDTO) {

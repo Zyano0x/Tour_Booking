@@ -30,6 +30,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
 
   @Override
   public void saveDepartureDay(DepartureDayDTO departureDayDTO) {
+    System.out.println(departureDayDTO.getDepartureDay());
     DepartureDay newDepartureDay = new DepartureDay(departureDayDTO.getQuantity(), departureDayDTO.getDepartureDay(),
         departureDayDTO.getStatus());
 
