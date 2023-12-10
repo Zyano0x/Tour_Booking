@@ -17,7 +17,7 @@ import java.util.List;
 public class TypeOfTourController {
   private TypeOfTourService typeOfTourService;
 
-  @PostMapping("/admin/type-of-tour")
+  @PostMapping("/admin/type-of-tours")
   public ResponseEntity<String> saveTOT(@Valid @RequestBody TypeOfTourDTO typeOfTourDTO) {
     typeOfTourService.saveTOT(typeOfTourDTO);
     return new ResponseEntity<>("THÊM LOẠI TOUR THÀNH CÔNG!", HttpStatus.CREATED);
@@ -28,7 +28,7 @@ public class TypeOfTourController {
     return new ResponseEntity<>(typeOfTourService.getTOT(id), HttpStatus.OK);
   }
 
-  @GetMapping("/type-of-tour/all")
+  @GetMapping("/types-of-tours")
   public ResponseEntity<List<TypeOfTour>> getTOTS() {
     return new ResponseEntity<>(typeOfTourService.getTOTS(), HttpStatus.OK);
   }

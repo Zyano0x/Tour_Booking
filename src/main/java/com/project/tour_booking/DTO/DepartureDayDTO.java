@@ -11,9 +11,9 @@ import java.time.LocalDate;
 @Data
 public class DepartureDayDTO {
     @NotNull(message = "Số lượng khách không được để trống!")
-    @Min(value = 1, message = "Số lượng khách phải lớn hơn '0'!")
+    @Min(value = 0, message = "Số lượng khách không được nhỏ hơn '0'")
     private Integer quantity;
-
+  
     @JsonFormat(pattern = "MM-dd-yyyy")
     @ValidDepartureDay(message = "Ngày khởi hành phải lớn hơn thời điểm khởi tạo!")
     private LocalDate departureDay;

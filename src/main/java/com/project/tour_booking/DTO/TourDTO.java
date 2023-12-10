@@ -44,7 +44,7 @@ public class TourDTO {
   @NotNull(message = "Trạng thái không được để trống!")
   private Boolean status;
 
-  @NotNull(message = "Điểm khởi hành không được để trống!")
+  @NotNull(message = "Is hot không được để trống!")
   private Boolean isHot;
 
   @NotEmpty(message = "Ảnh tour không được để trống!")

@@ -22,14 +22,14 @@ public class SecurityConfig {
             "/",
     };
 
-    private static final String[] BLACK_LIST = {
-            "/api/admin/**",
-            "/panel/**",
-    };
+        private static final String[] BLACK_LIST = {
+                        "/api/admin/**",
+                        "/panel/**",
+        };
 
-    private final JWTAuthenticationFilter jwtAuthenticationFilter;
-    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final AuthenticationProvider authenticationProvider;
+        private final JWTAuthenticationFilter jwtAuthenticationFilter;
+        private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+        private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {

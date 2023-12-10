@@ -22,18 +22,92 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class DepartureDayServiceImpl implements DepartureDayService {
-    private DepartureDayRepository departureDayRepository;
-    private TourRepository tourRepository;
-    private BookingRepository bookingRepository;
+  private DepartureDayRepository departureDayRepository;
+  private TourRepository tourRepository;
+  private BookingRepository bookingRepository;
 
-    @Override
-    public void saveDepartureDay(DepartureDayDTO departureDayDTO) {
-        DepartureDay newDepartureDay = new DepartureDay(departureDayDTO.getQuantity(), departureDayDTO.getDepartureDay(), departureDayDTO.getStatus());
+  @Override
+  public void saveDepartureDay(DepartureDayDTO departureDayDTO) {
+    System.out.println(departureDayDTO.getDepartureDay());
+    DepartureDay newDepartureDay = new DepartureDay(departureDayDTO.getQuantity(), departureDayDTO.getDepartureDay(),
+        departureDayDTO.getStatus());
 
-        Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
-        if (tourOptional.isPresent()) {
-            if (tourOptional.get().getStatus()) {
-                newDepartureDay.setTour(tourOptional.get());
+    Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
+    if (tourOptional.isPresent()) {
+      if (tourOptional.get().getStatus()) {
+        newDepartureDay.setTour(tourOptional.get());
+      } else {
+        throw new TourNotEnableException(departureDayDTO.getTourId());
+      }
+    } else
+      throw new TourNotFoundException(departureDayDTO.getTourId());
+    departureDayRepository.save(newDepartureDay);
+  }
+
+  @Override
+  public DepartureDay getDepartureDay(Long departureDayId) {
+    Optional<DepartureDay> departureDayOptional = departureDayRepository.findById(departureDayId);
+    if (departureDayOptional.isPresent())
+      return departureDayOptional.get();
+    else
+      throw new DepartureDayNotFoundException(departureDayId);
+  }
+
+  @Override
+  public List<DepartureDay> getDepartureDays() {
+    return (List<DepartureDay>) departureDayRepository.findAll();
+  }
+
+  @Override
+  public List<DepartureDay> getDepartureDaysByTourId(Long tourId) {
+    return departureDayRepository.findAllByTourId(tourId);
+  }
+
+  @Override
+  public DepartureDay updateDepartureDay(DepartureDayDTO departureDayDTO, Long departureDayId) {
+    // Kiểm tra tồn tại
+    Optional<DepartureDay> departureDayOptional = departureDayRepository.findById(departureDayId);
+    if (departureDayOptional.isPresent()) {
+      DepartureDay updateDepartureDay = departureDayOptional.get();
+
+      // Kiểm tra ngày khởi hành có hết hạn chưa
+      if (updateDepartureDay.getDepartureDay().isAfter(LocalDate.now())) {
+        updateDepartureDay.setQuantity(departureDayDTO.getQuantity());
+        updateDepartureDay.setDepartureDay(departureDayDTO.getDepartureDay());
+
+        // Kiểm tra có thay đổi status không
+        if (departureDayDTO.getStatus() != updateDepartureDay.getStatus()) {
+          // Hủy status của booking
+          if (!departureDayDTO.getStatus()) {
+            updateDepartureDay.setStatus(false);
+            List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDayId).stream()
+                .filter(booking -> booking.getStatus()).collect(Collectors.toList());
+            if (!bookings.isEmpty()) {
+              Integer totalQuantity = 0;
+              for (Booking booking : bookings) {
+                booking.setStatus(false);
+                bookingRepository.save(booking);
+                totalQuantity += booking.getQuantityOfAdult() + booking.getQuantityOfChild();
+              }
+              // Cập nhật trường số lượng của ngày khởi hành
+              updateDepartureDay.setQuantity(updateDepartureDay.getQuantity() + totalQuantity);
+            }
+          } else {
+            if (tourRepository.findById(departureDayDTO.getTourId()).get().getStatus())
+              updateDepartureDay.setStatus(true);
+            else
+              throw new TourNotEnableException(departureDayDTO.getTourId());
+          }
+        }
+
+        if (updateDepartureDay.getTour().getId() != departureDayDTO.getTourId()) {
+          Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
+          if (tourOptional.isPresent()) {
+            if (updateDepartureDay.getStatus()) {
+              if (tourRepository.findById(departureDayDTO.getTourId()).get().getStatus())
+                updateDepartureDay.setTour(tourOptional.get());
+              else
+                throw new TourNotEnableException(departureDayDTO.getTourId());
             } else {
                 throw new TourNotEnableException(departureDayDTO.getTourId());
             }
