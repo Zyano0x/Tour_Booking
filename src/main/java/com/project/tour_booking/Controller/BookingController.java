@@ -31,46 +31,46 @@ public class BookingController {
     return new ResponseEntity<>("ĐẶT TOUR THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/booking/{bookingId}")
+  @GetMapping("/bookings/{bookingId}")
   public ResponseEntity<Booking> getBooking(@PathVariable Long bookingId) {
     return new ResponseEntity<>(bookingService.getBooking(bookingId), HttpStatus.OK);
   }
 
-  @GetMapping("/booking/all")
+  @GetMapping("/bookings")
   public ResponseEntity<List<Booking>> getBookings() {
     return new ResponseEntity<>(bookingService.getBookings(), HttpStatus.OK);
   }
 
-  @GetMapping("/booking/user/{userId}")
+  @GetMapping("/users/{userId}/bookings")
   public ResponseEntity<List<Booking>> getAllBookingByUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(bookingService.getAllBookingByUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/booking-valid/user/{userId}")
+  @GetMapping("/users/{userId}/bookings-valid")
   public ResponseEntity<List<Booking>> getBookingIsValidOfUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(bookingService.getBookingIsValidOfUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/admin/booking/tour/{tourId}")
+  @GetMapping("/admin/tours/{tourId}/bookings")
   public ResponseEntity<List<Booking>> getAllBookingByTourId(@PathVariable Long tourId) {
     return new ResponseEntity<>(bookingService.getAllBookingByTourId(tourId),
         HttpStatus.OK);
   }
 
-  @GetMapping("/admin/booking/user/{userId}/tour/{tourId}")
+  @GetMapping("/admin/users/{userId}/tours/{tourId}/bookings")
   public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId,
       @PathVariable Long tourId) {
     return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId),
         HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-booking-status/{bookingId}")
+  @PutMapping("/admin/update-bookings-status/{bookingId}")
   public ResponseEntity<String> updateBookingStatus(@PathVariable Long bookingId) {
     bookingService.updateBookingStatus(bookingId);
     return new ResponseEntity<>("CẬP NHẬT TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
   }
 
-  @PutMapping("/update-booking/{bookingId}")
+  @PutMapping("/update-bookings/{bookingId}")
   public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingDTO bookingDTO, @PathVariable Long bookingId) {
     bookingService.updateBooking(bookingDTO, bookingId);
     return new ResponseEntity<>("CẬP NHẬT ĐƠN ĐẶT TOUR THÀNH CÔNG!", HttpStatus.OK);
