@@ -257,11 +257,19 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="newTour()">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addTour()">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newTourModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
+</div>
+
+<div role="alert" aria-live="assertive" aria-atomic="true" class="toast position-fixed" id="toast" data-autohide="false" style="margin-right: 50px; margin-bottom: 50px; bottom: 0; right: 0;">
+    <div class="toast-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/8358/8358886.png" width="20" height="20" class="rounded mr-2" alt="...">
+        <strong class="mr-auto"> Notify</strong>
+    </div>
+    <div class="toast-body"></div>
 </div>
 
 <!-- Javascripts -->
@@ -272,5 +280,7 @@
 <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/assets/admin/js/main.min.js}"></script>
 <script th:src="@{/assets/admin/js/pages/tour-data.js}"></script>
+<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
+<script th:src="@{/assets/admin/js/pages/dropdown.js}"></script>
 </body>
 </html>
