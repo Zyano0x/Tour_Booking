@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{admin/index::header}"></th:block>
+<body>
+<div class="page-container">
+    <th:block th:replace="~{admin/index::page-header}"></th:block>
+    <th:block th:replace="~{admin/index::page-sidebar}"></th:block>
+    <div class="page-content">
+        <div class="main-wrapper">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h2>Destination Manage</h2>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#newDestinationModalScrollable').modal('show')">New Destination</button>
+                            </div>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table destination-table" id="destination-table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Thumbnail</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="destinationDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="destinationDetailsModalScrollableTitle">Destination Details</h5>
+            </div>
+            <div class="modal-body">
+                <form id="tour-form">
+                    <div class="form-group">
+                        <label for="id" hidden="hidden">ID</label>
+                        <input type="text" class="form-control" id="id" hidden="hidden">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <input type="text" class="form-control" id="status">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="thumbnail">
+                    </div>
+                    <p></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateDestination(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#destinationDetailsModalScrollable').modal('hide');">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newDestinationModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newDestinationModalScrollableTitle">New Destination</h5>
+            </div>
+            <div class="modal-body">
+                <form id="new-tour-form">
+                    <div class="form-group">
+                        <label for="_id" hidden="hidden">ID</label>
+                        <input type="text" class="form-control" id="_id" hidden="hidden">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_name">Name</label>
+                        <input type="text" class="form-control" id="_name">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="_thumbnail">
+                    </div>
+                    <p></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addDestination()">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newDestinationModalScrollable').modal('hide')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div role="alert" aria-live="assertive" aria-atomic="true" class="toast position-fixed" id="toast" data-autohide="false" style="margin-right: 50px; margin-bottom: 50px; bottom: 0; right: 0;">
+    <div class="toast-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/8358/8358886.png" width="20" height="20" class="rounded mr-2" alt="...">
+        <strong class="mr-auto"> Notify</strong>
+    </div>
+    <div class="toast-body"></div>
+</div>
+
+<!-- Javascripts -->
+<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
+<script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
+<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{https://unpkg.com/feather-icons}"></script>
+<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/assets/admin/js/main.min.js}"></script>
+<script th:src="@{/assets/admin/js/pages/destination-data.js}"></script>
+<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
+</body>
+</html>

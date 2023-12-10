@@ -1,12 +1,5 @@
 package com.project.tour_booking.Service.Destination;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.project.tour_booking.DTO.DestinationDTO;
 import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Entity.DepartureDay;
@@ -18,8 +11,13 @@ import com.project.tour_booking.Repository.BookingRepository;
 import com.project.tour_booking.Repository.DepartureDayRepository;
 import com.project.tour_booking.Repository.DestinationRepository;
 import com.project.tour_booking.Repository.TourRepository;
-
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -99,10 +97,6 @@ public class DestinationServiceImpl implements DestinationService {
                   // Cập nhật trường số lượng cho ngày khởi hành
                   departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
                 }
-                departureDayRepository.save(departureDay);
-              }
-
-              tourRepository.save(tour);
             }
           }
         }
@@ -154,20 +148,11 @@ public class DestinationServiceImpl implements DestinationService {
                   // Cập nhật trường số lượng cho ngày khởi hành
                   departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
                 }
-                departureDayRepository.save(departureDay);
-              }
+            } else {
+                updateDestination.setStatus(true);
             }
 
-            tourRepository.save(tour);
-          }
-        }
-      } else {
-        updateDestination.setStatus(true);
-      }
-
-      return destinationRepository.save(updateDestination);
-    } else
-      throw new DestinationNotFoundException(destinationId);
-  }
-
+            return destinationRepository.save(updateDestination);
+        } else throw new DestinationNotFoundException(destinationId);
+    }
 }

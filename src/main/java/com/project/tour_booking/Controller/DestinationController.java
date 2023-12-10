@@ -1,23 +1,15 @@
 package com.project.tour_booking.Controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.project.tour_booking.DTO.DestinationDTO;
 import com.project.tour_booking.Entity.Destination;
 import com.project.tour_booking.Service.Destination.DestinationService;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -31,9 +23,9 @@ public class DestinationController {
         return new ResponseEntity<>("THÊM ĐỊA ĐIỂM THÀNH CÔNG!", HttpStatus.CREATED);
     }
 
-    @GetMapping("/destination/{destinationId}")
-    public ResponseEntity<Destination> getDestination(@PathVariable Long destinationId) {
-        return new ResponseEntity<>(destinationService.getDestination(destinationId), HttpStatus.OK);
+    @GetMapping("/destination")
+    public ResponseEntity<Destination> getDestination(@RequestParam Long id) {
+        return new ResponseEntity<>(destinationService.getDestination(id), HttpStatus.OK);
     }
 
     @GetMapping("/destinations")
@@ -41,14 +33,14 @@ public class DestinationController {
         return new ResponseEntity<>(destinationService.getDestinations(), HttpStatus.OK);
     }
 
-    @PutMapping("/admin/update-destination-status/{destinationId}")
-    public ResponseEntity<Destination> updateDestinationStatus(@PathVariable Long destinationId) {
-        return new ResponseEntity<>(destinationService.updateDestinationStatus(destinationId), HttpStatus.OK);
+    @PutMapping("/admin/update-destination-status")
+    public ResponseEntity<Destination> updateDestinationStatus(@RequestParam Long id) {
+        return new ResponseEntity<>(destinationService.updateDestinationStatus(id), HttpStatus.OK);
     }
 
-    @PutMapping("/admin/update-destination/{destinationId}")
+    @PutMapping("/admin/update-destination")
     public ResponseEntity<Destination> updateTOT(@Valid @RequestBody Destination destination,
-            @PathVariable Long destinationId) {
-        return new ResponseEntity<>(destinationService.updateDestination(destination, destinationId), HttpStatus.OK);
+            @RequestParam Long id) {
+        return new ResponseEntity<>(destinationService.updateDestination(destination, id), HttpStatus.OK);
     }
 }

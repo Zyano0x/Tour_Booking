@@ -1,10 +1,286 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{admin/index::header}"></th:block>
 <body>
+<div class="page-container">
+    <th:block th:replace="~{admin/index::page-header}"></th:block>
+    <th:block th:replace="~{admin/index::page-sidebar}"></th:block>
+    <div class="page-content">
+        <div class="main-wrapper">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h2>Tour Manage</h2>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#newTourModalScrollable').modal('show')">New Tour</button>
+                            </div>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table tour-table" id="tour-table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Type Tour</th>
+                                            <th scope="col">Posting Date</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modal -->
+<div class="modal fade" id="tourDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tourDetailsModalScrollableTitle">Tour Details</h5>
+            </div>
+            <div class="modal-body">
+                <form id="tour-form">
+                    <div class="form-group">
+                        <label for="id" hidden="hidden">ID</label>
+                        <input type="text" class="form-control" id="id" hidden="hidden">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="content">Description</label>
+                        <textarea class="form-control" id="content"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="service">Service</label>
+                        <input type="text" class="form-control" id="service">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="text" class="form-control" id="time">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="schedule">Schedule</label>
+                        <input type="text" class="form-control" id="schedule">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="priceForAdult">Price For Adult</label>
+                        <input type="text" class="form-control" id="priceForAdult">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="priceForChildren">Price For Children</label>
+                        <input type="text" class="form-control" id="priceForChildren">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="departurePoint">Departure Point</label>
+                        <input type="text" class="form-control" id="departurePoint">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="dateOfPosting">Posting Date</label>
+                        <input type="text" class="form-control" id="dateOfPosting">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="editDate">Editing Date</label>
+                        <input type="text" class="form-control" id="editDate">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <input type="text" class="form-control" id="status">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="isHot">Hot Tours</label>
+                        <input type="text" class="form-control" id="isHot">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="thumbnail">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="images">Images</label>
+                        <textarea class="form-control" id="images"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Type Of Tour</label>
+                        <label for="typeOfTourDropdownUpdate"></label>
+                        <select class="form-control" id="typeOfTourDropdownUpdate"></select>
+                        <option th:each="typeOfTour : ${typeOfTours}"
+                                th:value="${typeOfTour.name}"
+                                th:text="${typeOfTour.name}">
+                        </option>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Destination</label>
+                        <label for="destinationDropdownUpdate"></label>
+                        <select class="form-control" id="destinationDropdownUpdate"></select>
+                            <option th:each="destination : ${destinations}"
+                                    th:value="${destination.name}"
+                                    th:text="${destination.name}">
+                            </option>
+                    </div>
+                    <p></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateTour(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#tourDetailsModalScrollable').modal('hide');">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newTourModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newTourModalScrollableTitle">New Tour</h5>
+            </div>
+            <div class="modal-body">
+                <form id="new-tour-form">
+                    <div class="form-group">
+                        <label for="_id" hidden="hidden">ID</label>
+                        <input type="text" class="form-control" id="_id" hidden="hidden">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_name">Name</label>
+                        <input type="text" class="form-control" id="_name">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_content">Description</label>
+                        <textarea class="form-control" id="_content"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_service">Service</label>
+                        <input type="text" class="form-control" id="_service">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_time">Time</label>
+                        <input type="text" class="form-control" id="_time">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_schedule">Schedule</label>
+                        <input type="text" class="form-control" id="_schedule">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_priceForAdult">Price For Adult</label>
+                        <input type="text" class="form-control" id="_priceForAdult">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_priceForChildren">Price For Children</label>
+                        <input type="text" class="form-control" id="_priceForChildren">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_departurePoint">Departure Point</label>
+                        <input type="text" class="form-control" id="_departurePoint">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_status">Status</label>
+                        <input type="text" class="form-control" id="_status">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_isHot">Hot Tours</label>
+                        <input type="text" class="form-control" id="_isHot">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="_thumbnail">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_images">Images</label>
+                        <textarea class="form-control" id="_images"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Type Of Tour</label>
+                        <label for="typeOfTourDropdownNew"></label>
+                        <select class="form-control" id="typeOfTourDropdownNew"></select>
+                        <option th:each="typeOfTour : ${typeOfTours}"
+                                th:value="${typeOfTour.name}"
+                                th:text="${typeOfTour.name}">
+                        </option>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Destination</label>
+                        <label for="destinationDropdownNew"></label>
+                        <select class="form-control" id="destinationDropdownNew"></select>
+                        <option th:each="destination : ${destinations}"
+                                th:value="${destination.name}"
+                                th:text="${destination.name}">
+                        </option>
+                    </div>
+                    <p></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addTour()">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newTourModalScrollable').modal('hide')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div role="alert" aria-live="assertive" aria-atomic="true" class="toast position-fixed" id="toast" data-autohide="false" style="margin-right: 50px; margin-bottom: 50px; bottom: 0; right: 0;">
+    <div class="toast-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/8358/8358886.png" width="20" height="20" class="rounded mr-2" alt="...">
+        <strong class="mr-auto"> Notify</strong>
+    </div>
+    <div class="toast-body"></div>
+</div>
+
+<!-- Javascripts -->
+<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
+<script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
+<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{https://unpkg.com/feather-icons}"></script>
+<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/assets/admin/js/main.min.js}"></script>
+<script th:src="@{/assets/admin/js/pages/tour-data.js}"></script>
+<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
+<script th:src="@{/assets/admin/js/pages/dropdown.js}"></script>
 </body>
 </html>

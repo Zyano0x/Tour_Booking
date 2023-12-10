@@ -7,28 +7,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/admin/user")
+    @GetMapping("/user")
     public ResponseEntity<?> user(@RequestParam String email) {
         return ResponseEntity.ok(userService.user(email));
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<User> user(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.getUserById(userId));
-    }
-
-    @GetMapping("/admin/list-users")
+    @GetMapping("/all-users")
     public ResponseEntity<?> listUsers() {
         return ResponseEntity.ok(userService.listUsers());
     }
 
-    @PutMapping("/admin/update-user-status")
+    @PutMapping("/update-user-status")
     public ResponseEntity<?> updateUserStatus(@RequestBody String email) {
         return ResponseEntity.ok(userService.updateUserStatus(email));
     }
