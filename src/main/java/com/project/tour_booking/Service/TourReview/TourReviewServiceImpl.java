@@ -1,9 +1,7 @@
 package com.project.tour_booking.Service.TourReview;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -27,35 +25,6 @@ public class TourReviewServiceImpl implements TourReviewService {
   private TourReviewRepository tourReviewRepository;
   private TourRepository tourRepository;
   private UserRepository userRepository;
-
-  // @Override
-  // public String getRatingByTourId(Long tourId) {
-  // int dummyScore = 0, dummyQuantity = 0;
-  // List<TourReview> tourReviews = tourReviewRepository.findAllByTourId(tourId);
-  // for (TourReview tourReview : tourReviews) {
-  // dummyScore += tourReview.getVote();
-  // dummyQuantity++;
-  // }
-  // // dummyScore = Math.floor(dummyScore / dummyQuantity);
-  // dummyScore = (int) Math.floor((double) dummyScore / dummyQuantity);
-  // String ratingTemplate = "";
-  // if (tourReviews.size() > 0) {
-  // for (var i = 0; i < 5; i++) {
-  // if (dummyScore > 0) {
-  // ratingTemplate += "<i class=\"icon-smile voted\">";
-  // dummyScore--;
-  // } else {
-  // ratingTemplate += "<i class=\"icon-smile\">";
-  // }
-  // }
-  // ratingTemplate += "<small>(" + dummyQuantity + ")</small>";
-  // } else {
-  // ratingTemplate = "<i class=\"icon-smile\"></i><i class=\"icon-smile\"></i><i
-  // class=\"icon-smile\"></i><i class=\"icon-smile\"></i><i
-  // class=\"icon-smile\"></i><small>(0)</small>";
-  // }
-  // return ratingTemplate;
-  // }
 
   @Override
   public void saveTourReview(TourReviewDTO tourReviewDTO) {

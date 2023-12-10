@@ -1,5 +1,8 @@
 @charset "UTF-8";
 /* CSS Document */
+.none-padding-right {
+    padding-right: 0 !important;
+}
 
 .padding_42 {
     padding-top: 42px;
@@ -125,8 +128,11 @@
 
 #price_single_main span, #price_single_main_for_children span {
     font-size: 25px;
-    margin-right: 6px;
     color: #f90;
+}
+
+#price_single_main span:last-of-type, #price_single_main_for_children span:last-of-type {
+    margin-right: 6px;
 }
 
 #price_single_main p, #price_single_main_for_children p {
@@ -189,9 +195,11 @@
     font-size: 14px;
 }
 
-/* Note */
-/* #booking_box .booking_overlay a {
-    font-size: 16px;
-    margin-top: 15px;
-    font-weight: 700;
-} */
+.modal.show .modal-dialog {
+    top: 50%;
+    transform: translate(0,-80%);
+}
+
+.page-item-number.active {
+    pointer-events: none;
+}

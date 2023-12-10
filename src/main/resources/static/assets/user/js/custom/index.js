@@ -26,7 +26,7 @@ async function renderFavouriteTours(tours, fatherBlock) {
   const favouriteTours = tours.filter(tour => tour.status && tour.isHot);
   if (favouriteTours.length > 0) {
     for (const favouriteTour of favouriteTours) {
-      const html = favouriteTour.status && favouriteTour.isHot ?
+      let html = favouriteTour.status && favouriteTour.isHot ?
         `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.2s">
             <div div class="tour_container" >
               <div class="ribbon_3 popular"><span>Popular</span></div>
@@ -57,7 +57,7 @@ async function renderFavouriteTours(tours, fatherBlock) {
         :
         '';
       if (html != '')
-        fatherBlock.insertAdjacentHTML("afterbegin", html);
+        fatherBlock.insertAdjacentHTML("beforeend", html);
     }
   }
 }
@@ -68,18 +68,18 @@ function renderFavouriteDestinations(destinations) {
   try {
     const favouriteDestinationsBlock = document.querySelector("#favourite-destinations");
     if (favouriteDestinationsBlock) {
-      var htmls = destinations.map(destinations =>
-        destinations.status && destinations.isHot ?
+      for (const destination of destinations) {
+        let html = destination.status && destination.isHot ?
           `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
               <div class="hotel_container">
                 <div class="ribbon_3 popular"><span>Popular</span></div>
                 <div class="img_container">
                   <a href="single_hotel.html">
-                    <img src="${destinations.thumbnail}" width="800" height="533"  alt="image">
+                    <img src="${destination.thumbnail}" width="800" height="533"  alt="image">
                   </a>
                 </div>
                 <div class="hotel_title">
-                  <h3><strong>${destinations.name}</strong></h3>
+                  <h3><strong>${destination.name}</strong></h3>
                   <!-- end rating -->
                 </div>
               </div>
@@ -87,10 +87,8 @@ function renderFavouriteDestinations(destinations) {
             </div>
             <!-- End col -->`
           : ''
-      );
-      if (htmls && htmls.length > 0) {
-        htmls.reverse();
-        favouriteDestinationsBlock.innerHTML = htmls.join('');
+        if (html != '')
+          favouriteDestinationsBlock.insertAdjacentHTML("afterbegin", html);
       }
     } else
       throw new Error("Element with id '#favourite-destinations' not found in the DOM");

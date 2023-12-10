@@ -135,7 +135,7 @@ export async function handleGetTours(callBack, fatherBlockSelector) {
         const fatherBlock = document.querySelector(fatherBlockSelector);
         if (fatherBlock) {
             await getApi("/api/tours", "NotCallBack")
-                .then(tours => callBack(tours, fatherBlock))
+                .then(tours => callBack(tours.reverse(), fatherBlock))
                 .catch(error => { throw new Error(error) });
         } else {
             throw new Error("Element with id '#favourite-tours' not found in the DOM");

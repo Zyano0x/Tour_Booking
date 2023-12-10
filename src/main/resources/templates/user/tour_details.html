@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
   <head th:replace="user/fragments/fragment :: head"> </head>
 
-  <body>
+  <body class="none-padding-right">
     <div th:replace="user/fragments/fragment :: preloader"></div>
     <!-- End Preload -->
 
@@ -26,16 +26,22 @@
             <div class="row">
               <div class="col-md-8">
                 <h1 id="tourName">Name</h1>
-                <span class="caption">...</span>
+                <div class="caption">
+                  <span class="destination">...</span>
+                  -
+                  <span class="type-of-tour">...</span>
+                </div>
                 <span class="rating tourRating genarateRating"></span>
               </div>
               <div class="col-md-4 line-height-1_5">
                 <div id="price_single_main">
-                  <span>100000000.0</span>
+                  <span>0</span>
+                  <span>.0</span>
                   <p>VND / Người lớn</p>
                 </div>
                 <div id="price_single_main_for_children">
-                  <span>100000000.0</span>
+                  <span>0</span>
+                  <span>.0</span>
                   <p>VND / Trẻ em</p>
                 </div>
               </div>
@@ -113,7 +119,7 @@
                 <h3>ĐÁNH GIÁ</h3>
                 <a
                   href="#"
-                  class="btn_1 add_bottom_30"
+                  class="btn_1 add_bottom_30 .none-padding-right"
                   data-toggle="modal"
                   data-target="#myReview"
                   >Thêm đánh giá</a
@@ -193,8 +199,8 @@
                           class="qty2 form-control"
                           name="quantity"
                         />
-                        <div class="inc button_inc">+</div>
-                        <div class="dec button_inc">-</div>
+                        <!-- <div class="inc button_inc">+</div>
+                        <div class="dec button_inc">-</div> -->
                       </div>
                     </div>
                   </div>
@@ -209,8 +215,8 @@
                           class="qty2 form-control"
                           name="quantity"
                         />
-                        <div class="inc button_inc">+</div>
-                        <div class="dec button_inc">-</div>
+                        <!-- <div class="inc button_inc">+</div>
+                        <div class="dec button_inc">-</div> -->
                       </div>
                     </div>
                   </div>
@@ -230,7 +236,9 @@
                     </tr>
                   </tbody>
                 </table>
-                <a class="btn_full" href="cart.html">Đặt vé ngay</a>
+                <a id="booking_btn" class="btn_full" href="javascript:void(0)"
+                  >Đặt vé ngay</a
+                >
               </div>
               <!--/box_style_1 -->
             </div>
@@ -399,11 +407,11 @@
                       id="quality_review"
                     >
                       <option value="">Mời đánh giá</option>
-                      <option value="Low">Tồi tệ</option>
-                      <option value="Sufficient">Tạm được</option>
-                      <option value="Good">Tốt</option>
-                      <option value="Excellent">Khá tốt</option>
-                      <option value="Superb">Tuyệt vời</option>
+                      <option value="1">Tồi tệ</option>
+                      <option value="2">Tạm được</option>
+                      <option value="3">Tốt</option>
+                      <option value="4">Khá tốt</option>
+                      <option value="5">Tuyệt vời</option>
                     </select>
                   </div>
                 </div>

@@ -145,8 +145,8 @@
                   <div class="styled-select-filters">
                     <select name="sort_price" id="sort_price">
                       <option value="" selected>Sắp xếp theo giá</option>
-                      <option value="lower">Giảm dần</option>
-                      <option value="higher">Tăng dần</option>
+                      <option value="decrease">Giá giảm dần</option>
+                      <option value="ascending">Giá tăng dần</option>
                     </select>
                   </div>
                 </div>
@@ -154,8 +154,8 @@
                   <div class="styled-select-filters">
                     <select name="sort_rating" id="sort_rating">
                       <option value="" selected>Sắp xếp theo điểm số</option>
-                      <option value="lower">Giảm dần</option>
-                      <option value="higher">Tăng dần</option>
+                      <option value="decrease">Điểm số giảm dần</option>
+                      <option value="ascending">Điểm số tăng dần</option>
                     </select>
                   </div>
                 </div>
@@ -167,43 +167,9 @@
 
             <hr />
 
-            <!-- <nav aria-label="Page navigation">
-              <ul class="pagination justify-content-center">
-                <li class="page-item" th:if="${currentPage > 1}">
-                  <a
-                    class="page-link"
-                    th:href="@{'?page='+${currentPage - 1}}"
-                    aria-label="Previous"
-                  >
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                </li>
-
-                <li
-                  class="page-item"
-                  th:each="i : ${#numbers.sequence(1, totalPage)}"
-                  th:classappend="${currentPage == i} ? 'active' : ''"
-                >
-                  <a
-                    class="page-link"
-                    th:href="@{'?page='+${i}}"
-                    th:text="${i}"
-                  ></a>
-                </li>
-
-                <li class="page-item" th:if="${currentPage < totalPage}">
-                  <a
-                    class="page-link"
-                    th:href="@{'?page='+${currentPage + 1}}"
-                    aria-label="Next"
-                  >
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </nav> -->
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center"></ul>
+            </nav>
             <!-- end pagination-->
           </div>
           <!-- End col lg-9 -->

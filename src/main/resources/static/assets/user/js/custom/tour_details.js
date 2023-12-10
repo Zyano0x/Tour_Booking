@@ -1,14 +1,18 @@
 async function renderTourHeader(tour) {
-    const name = document.querySelector("#tourName");
-    if (name)
-        name.innerText = tour.name;
+    const name = document.getElementById("tourName");
+    const destination = document.querySelector(".destination");
+    const typeOfTour = document.querySelector(".type-of-tour");
+    const priceForAdult = document.querySelector("#price_single_main span");
+    const priceForChildren = document.querySelector("#price_single_main_for_children span");
 
-    const caption = document.querySelector(".caption");
-    if (caption)
-        caption.innerText = tour.description;
+    if (name) name.textContent = tour.name;
+    if (destination) destination.textContent = tour.destination.name;
+    if (typeOfTour) typeOfTour.textContent = tour.typeOfTour.name;
+    if (priceForAdult) priceForAdult.textContent = tour.priceForAdult;
+    if (priceForChildren) priceForChildren.textContent = tour.priceForChildren;
 
     const rating = await renderToursRating(`${tour.id}`);
-    document.querySelectorAll(".genarateRating").forEach(function (element) {
+    document.querySelectorAll(".genarateRating").forEach(element => {
         element.innerHTML = rating;
     });
 }
@@ -113,11 +117,10 @@ function renderInfo(tourInfo, fatherBlockSelector) {
 /*END TOUR INFO {description, schedule, service}*/
 
 /*PAGINATION USER REVIEWS*/
-var tourReviews = [];
-var currentPage = 1;
-var perPage = 1;
-var totalPage = 0;
-var pertourReviews = [];
+let tourReviews = [];
+let currentPage = 1;
+let perPage = 1;
+let totalPage = 0;
 
 function renderUserRating(score) {
     try {
@@ -154,7 +157,7 @@ async function renderUsersReviews(tourReviews) {
                             class="rounded-circle"
                         />
                         <small> - ${tourReview.editDate ? "Chỉnh sửa - " + tourReview.editDate : tourReview.dateOfPosting} -</small>
-                        <h4>${(await getApi(`/api/users/${tourReview.id}`, "NotCallBack")).name}</h4>
+                        <h4>${tourReview.user ? tourReview.user.name : ''}</h4>
                         <p>
                             ${tourReview.content}
                         </p>
@@ -176,11 +179,9 @@ async function renderUsersReviews(tourReviews) {
 }
 
 function handleUserReviewsPagesNumber() {
-    pertourReviews = tourReviews.slice(
+    renderUsersReviews(tourReviews.slice(
         (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-    );
-
-    renderUsersReviews(pertourReviews);
+    ));
 }
 
 async function handleRenderUserReviews(tourId) {
@@ -188,12 +189,8 @@ async function handleRenderUserReviews(tourId) {
         tourReviews = await getApi(`/api/tours/${tourId}/tour-review`, "NotCallBack");
         tourReviews.reverse();
 
-        pertourReviews = tourReviews.slice(
-            (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-        );
-
         // render page number
-        totalPage = tourReviews.length / perPage;
+        totalPage = Math.ceil(tourReviews.length / perPage);
 
         if (totalPage > 1) {
             const pagination = document.querySelector("ul.pagination");
@@ -259,7 +256,7 @@ async function handleRenderUserReviews(tourId) {
                     this.setAttribute("style", "pointer-events: none;");
                 }
                 document.querySelector(`.page-item-number-${currentPage}`).classList.add("active");
-                handleUserReviewsPagesNumber(parseInt(currentPage));
+                handleUserReviewsPagesNumber();
             });
 
             pageItemNext.addEventListener("click", function () {
@@ -272,54 +269,127 @@ async function handleRenderUserReviews(tourId) {
                     this.setAttribute("style", "pointer-events: none;");
                 }
                 document.querySelector(`.page-item-number-${currentPage}`).classList.add("active");
-                handleUserReviewsPagesNumber(parseInt(currentPage));
+                handleUserReviewsPagesNumber();
             });
         }
-        renderUsersReviews(pertourReviews);
+        renderUsersReviews(tourReviews.slice(
+            (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
+        ));
     } catch (error) {
         console.log(">>> Error: " + error.message);
     }
 }
 /*END PAGINATION USER REVIEWS*/
 
-// function statusButton(quantity) {
-//     if (quantity == 1)
-//         return 1;
-//     else if (quantity >)
-// }
-
-// function handleBookingQuantity(priceForAdult, priceForChildren) {
-//     try {
-//         const adult = document.querySelector("#adults");
-//         const adultInc = document.querySelector("#adults-numbers-row .inc");
-//         const adultDec = document.querySelector("#adults-numbers-row .dec");
-//         const children = document.querySelector("#children");
-//         const childrenInc = document.querySelector("#children-numbers-row .inc");
-//         const childrenDec = document.querySelector("#children-numbers-row .dec");
-
-//         if (adult && adultInc && adultDec && children && childrenInc && childrenDec) {
-//             let adultQuantity = adult.value;
-//             let childrenQuantity = children.value;
-
-//             adultQuantity == 1
-
-//             adultInc.addEventListener()
-//         } else {
-//             throw new Error(`>>> Element with selector '#adults-numbers-row .inc or #adults-numbers-row .dec or #children-numbers-row .inc or #children-numbers-row .dec or "#adults or #children' not found in the DOM`);
-//         }
-
-//     } catch (error) {
-//         console.log(">>> Error: " + error.message);
-//     }
-// }
-
 /*BOOKING*/
 let deparuteDayIdForUpdate;
 
+/*
+function changeQuantity(priceForAdult, priceForChildren) {
+    try {
+        const totalBlock = document.querySelector("#total");
+        totalBlock.innerText = priceForAdult;
+
+        if (totalBlock) {
+            const adult = document.querySelector("#adults");
+            const adultInc = document.querySelector("#adults-numbers-row .inc");
+            const adultDec = document.querySelector("#adults-numbers-row .dec");
+            const children = document.querySelector("#children");
+            const childrenInc = document.querySelector("#children-numbers-row .inc");
+            const childrenDec = document.querySelector("#children-numbers-row .dec");
+
+            if (adult && adultInc && adultDec && children && childrenInc && childrenDec) {
+                adultInc.addEventListener("click", function () {
+                    totalBlock.innerText = parseInt(totalBlock.innerText) + priceForAdult;
+                });
+                adultDec.addEventListener("click", function () {
+                    totalBlock.innerText = parseInt(totalBlock.innerText) - priceForAdult;
+                });
+                childrenInc.addEventListener("click", function () {
+                    totalBlock.innerText = parseInt(totalBlock.innerText) + priceForChildren;
+                });
+                childrenDec.addEventListener("click", function () {
+                    totalBlock.innerText = parseInt(totalBlock.innerText) - priceForChildren;
+                });
+            } else {
+                throw new Error(`>>> Element with selector '#adults-numbers-row .inc or #adults-numbers-row .dec or #children-numbers-row .inc or #children-numbers-row .dec or #adults or #children' not found in the DOM`);
+            }
+        } else {
+            throw new Error(`>>> Element with selector '#total' not found in the DOM`);
+        }
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+*/
+
+function changeQuantity(priceForAdult, priceForChildren) {
+    try {
+        const totalBlock = document.getElementById("total");
+
+        if (!totalBlock) {
+            throw new Error(">>> Element with selector '#total' not found in the DOM");
+        }
+        totalBlock.innerText = priceForAdult;
+
+        const adult = document.getElementById("adults");
+        const adultInc = document.querySelector("#adults-numbers-row .inc");
+        const adultDec = document.querySelector("#adults-numbers-row .dec");
+        const children = document.getElementById("children");
+        const childrenInc = document.querySelector("#children-numbers-row .inc");
+        const childrenDec = document.querySelector("#children-numbers-row .dec");
+
+        if (!adult || !adultInc || !adultDec || !children || !childrenInc || !childrenDec) {
+            throw new Error(`>>> Element with selector '#adults-numbers-row .inc or #adults-numbers-row .dec or #children-numbers-row .inc or #children-numbers-row .dec or #adults or #children' not found in the DOM`);
+        }
+
+        const btnStatus = (element, option) => {
+            if (option) {
+                adultDec.style.pointerEvents = element.value === '0' ? "none" : "";
+            } else {
+                childrenDec.style.pointerEvents = element.value === '0' ? "none" : "";
+            }
+        };
+
+        const updateTotal = (quantity, price) => {
+            totalBlock.innerText = parseInt(totalBlock.innerText, 10) + quantity * price;
+        };
+
+        btnStatus(children, 0);
+        adultInc.addEventListener("click", () => {
+            updateTotal(1, priceForAdult)
+            btnStatus(adult, 1);
+        });
+        adultDec.addEventListener("click", () => {
+            updateTotal(-1, priceForAdult);
+            btnStatus(adult, 1);
+        });
+        childrenInc.addEventListener("click", () => {
+            updateTotal(1, priceForChildren)
+            btnStatus(children, 0);
+        });
+        childrenDec.addEventListener("click", () => {
+            updateTotal(-1, priceForChildren);
+            btnStatus(children, 0);
+        });
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+
 function updateBookingQuantity() {
-    setInterval(function () {
-        console.log("Đã qua 1 giây với deparuteDayId : " + deparuteDayIdForUpdate);
-    }, 1000);
+    try {
+        const remainingQuanityBlock = document.querySelector("#remainingQuanity");
+        if (remainingQuanityBlock) {
+            setInterval(async function () {
+                remainingQuanityBlock.innerText = (await getApi(`/api/departure-day/${deparuteDayIdForUpdate}`, "NotCallBack")).quantity;
+            }, 1000);
+        } else {
+            throw new Error(`>>> Element with selector '#remainingQuanity' not found in the DOM`);
+        }
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
 }
 
 async function bookingOverLay(tourId) {
@@ -345,21 +415,56 @@ function changeDepartureDay() {
         if (selectedValueInputs.length > 0) {
             selectedValueInputs.forEach(function (option) {
                 option.addEventListener('click', function () {
-                    console.log('Đã chọn giá trị mới:', option.querySelector('.dd-option-value').value);
-                    deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
+                    const optionValue = document.querySelector(".dd-option-selected .dd-option-value");
+                    if (optionValue) {
+                        deparuteDayIdForUpdate = parseInt(optionValue.value);
+                    } else {
+                        console.log("Not found element with selector '.dd-option-selected .dd-option-value' in DOM");
+                    }
                 });
             });
         } else {
-            console.log("Not found in DOM");
+            console.log("Not found element with selector '.dd-option' in DOM");
         }
     } catch (error) {
-        console.log(">>> Error when getting url parameter: " + error.message);
+        console.log(">>> Error: " + error.message);
     }
 }
 
-async function handleBooking(tourId) {
-    if (!(await bookingOverLay(tourId))) {
-        await getDropList(`/api/tour/${tourId}/departure-day`, renderDepartureDropList, "#departureDays", "all_tours.png");
+function booking() {
+    try {
+        const bookingBtn = document.querySelector("#booking_btn");
+        if (bookingBtn) {
+            const totalBlock = document.getElementById("total");
+            const adult = document.getElementById("adults");
+            const children = document.getElementById("children");
+            const remainingQuanityBlock = document.querySelector("#remainingQuanity");
+
+            bookingBtn.addEventListener("click", function () {
+                if (totalBlock.innerText != '0') {
+                    let totalQuantity = parseInt(adult.value) + parseInt(children.value);
+                    if (parseInt(remainingQuanityBlock.innerText) >= totalQuantity) {
+                        alert("Thông báo: Đặt vé thành công!");
+                    } else if (parseInt(remainingQuanityBlock.innerText) === 0) {
+                        alert("Thông báo: Ngày khởi hành bạn chọn đã hết vé!");
+                    } else {
+                        alert("Thông báo: Số lượng vé đã vượt quá số lượng vé còn lại!");
+                    }
+                } else {
+                    alert("Thông báo: Số lượng vé phải lớn hơn > 0!");
+                }
+            })
+        } else {
+            console.log("Not found element width selector '#bookingBtn' in DOM");
+        }
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+
+async function handleBooking(tour) {
+    if (!(await bookingOverLay(tour.id))) {
+        await getDropList(`/api/tour/${tour.id}/departure-day`, renderDepartureDropList, "#departureDays", "all_tours.png");
 
         // Set departureDayId ban đầu
         deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
@@ -367,7 +472,16 @@ async function handleBooking(tourId) {
         updateBookingQuantity();
 
         changeDepartureDay();
+
+        changeQuantity(tour.priceForAdult, tour.priceForChildren);
+
+        booking();
     } else {
+        document.querySelector("#departureDays").innerHTML += `<option
+            value=""
+            data-imagesrc="/assets/user/images/icons_search/all_tours.png">
+            ...
+        </option>`;
         ddslick("#departureDays");
     }
 }
@@ -393,9 +507,9 @@ import { getDropList, renderToursRating, getApi, renderDepartureDropList, compar
 async function start() {
     try {
         const tour = await getApi(`/api/tours/${await getParamId()}`, "NotCallBack");
-        handleBooking(tour.id);
         renderTourHeader(tour);
         handleGetTourImages(tour.id);
+        handleBooking(tour);
         renderInfo(tour.description, ".description-content");
         renderInfo(tour.schedule, ".schedule-content");
         renderInfo(tour.service, ".service-content");
