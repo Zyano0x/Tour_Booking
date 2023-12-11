@@ -279,7 +279,7 @@ function sortByPrice() {
 
 async function getReviewScore(tourId) {
   try {
-    let tourReviews = await getApi(`/api/tours/${tourId}/tour-review`, "NotCallBack");
+    let tourReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
     if (tourReviews.length === 0)
       return 0;
     let totalRating = 0;
