@@ -26,11 +26,6 @@ import lombok.AllArgsConstructor;
 public class TourReviewController {
   private TourReviewService tourReviewService;
 
-  // @GetMapping("/tour-rating/{tourId}")
-  // public String getRatingByTourId(@PathVariable Long tourId) {
-  // return tourReviewService.getRatingByTourId(tourId);
-  // }
-
   @PostMapping("/tour-review")
   public ResponseEntity<String> saveTourReview(
       @Valid @RequestBody TourReviewDTO tourReviewDTO) {
@@ -44,18 +39,18 @@ public class TourReviewController {
     return new ResponseEntity<>(tourReviewService.getTourReview(tourReviewId), HttpStatus.OK);
   }
 
-  @GetMapping("/admin/users/{userId}/tours/{tourId}/tour-review")
+  @GetMapping("/admin/user/{userId}/tour/{tourId}/tour-review")
   public ResponseEntity<TourReview> getTourReviewByTourIdAndUserId(@PathVariable Long userId,
       @PathVariable Long tourId) {
     return new ResponseEntity<>(tourReviewService.getTourReviewByTourIdAndUserId(tourId, userId), HttpStatus.OK);
   }
 
-  @GetMapping("/admin/users/{userId}/tour-review")
+  @GetMapping("/admin/user/{userId}/tour-reviews")
   public ResponseEntity<List<TourReview>> getAllTourReviewByUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(tourReviewService.getAllTourReviewByUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/tours/{tourId}/tour-review")
+  @GetMapping("/tour/{tourId}/tour-reviews")
   public ResponseEntity<List<TourReview>> getAllTourReviewByTourId(@PathVariable Long tourId) {
     return new ResponseEntity<>(tourReviewService.getAllTourReviewByTourId(tourId), HttpStatus.OK);
   }
