@@ -101,7 +101,7 @@ function renderFavouriteDestinations(destinations) {
 import { getApi, getDropList, renderSearchDropList, handleGetTours, renderToursRating, compareDate } from './global_function.js';
 
 function start() {
-  getApi("/api/slider/all", renderSlider);
+  getApi("/api/sliders", renderSlider);
   getDropList("/api/destinations", renderSearchDropList, "#destinationsDropList", "walking.png");
   getDropList("/api/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png");
   handleGetTours(renderFavouriteTours, "#favourite-tours");
