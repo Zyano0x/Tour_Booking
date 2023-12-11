@@ -102,7 +102,7 @@ export function renderDeparturesDropList(data, fatherBlock, icon) {
 
 export async function renderToursRating(tourId) {
     try {
-        const tourReviews = await getApi(`/api/tours/${tourId}/tour-review`, "NotCallBack");
+        const tourReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
 
         let rating = ``;
         if (tourReviews.length === 0) {
