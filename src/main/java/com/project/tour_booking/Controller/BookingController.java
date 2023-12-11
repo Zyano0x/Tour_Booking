@@ -31,7 +31,7 @@ public class BookingController {
     return new ResponseEntity<>("ĐẶT TOUR THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/bookings/{bookingId}")
+  @GetMapping("/booking/{bookingId}")
   public ResponseEntity<Booking> getBooking(@PathVariable Long bookingId) {
     return new ResponseEntity<>(bookingService.getBooking(bookingId), HttpStatus.OK);
   }
@@ -64,13 +64,13 @@ public class BookingController {
         HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-bookings-status/{bookingId}")
+  @PutMapping("/admin/update-booking-status/{bookingId}")
   public ResponseEntity<String> updateBookingStatus(@PathVariable Long bookingId) {
     bookingService.updateBookingStatus(bookingId);
     return new ResponseEntity<>("CẬP NHẬT TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
   }
 
-  @PutMapping("/update-bookings/{bookingId}")
+  @PutMapping("/update-booking/{bookingId}")
   public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingDTO bookingDTO, @PathVariable Long bookingId) {
     bookingService.updateBooking(bookingDTO, bookingId);
     return new ResponseEntity<>("CẬP NHẬT ĐƠN ĐẶT TOUR THÀNH CÔNG!", HttpStatus.OK);
