@@ -28,14 +28,14 @@ public class TourController {
         return new ResponseEntity<>(tourService.getTour(id), HttpStatus.OK);
     }
 
-    @GetMapping("/tour/all")
+    @GetMapping("/tours")
     public ResponseEntity<List<Tour>> getTours() {
         return new ResponseEntity<>(tourService.getTours(), HttpStatus.OK);
     }
 
-    @GetMapping("/tour/type-of-tour")
-    public ResponseEntity<List<Tour>> getTourByTypeOfTourId(@RequestParam Long id) {
-        return new ResponseEntity<>(tourService.getTourByTypeOfTourId(id), HttpStatus.OK);
+    @GetMapping("/type-of-tours/{totId}/toura")
+    public ResponseEntity<List<Tour>> getTourByTypeOfTourId(@PathVariable Long totId) {
+        return new ResponseEntity<>(tourService.getTourByTypeOfTourId(totId), HttpStatus.OK);
     }
 
     @PutMapping("/admin/update-tour")
