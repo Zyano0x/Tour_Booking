@@ -41,23 +41,23 @@ public class BookingController {
     return new ResponseEntity<>(bookingService.getBookings(), HttpStatus.OK);
   }
 
-  @GetMapping("/users/{userId}/bookings")
+  @GetMapping("/user/{userId}/bookings")
   public ResponseEntity<List<Booking>> getAllBookingByUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(bookingService.getAllBookingByUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/users/{userId}/bookings-valid")
+  @GetMapping("/user/{userId}/bookings-valid")
   public ResponseEntity<List<Booking>> getBookingIsValidOfUserId(@PathVariable Long userId) {
     return new ResponseEntity<>(bookingService.getBookingIsValidOfUserId(userId), HttpStatus.OK);
   }
 
-  @GetMapping("/admin/tours/{tourId}/bookings")
+  @GetMapping("/admin/tour/{tourId}/bookings")
   public ResponseEntity<List<Booking>> getAllBookingByTourId(@PathVariable Long tourId) {
     return new ResponseEntity<>(bookingService.getAllBookingByTourId(tourId),
         HttpStatus.OK);
   }
 
-  @GetMapping("/admin/users/{userId}/tours/{tourId}/bookings")
+  @GetMapping("/admin/user/{userId}/tour/{tourId}/bookings")
   public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId,
       @PathVariable Long tourId) {
     return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId),
