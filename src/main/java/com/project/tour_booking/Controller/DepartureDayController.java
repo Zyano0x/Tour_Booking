@@ -33,7 +33,7 @@ public class DepartureDayController {
         return new ResponseEntity<>(departureDayService.getDepartureDays(), HttpStatus.OK);
     }
 
-    @GetMapping("/tours/{tourId}/departure-days")
+    @GetMapping("/tour/{tourId}/departure-days")
     public ResponseEntity<List<DepartureDay>> getDepartureDaysByTourId(@PathVariable Long tourId) {
         return new ResponseEntity<>(departureDayService.getDepartureDaysByTourId(tourId), HttpStatus.OK);
     }
