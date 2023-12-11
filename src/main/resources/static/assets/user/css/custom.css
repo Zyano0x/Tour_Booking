@@ -203,3 +203,12 @@
 .page-item-number.active {
     pointer-events: none;
 }
+
+.date-pick {
+    font-size: 13px;
+    text-align: center;
+}
+
+.filter-btn {
+    outline: none;
+}

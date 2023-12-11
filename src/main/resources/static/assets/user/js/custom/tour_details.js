@@ -397,7 +397,7 @@ function updateBookingQuantity() {
 async function bookingOverLay(tourId) {
     try {
         var departureDays = await getApi(`/api/tour/${tourId}/departure-days`, "NotCallBack");
-        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDate(departureDay.departureDay) && departureDay.quantity > 0);
+        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDateNow(departureDay.departureDay) && departureDay.quantity > 0);
 
         if (validDepartureDays.length <= 0) {
             document.querySelector("#booking_box").style.pointerEvents = "none";
@@ -504,7 +504,7 @@ async function getParamId() {
     }
 }
 
-import { getDropList, renderToursRating, getApi, renderDepartureDropList, compareDate, ddslick } from './global_function.js';
+import { getDropList, renderToursRating, getApi, renderDepartureDropList, compareDateNow, ddslick } from './global_function.js';
 
 async function start() {
     try {

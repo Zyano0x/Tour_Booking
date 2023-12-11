@@ -1,4 +1,14 @@
-export function compareDate(dateStr) {
+export function compareDates(dateString1, dateString2) {
+    if (dateString1 < dateString2) {
+        return -1;
+    } else if (dateString1 > dateString2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+export function compareDateNow(dateStr) {
     /*Phải chuyển đổi định dạng dd-MM-yyyy sang "MM/dd/yyyy" hoặc "yyyy-MM-dd" để JavaScript có thể hiểu */
     const dateParts = dateStr.split("-");
     const inputDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
@@ -30,8 +40,11 @@ export function compareDate(dateStr) {
             // Nếu cùng tháng, so sánh ngày
             if (inputDay > currentDay) {
                 return true;
-            } else
+            } else if (inputDay < currentDay) {
                 return false;
+            }
+            else
+                return true;
         }
     }
 }
@@ -69,7 +82,7 @@ export function renderSearchDropList(data, fatherBlock, icon) {
 export function renderDepartureDropList(data, fatherBlock, icon) {
     try {
         var htmls = data.map(item =>
-            item.status && item.status && compareDate(item.departureDay) && item.quantity > 0 ?
+            item.status && item.status && compareDateNow(item.departureDay) && item.quantity > 0 ?
                 `<option
                     value="${item.id}"
                     data-imagesrc="/assets/user/images/icons_search/${icon}">
@@ -86,7 +99,7 @@ export function renderDepartureDropList(data, fatherBlock, icon) {
 export function renderDeparturesDropList(data, fatherBlock, icon) {
     try {
         var htmls = data.map(item =>
-            item.status && compareDate(item.departureDay) && item.quantity > 0 ?
+            item.status && compareDateNow(item.departureDay) && item.quantity > 0 ?
                 `<option
                     value="${item.id}"
                     data-imagesrc="/assets/user/images/icons_search/${icon}">

@@ -98,7 +98,7 @@ function renderFavouriteDestinations(destinations) {
 }
 /*END FAVOURITE DESTINATIONS*/
 
-import { getApi, getDropList, renderSearchDropList, handleGetTours, renderToursRating, compareDate } from './global_function.js';
+import { getApi, getDropList, renderSearchDropList, handleGetTours, renderToursRating } from './global_function.js';
 
 function start() {
   getApi("/api/sliders", renderSlider);

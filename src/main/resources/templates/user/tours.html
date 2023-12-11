@@ -116,11 +116,7 @@
                             ><i class="icon-calendar-7"></i> Ngày khởi
                             hành</label
                           >
-                          <input
-                            class="date-pick form-control"
-                            data-date-format="M d, D"
-                            type="text"
-                          />
+                          <input class="date-pick form-control" type="text" />
                         </div>
                       </div>
                     </div>
@@ -128,7 +124,7 @@
 
                   <!-- End row -->
                   <hr />
-                  <button class="btn_1 green">Lọc</button>
+                  <button class="btn_1 green filter-btn">Lọc</button>
                 </div>
                 <!-- End rab -->
               </div>
@@ -302,12 +298,77 @@
     <script th:src="@{/assets/user/js/jquery.ddslick.js}"></script>
 
     <!-- search  -->
+    <!-- jQuery UI library -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+
+    <!-- jQuery UI Vietnamese localization -->
+    <script src="https://raw.githubusercontent.com/jquery/jquery-ui/master/ui/i18n/datepicker-vi.js"></script>
+
     <script>
-      $("input.date-pick").datepicker("setDate", "today");
-      $("input.time-pick").timepicker({
-        minuteStep: 15,
-        showInpunts: false,
+      $.datepicker.regional["vi"] = {
+        closeText: "Đóng",
+        prevText: "&#x3c;Trước",
+        nextText: "Tiếp&#x3e;",
+        currentText: "Hôm nay",
+        monthNames: [
+          "Tháng 1",
+          "Tháng 2",
+          "Tháng 3",
+          "Tháng 4",
+          "Tháng 5",
+          "Tháng 6",
+          "Tháng 7",
+          "Tháng 8",
+          "Tháng 9",
+          "Tháng 10",
+          "Tháng 11",
+          "Tháng 12",
+        ],
+        monthNamesShort: [
+          "Tháng 1",
+          "Tháng 2",
+          "Tháng 3",
+          "Tháng 4",
+          "Tháng 5",
+          "Tháng 6",
+          "Tháng 7",
+          "Tháng 8",
+          "Tháng 9",
+          "Tháng 10",
+          "Tháng 11",
+          "Tháng 12",
+        ],
+        dayNames: [
+          "Chủ Nhật",
+          "Thứ Hai",
+          "Thứ Ba",
+          "Thứ Tư",
+          "Thứ Năm",
+          "Thứ Sáu",
+          "Thứ Bảy",
+        ],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+        weekHeader: "Tuần",
+        dateFormat: "dd/mm/yy",
+        firstDay: 0,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: "",
+      };
+      $.datepicker.setDefaults($.datepicker.regional["vi"]); // Đặt ngôn ngữ mặc định là tiếng Việt
+
+      $("input.date-pick").datepicker({
+        dateFormat: "dd-mm-yy", // Đặt định dạng ngày giờ thành tiếng Việt
+        changeDay: true,
+        changeMonth: true,
+        changeYear: true,
       });
+      // .attr("readonly", "readonly"); // Sử dụng new Date() để đặt ngày là hôm nay
     </script>
 
     <!-- Check box and radio style iCheck -->
