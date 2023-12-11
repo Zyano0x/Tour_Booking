@@ -33,7 +33,7 @@ public class TourController {
         return new ResponseEntity<>(tourService.getTours(), HttpStatus.OK);
     }
 
-    @GetMapping("/type-of-tours/{totId}/toura")
+    @GetMapping("/type-of-tours/{totId}/tours")
     public ResponseEntity<List<Tour>> getTourByTypeOfTourId(@PathVariable Long totId) {
         return new ResponseEntity<>(tourService.getTourByTypeOfTourId(totId), HttpStatus.OK);
     }
