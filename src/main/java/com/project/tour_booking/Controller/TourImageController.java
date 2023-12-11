@@ -28,12 +28,12 @@ public class TourImageController {
     return new ResponseEntity<>(tourImageService.getTourImage(id), HttpStatus.OK);
   }
 
-  @GetMapping("/tour-image/tour")
-  public ResponseEntity<List<TourImage>> getTourImageByTourId(@RequestParam Long id) {
-    return new ResponseEntity<>(tourImageService.getTourImageByTourId(id), HttpStatus.OK);
+  @GetMapping("/tour/{tourId}/tour-images")
+  public ResponseEntity<List<TourImage>> getTourImageByTourId(@PathVariable Long tourId) {
+    return new ResponseEntity<>(tourImageService.getTourImageByTourId(tourId), HttpStatus.OK);
   }
 
-  @GetMapping("/tour-image/all")
+  @GetMapping("/tour-images")
   public ResponseEntity<List<TourImage>> getTourImages() {
     return new ResponseEntity<>(tourImageService.getTourImages(), HttpStatus.OK);
   }
