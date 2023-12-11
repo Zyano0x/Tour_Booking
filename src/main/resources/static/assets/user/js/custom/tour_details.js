@@ -4,12 +4,14 @@ async function renderTourHeader(tour) {
     const typeOfTour = document.querySelector(".type-of-tour");
     const priceForAdult = document.querySelector("#price_single_main span");
     const priceForChildren = document.querySelector("#price_single_main_for_children span");
+    const navigationTourName = document.querySelector(".navigation-tour-name");
 
     if (name) name.textContent = tour.name;
     if (destination) destination.textContent = tour.destination.name;
     if (typeOfTour) typeOfTour.textContent = tour.typeOfTour.name;
     if (priceForAdult) priceForAdult.textContent = tour.priceForAdult;
     if (priceForChildren) priceForChildren.textContent = tour.priceForChildren;
+    if (navigationTourName) navigationTourName.textContent = tour.name;
 
     const rating = await renderToursRating(`${tour.id}`);
     document.querySelectorAll(".genarateRating").forEach(element => {
