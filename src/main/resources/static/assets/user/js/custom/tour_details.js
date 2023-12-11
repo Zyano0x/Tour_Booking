@@ -74,7 +74,7 @@ function loadScript(src) {
 }
 
 async function handleGetTourImages(tourId) {
-    await getApi(`/api/tour/${tourId}/tour-image`, renderTourImages);
+    await getApi(`/api/tour/${tourId}/tour-images`, renderTourImages);
 
     // Create layout & animation slider
     await loadScript("/assets/user/js/jquery.sliderPro.min.js")
@@ -186,7 +186,7 @@ function handleUserReviewsPagesNumber() {
 
 async function handleRenderUserReviews(tourId) {
     try {
-        tourReviews = await getApi(`/api/tours/${tourId}/tour-review`, "NotCallBack");
+        tourReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
         tourReviews.reverse();
 
         // render page number
@@ -382,7 +382,7 @@ function updateBookingQuantity() {
         const remainingQuanityBlock = document.querySelector("#remainingQuanity");
         if (remainingQuanityBlock) {
             setInterval(async function () {
-                remainingQuanityBlock.innerText = (await getApi(`/api/departure-day/${deparuteDayIdForUpdate}`, "NotCallBack")).quantity;
+                remainingQuanityBlock.innerText = (await getApi(`/api/departure-day?id=${deparuteDayIdForUpdate}`, "NotCallBack")).quantity;
             }, 1000);
         } else {
             throw new Error(`>>> Element with selector '#remainingQuanity' not found in the DOM`);
@@ -394,7 +394,7 @@ function updateBookingQuantity() {
 
 async function bookingOverLay(tourId) {
     try {
-        var departureDays = await getApi(`/api/tour/${tourId}/departure-day`, "NotCallBack");
+        var departureDays = await getApi(`/api/tour/${tourId}/departure-days`, "NotCallBack");
         var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDate(departureDay.departureDay) && departureDay.quantity > 0);
 
         if (validDepartureDays.length <= 0) {
@@ -464,7 +464,7 @@ function booking() {
 
 async function handleBooking(tour) {
     if (!(await bookingOverLay(tour.id))) {
-        await getDropList(`/api/tour/${tour.id}/departure-day`, renderDepartureDropList, "#departureDays", "all_tours.png");
+        await getDropList(`/api/tour/${tour.id}/departure-days`, renderDepartureDropList, "#departureDays", "all_tours.png");
 
         // Set departureDayId ban đầu
         deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
@@ -506,7 +506,7 @@ import { getDropList, renderToursRating, getApi, renderDepartureDropList, compar
 
 async function start() {
     try {
-        const tour = await getApi(`/api/tours/${await getParamId()}`, "NotCallBack");
+        const tour = await getApi(`/api/tour?id=${await getParamId()}`, "NotCallBack");
         renderTourHeader(tour);
         handleGetTourImages(tour.id);
         handleBooking(tour);
