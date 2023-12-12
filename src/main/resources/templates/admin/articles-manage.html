@@ -13,21 +13,21 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-8">
-                                    <h2>Departure Manage</h2>
+                                    <h2>Articles Manage</h2>
                                 </div>
                             </div>
                             <div>
-                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#newDepartureModalScrollable').modal('show')">New Departure</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#newArticlesModalScrollable').modal('show')">New Articles</button>
                             </div>
                             <div class="row">
                                 <div class="table-responsive">
-                                    <table class="table departure-table" id="departure-table">
+                                    <table class="table articles-table" id="articles-table">
                                         <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Departure Day</th>
-                                            <th scope="col">Slots</th>
-                                            <th scope="col">Tour</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Posting</th>
+                                            <th scope="col">Editing</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -46,11 +46,11 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="departureDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+<div class="modal fade" id="articlesDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="departureDetailsModalScrollableTitle">Departure Details</h5>
+                <h5 class="modal-title" id="articlesDetailsModalScrollableTitle">Articles Details</h5>
             </div>
             <div class="modal-body">
                 <form id="tour-form">
@@ -59,13 +59,18 @@
                         <input type="text" class="form-control" id="id" hidden="hidden">
                     </div>
                     <div class="form-group">
-                        <label for="departure">Departure Day</label>
-                        <input type="date" class="form-control" id="departure">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title">
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="slots">Slots</label>
-                        <input type="text" class="form-control" id="slots">
+                        <label for="posting">Posting</label>
+                        <input type="text" class="form-control" id="posting">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="editing">Editing</label>
+                        <input type="text" class="form-control" id="editing" disabled>
                     </div>
                     <br>
                     <div class="form-group">
@@ -74,28 +79,23 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label>Tour</label>
-                        <label for="tourDropdownUpdate"></label>
-                        <select class="form-control" id="tourDropdownUpdate"></select>
-                        <option th:each="tour : ${tours}"
-                                th:value="${tour.name}"
-                                th:text="${tour.name}">
-                        </option>
+                         <textarea id="content">
+                         </textarea>
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateDeparture(document.getElementById('id').value)">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#departureDetailsModalScrollable').modal('hide');">Close</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateArticles(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#articlesDetailsModalScrollable').modal('hide');">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="newDepartureModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+<div class="modal fade" id="newArticlesModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="newDepartureModalScrollableTitle">New Departure</h5>
@@ -108,13 +108,8 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="_departure">Departure Day</label>
-                        <input type="date" class="form-control" id="_departure">
-                    </div>
-                    <br>
-                    <div class="form-group">
-                        <label for="_slots">Slots</label>
-                        <input type="text" class="form-control" id="_slots">
+                        <label for="_title">Title</label>
+                        <input type="text" class="form-control" id="_title">
                     </div>
                     <br>
                     <div class="form-group">
@@ -123,13 +118,6 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label>Tour</label>
-                        <label for="tourDropdownNew"></label>
-                        <select class="form-control" id="tourDropdownNew"></select>
-                        <option th:each="tour : ${tours}"
-                                th:value="${tour.name}"
-                                th:text="${tour.name}">
-                        </option>
                     </div>
                     <p></p>
                 </form>
@@ -157,8 +145,15 @@
 <script th:src="@{https://unpkg.com/feather-icons}"></script>
 <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/assets/admin/js/main.min.js}"></script>
-<script th:src="@{/assets/admin/js/pages/departure-data.js}"></script>
+<script th:src="@{/assets/admin/js/pages/articles-data.js}"></script>
 <script th:src="@{/assets/admin/js/pages/toast.js}"></script>
-<script th:src="@{/assets/admin/js/pages/dropdown.js}"></script>
+<script th:src="@{https://cdn.tiny.cloud/1/q3htlijrx9udcqbgh8a503rmci1shq3a5wjodgfqtzuu5yek/tinymce/6/tinymce.min.js}" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#content',
+        plugins: 'autolink lists link image charmap print preview',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    });
+</script>
 </body>
 </html>

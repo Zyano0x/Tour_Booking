@@ -31,5 +31,5 @@ function login(email, password) {
         .then((result) => {
             window.location.href = "/panel";
         })
-        .catch((error) => console.error("Login Error:", error.message));
+        .catch((error) => console.log(error));
 }

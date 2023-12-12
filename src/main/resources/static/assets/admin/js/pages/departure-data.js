@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/departure-day/all")
+        fetch("/api/departure-days")
             .then(response => response.json())
             .then(data => {
                 fetchTableDeparture(data);
@@ -173,7 +173,7 @@ async function addDeparture() {
 function dropdownWithTour(currentTour) {
     const dropdownUpdate = document.getElementById('tourDropdownUpdate');
 
-    fetch('/api/tour/all')
+    fetch('/api/tours')
         .then(response => {
             if (response.ok) return response.json();
         })
@@ -206,7 +206,7 @@ function fetchDepartureDetailsModal(data) {
 
 async function getTourOptions() {
     try {
-        const response = await fetch('/api/tour/all');
+        const response = await fetch('/api/tours');
         if (response.ok) return await response.json();
     } catch (error) {
         console.error('Error fetching tour options:', error);
@@ -222,11 +222,13 @@ async function getTourIdByName(name) {
 
 async function fetchTours() {
     try {
-        const tours = await fetch('/api/tour/all').then(response => response.json());
+        const tours = await fetch('/api/tours').then(response => response.json());
 
         populateDropdown('tourDropdownNew', tours);
     } catch (error) {
         console.error('Error fetching data options:', error);
     }
 }
-fetchTours();
+fetchTours().then(r => {
+    console.log('Data fetched successfully!');
+});

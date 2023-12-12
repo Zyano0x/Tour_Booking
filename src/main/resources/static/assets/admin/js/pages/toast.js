@@ -3,8 +3,8 @@ function showToast(message, type = 'success') {
     const toast = new bootstrap.Toast(toastContainer);
 
     toastContainer.querySelector('.toast-body').innerText = message;
-    toastContainer.classList.remove('bg-success', 'bg-error'); // Remove previous classes
-    toastContainer.classList.add(`bg-${type}`);
+    toastContainer.querySelector('.toast-body').classList.remove('bg-success', 'bg-error');
+    toastContainer.querySelector('.toast-body').classList.add(`bg-${type}`);
 
     toast.show();
 }
