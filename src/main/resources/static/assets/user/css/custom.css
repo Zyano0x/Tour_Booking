@@ -1,7 +1,33 @@
 @charset "UTF-8";
+
 /* CSS Document */
 .none-padding-right {
     padding-right: 0 !important;
+}
+
+.margin-auto {
+    margin: auto;
+}
+
+.display-space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.text-align-justify {
+    text-align: justify;
+}
+
+.none-margin-bottom {
+    margin-bottom: 0;
+}
+
+.none-padding {
+    padding: 0;
 }
 
 .padding_42 {
@@ -9,25 +35,28 @@
     padding-bottom: 42px;
 }
 
-.display-right  {
+.display-right {
     display: flex;
     justify-content: right;
 }
 
 .grey-layout {
     height: 400px;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .line-height-1_5 {
     line-height: 1.5;
 }
 
-.description-content, .schedule-content, .service-content {
+.description-content,
+.schedule-content,
+.service-content {
     font-size: 15px;
 }
 
-#tourName, .caption {
+#tourName,
+.caption {
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -80,7 +109,7 @@
     font-size: 12px;
 }
 
-.tour_list_desc > p {
+.tour_list_desc>p {
     display: -webkit-box;
     overflow: hidden;
     -webkit-box-orient: vertical;
@@ -113,7 +142,8 @@
     display: flex;
 }
 
-.dd-select label, .dd-options label {
+.dd-select label,
+.dd-options label {
     display: block;
     overflow: hidden;
     white-space: nowrap;
@@ -122,20 +152,23 @@
     margin-bottom: 0;
 }
 
-#position > .container {
+#position>.container {
     display: flex;
 }
 
-#price_single_main span, #price_single_main_for_children span {
+#price_single_main span,
+#price_single_main_for_children span {
     font-size: 25px;
     color: #f90;
 }
 
-#price_single_main span:last-of-type, #price_single_main_for_children span:last-of-type {
+#price_single_main span:last-of-type,
+#price_single_main_for_children span:last-of-type {
     margin-right: 6px;
 }
 
-#price_single_main p, #price_single_main_for_children p {
+#price_single_main p,
+#price_single_main_for_children p {
     margin: 0;
 }
 
@@ -145,7 +178,8 @@
     font-weight: normal;
 }
 
-#price_single_main_for_children, #price_single_main {
+#price_single_main_for_children,
+#price_single_main {
     padding: 0;
     text-align: left;
     font-size: 15px;
@@ -157,7 +191,7 @@
     color: #e04f67;
 }
 
-.review_strip_single > p {
+.review_strip_single>p {
     max-height: 100px;
     overflow: auto;
 }
@@ -167,7 +201,8 @@
     justify-content: right;
 }
 
-#adults, #children {
+#adults,
+#children {
     pointer-events: none;
 }
 
@@ -177,7 +212,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -191,13 +226,14 @@
     margin-bottom: 15px;
 }
 
-#booking_box lable, #booking_box .remainingQuanity {
+#booking_box lable,
+#booking_box .remainingQuanity {
     font-size: 14px;
 }
 
 .modal.show .modal-dialog {
     top: 50%;
-    transform: translate(0,-80%);
+    transform: translate(0, -80%);
 }
 
 .page-item-number.active {
@@ -212,3 +248,182 @@
 .filter-btn {
     outline: none;
 }
+
+/* Cart */
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.tab {
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s;
+}
+
+.tab:hover {
+    background-color: #e0e0e0;
+}
+
+.tab.active {
+    background-color: #f90;
+    border-bottom: 1px solid #fff;
+    color: #fff;
+}
+
+.tab-booking-content {
+    border: 1px solid #ccc;
+    padding: 0;
+    border-radius: 0 0 5px 5px;
+}
+
+.tab-booking-content.active {
+    display: block;
+}
+
+.tab-booking-content:not(.active) {
+    display: none;
+}
+
+.item_cart,
+.departurePoint {
+    display: block;
+}
+
+.departurePoint {
+    max-width: 230px;
+    max-height: 60px;
+    padding-right: 5px;
+    overflow: auto;
+}
+
+/* width */
+.departurePoint::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+.departurePoint::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.departurePoint::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.item_cart {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cart_bt {
+    font-size: 18px;
+    color: #fff;
+}
+
+.custom-prompt {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 3;
+}
+
+.prompt-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.action {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+button.action-btn {
+    outline: none;
+    border: none;
+    min-width: 100px;
+    border-radius: 4px;
+    transition: all linear 0.2s;
+}
+
+button.action-btn:hover {
+    background-color: #f90;
+    color: #fff;
+}
+
+#customPrompt .tour-cancel-info {
+    margin: 20px 0;
+}
+
+#customPrompt .tour-cancel-info p {
+    margin: 0;
+}
+
+#customPrompt .tour-cancel-info p:last-of-type strong {
+    color: #f90;
+}
+
+#customPrompt h4 {
+    text-align: center;
+    padding: 10px 0;
+    background: #565a5c;
+    color: #fff;
+    border-radius: inherit;
+    margin-bottom: 25px;
+}
+
+#customPrompt p {
+    text-align: justify;
+    line-height: 1.5;
+}
+
+#customPrompt .prompt-content {
+    max-width: 530px;
+    padding: 20px 30px 30px;
+    font-size: 15px;
+    text-align: left;
+}
+
+#customPrompt .temp {
+    margin: 20px 0;
+}
+
+#customPrompt .temp p:first-of-type {
+    margin: 0;
+}
+
+#customPrompt .temp strong {
+    color: #f90;
+}
+
+
+/* End cart */

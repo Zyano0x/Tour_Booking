@@ -48,7 +48,7 @@ async function renderFavouriteTours(tours, fatherBlock) {
                 <h3>
                   <strong>${favouriteTour.name}</strong>
                 </h3>
-                <div id="tour_rating${favouriteTour.id}" class="tour_rating">
+                <div id="tour_rating${favouriteTour.id}" class="tourRating">
                   ${await renderToursRating(favouriteTour.id)}
               </div >
             </div >
@@ -102,8 +102,8 @@ import { getApi, getDropList, renderSearchDropList, handleGetTours, renderToursR
 
 function start() {
   getApi("/api/sliders", renderSlider);
-  getDropList("/api/destinations", renderSearchDropList, "#destinationsDropList", "walking.png");
-  getDropList("/api/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png");
+  // getDropList("/api/destinations", renderSearchDropList, "#destinationsDropList", "walking.png");
+  // getDropList("/api/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png");
   handleGetTours(renderFavouriteTours, "#favourite-tours");
   getApi("/api/destinations", renderFavouriteDestinations);
 }

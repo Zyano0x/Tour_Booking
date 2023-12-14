@@ -52,7 +52,8 @@ public class BookingServiceImpl implements BookingService {
       if (departureDayOptional.isPresent()) {
         DepartureDay departureDay = departureDayOptional.get();
         // Kiểm tra status của ngày khởi hành
-        if (departureDay.getDepartureDay().isAfter(LocalDate.now())) {
+        if (departureDay.getDepartureDay().isAfter(LocalDate.now())
+            || departureDay.getDepartureDay().isEqual(LocalDate.now())) {
           if (departureDay.getStatus()) {
             booking.setDepartureDay(departureDay);
             if (bookingDTO.getQuantityOfAdult() + bookingDTO.getQuantityOfChild() > 0) {

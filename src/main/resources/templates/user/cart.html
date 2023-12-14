@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+  <head th:replace="user/fragments/fragment :: head"></head>
+
+  <body>
+    <div th:replace="user/fragments/fragment :: preloader"></div>
+    <!-- End Preload -->
+
+    <div class="layer"></div>
+    <!-- Mobile menu overlay mask -->
+
+    <!-- Header================================================== -->
+    <header th:replace="user/fragments/fragment :: header"></header>
+    <!-- End Header -->
+
+    <section
+      class="parallax-window"
+      data-parallax="scroll"
+      data-image-src=""
+      data-natural-width="1400"
+      data-natural-height="500"
+    >
+      <div class="parallax-content-1">
+        <div class="animated fadeInDown">
+          <h1>Giỏ Hàng Của Bạn</h1>
+        </div>
+      </div>
+    </section>
+    <!-- End Section hero_2 -->
+
+    <main>
+      <div id="position">
+        <div class="container">
+          /
+          <ul>
+            <li><a href="/">Trang chủ</a></li>
+            <li>Giỏ hàng</li>
+          </ul>
+        </div>
+      </div>
+      <!-- End position -->
+
+      <div class="container margin_60">
+        <div class="row">
+          <div class="tabs col-lg-12">
+            <div
+              class="tab active"
+              data-toggle="tab1"
+              onclick="showTab('tab1')"
+            >
+              Booking
+            </div>
+            <div class="tab" data-toggle="tab2" onclick="showTab('tab2')">
+              Booking Hết Hạn
+            </div>
+            <div class="tab" data-toggle="tab3" onclick="showTab('tab3')">
+              Booking Đã Hủy
+            </div>
+          </div>
+        </div>
+
+        <div class="row tab-booking-content active" id="tab1">
+          <div class="col-lg-12 none-padding">
+            <table class="table table-striped cart-list none-margin-bottom">
+              <thead>
+                <tr>
+                  <th class="text-align-center">Tour</th>
+                  <th class="text-align-center">Người Lớn</th>
+                  <th class="text-align-center">Trẻ em</th>
+                  <th class="text-align-center">Ngày khởi hành</th>
+                  <th class="text-align-center">Điểm khởi hàng</th>
+                  <th class="text-align-center">Tổng tiền</th>
+                  <th class="text-align-center"></th>
+                </tr>
+              </thead>
+              <tbody class="valid-bookings"></tbody>
+            </table>
+          </div>
+        </div>
+        <!--End row -->
+
+        <div class="row tab-booking-content" id="tab2">
+          <div class="col-lg-12 none-padding">
+            <table class="table table-striped cart-list none-margin-bottom">
+              <thead>
+                <tr>
+                  <th class="text-align-center">Tour</th>
+                  <th class="text-align-center">Người Lớn</th>
+                  <th class="text-align-center">Trẻ em</th>
+                  <th class="text-align-center">Ngày khởi hành</th>
+                  <th class="text-align-center">Điểm khởi hàng</th>
+                  <th class="text-align-center">Tổng tiền</th>
+                  <th class="text-align-center"></th>
+                </tr>
+              </thead>
+              <tbody class="expired-bookings"></tbody>
+            </table>
+          </div>
+        </div>
+        <!--End row -->
+
+        <div class="row tab-booking-content" id="tab3">
+          <div class="col-lg-12 none-padding">
+            <table class="table table-striped cart-list none-margin-bottom">
+              <thead>
+                <tr>
+                  <th class="text-align-center">Tour</th>
+                  <th class="text-align-center">Người Lớn</th>
+                  <th class="text-align-center">Trẻ em</th>
+                  <th class="text-align-center">Ngày khởi hành</th>
+                  <th class="text-align-center">Điểm khởi hàng</th>
+                  <th class="text-align-center">Tổng tiền</th>
+                  <th class="text-align-center"></th>
+                </tr>
+              </thead>
+              <tbody class="cancelled-bookings"></tbody>
+            </table>
+          </div>
+        </div>
+        <!--End row -->
+      </div>
+      <!--End container -->
+    </main>
+    <!-- End main -->
+
+    <footer class="revealed">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h3>Need help?</h3>
+            <a href="tel://004542344599" id="phone">+45 423 445 99</a>
+            <a href="mailto:help@citytours.com" id="email_footer"
+              >help@citytours.com</a
+            >
+          </div>
+          <div class="col-md-3">
+            <h3>About</h3>
+            <ul>
+              <li><a href="#">About us</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Login</a></li>
+              <li><a href="#">Register</a></li>
+              <li><a href="#">Terms and condition</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h3>Discover</h3>
+            <ul>
+              <li><a href="#">Community blog</a></li>
+              <li><a href="#">Tour guide</a></li>
+              <li><a href="#">Wishlist</a></li>
+              <li><a href="#">Gallery</a></li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h3>Settings</h3>
+            <div class="styled-select">
+              <select name="lang" id="lang">
+                <option value="English" selected>English</option>
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+                <option value="Russian">Russian</option>
+              </select>
+            </div>
+            <div class="styled-select">
+              <select name="currency" id="currency">
+                <option value="USD" selected>USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="RUB">RUB</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- End row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div id="social_footer">
+              <ul>
+                <li>
+                  <a href="#"><i class="icon-facebook"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-twitter"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-google"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-instagram"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-pinterest"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-vimeo"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-youtube-play"></i></a>
+                </li>
+              </ul>
+              <p>© Citytours 2018</p>
+            </div>
+          </div>
+        </div>
+        <!-- End row -->
+      </div>
+      <!-- End container -->
+    </footer>
+    <!-- End footer -->
+
+    <div id="toTop"></div>
+    <!-- Back to top button -->
+
+    <!-- Search Menu -->
+    <div class="search-overlay-menu">
+      <span class="search-overlay-close"
+        ><i class="icon_set_1_icon-77"></i
+      ></span>
+      <form role="search" id="searchform" method="get">
+        <input value="" name="q" type="search" placeholder="Search..." />
+        <button type="submit"><i class="icon_set_1_icon-78"></i></button>
+      </form>
+    </div>
+    <!-- End Search Menu -->
+
+    <!-- Sign In Popup -->
+    <div th:replace="user/fragments/fragment :: sign-in-popup"></div>
+    <!-- /Sign In Popup -->
+
+    <!-- Common scripts -->
+    <div th:replace="user/fragments/fragment :: common_js"></div>
+
+    <!--Review modal validation -->
+    <script th:src="@{/assets/user/assets/validate.js}"></script>
+
+    <!-- Custom -->
+    <script>
+      function showTab(tabId) {
+        // Hide all tab content
+        document
+          .querySelectorAll(".tab-booking-content")
+          .forEach(function (tabContent) {
+            tabContent.classList.remove("active");
+          });
+
+        // Remove 'active' class from all tabs
+        document.querySelectorAll(".tab").forEach(function (tab) {
+          tab.classList.remove("active");
+        });
+
+        // Show the selected tab content
+        if (document.getElementById(tabId))
+          document.getElementById(tabId).classList.add("active");
+
+        // Add 'active' class to the clicked tab
+        document
+          .querySelector('.tab[data-toggle="' + tabId + '"]')
+          .classList.add("active");
+      }
+
+      // Show the default tab on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        showTab("tab1");
+
+        // Add 'active' class to the first tab on page load
+        document
+          .querySelector('.tab[data-toggle="tab1"]')
+          .classList.add("active");
+      });
+    </script>
+    <script type="module" th:src="@{/assets/user/js/custom/cart.js}"></script>
+    <script th:src="@{/assets/user/js/jquery.ddslick.js}"></script>
+  </body>
+</html>

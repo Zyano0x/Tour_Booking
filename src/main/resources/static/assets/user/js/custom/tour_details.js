@@ -325,60 +325,6 @@ function changeQuantity(priceForAdult, priceForChildren) {
 }
 */
 
-function changeQuantity(priceForAdult, priceForChildren) {
-    try {
-        const totalBlock = document.getElementById("total");
-
-        if (!totalBlock) {
-            throw new Error(">>> Element with selector '#total' not found in the DOM");
-        }
-        totalBlock.innerText = priceForAdult;
-
-        const adult = document.getElementById("adults");
-        const adultInc = document.querySelector("#adults-numbers-row .inc");
-        const adultDec = document.querySelector("#adults-numbers-row .dec");
-        const children = document.getElementById("children");
-        const childrenInc = document.querySelector("#children-numbers-row .inc");
-        const childrenDec = document.querySelector("#children-numbers-row .dec");
-
-        if (!adult || !adultInc || !adultDec || !children || !childrenInc || !childrenDec) {
-            throw new Error(`>>> Element with selector '#adults-numbers-row .inc or #adults-numbers-row .dec or #children-numbers-row .inc or #children-numbers-row .dec or #adults or #children' not found in the DOM`);
-        }
-
-        const btnStatus = (element, option) => {
-            if (option) {
-                adultDec.style.pointerEvents = element.value === '0' ? "none" : "";
-            } else {
-                childrenDec.style.pointerEvents = element.value === '0' ? "none" : "";
-            }
-        };
-
-        const updateTotal = (quantity, price) => {
-            totalBlock.innerText = parseInt(totalBlock.innerText, 10) + quantity * price;
-        };
-
-        btnStatus(children, 0);
-        adultInc.addEventListener("click", () => {
-            updateTotal(1, priceForAdult)
-            btnStatus(adult, 1);
-        });
-        adultDec.addEventListener("click", () => {
-            updateTotal(-1, priceForAdult);
-            btnStatus(adult, 1);
-        });
-        childrenInc.addEventListener("click", () => {
-            updateTotal(1, priceForChildren)
-            btnStatus(children, 0);
-        });
-        childrenDec.addEventListener("click", () => {
-            updateTotal(-1, priceForChildren);
-            btnStatus(children, 0);
-        });
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
-
 function updateBookingQuantity() {
     try {
         const remainingQuanityBlock = document.querySelector("#remainingQuanity");
@@ -453,7 +399,7 @@ function booking() {
                         alert("Thông báo: Số lượng vé đã vượt quá số lượng vé còn lại!");
                     }
                 } else {
-                    alert("Thông báo: Số lượng vé phải lớn hơn > 0!");
+                    alert("Thông báo: Số lượng vé phải lớn hơn > '0' !");
                 }
             })
         } else {
@@ -504,7 +450,7 @@ async function getParamId() {
     }
 }
 
-import { getDropList, renderToursRating, getApi, renderDepartureDropList, compareDateNow, ddslick } from './global_function.js';
+import { getDropList, renderToursRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity } from './global_function.js';
 
 async function start() {
     try {
