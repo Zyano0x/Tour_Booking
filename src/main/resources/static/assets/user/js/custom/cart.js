@@ -1,5 +1,4 @@
 let bookings = [];
-let bookingOrigin = [];
 
 /*GET BOOKINGS*/
 // Booking còn hạn
@@ -76,7 +75,7 @@ async function handleRenderValidBookings(fatherBlock) {
                     </td>
                     <td class="options" data-booking="${bookings[i].id}" >
                         <a class="cancel" href="javascript:void(0);"><i class="icon-trash"></i></a>
-                        <a href="#"><i class="icon-ccw-2"></i></a>
+                        <a class="update" href="javascript:void(0);"><i class="icon-ccw-2"></i></a>
                     </td>
                 </tr>`;
 
@@ -85,8 +84,9 @@ async function handleRenderValidBookings(fatherBlock) {
                 let departureDaysBlock = document.querySelector(`#departureDays${bookings[i].id}`);
                 let icon = "all_tours.png";
 
-                if (departureDaysBlock)
+                if (departureDaysBlock) {
                     renderDepartureDropList(departureDays.reverse(), departureDaysBlock, icon, false);
+                }
 
                 bookings.splice(i, 1);
             }
@@ -205,13 +205,13 @@ async function renderCancelledBookings(fatherBlock) {
     }
 }
 
-function handleGetBooking() {
+async function handleGetBooking() {
     try {
-        handleRenderValidBookings(document.querySelector(".valid-bookings"));
+        await handleRenderValidBookings(document.querySelector(".valid-bookings"));
         if (bookings.length > 0) {
-            renderExpiredBookings(document.querySelector(".expired-bookings"));
+            await renderExpiredBookings(document.querySelector(".expired-bookings"));
             if (bookings.length > 0) {
-                renderCancelledBookings(document.querySelector(".cancelled-bookings"));
+                await renderCancelledBookings(document.querySelector(".cancelled-bookings"));
             }
         }
     } catch (error) {
@@ -257,7 +257,7 @@ function CancelBooking() {
                 });
             }
         } else {
-            throw new Error(">>> Element with id '.options .cancel' not found in the DOM");
+            throw new Error("Element with selector '.options .cancel' not found in the DOM");
         }
     } catch (error) {
         console.log(">>> Error: " + error.message);
@@ -268,7 +268,7 @@ function CancelBooking() {
 /*END UPDATE BOOKING*/
 function UpdateBooking() {
     try {
-        const updateBtns = document.querySelectorAll(".options .udpate");
+        const updateBtns = document.querySelectorAll(".options .update");
 
         if (updateBtns.length > 0) {
             for (const updateBtn of updateBtns) {
@@ -277,7 +277,7 @@ function UpdateBooking() {
                 });
             }
         } else {
-            throw new Error(">>> Element with id '.options .udpate' not found in the DOM");
+            throw new Error("Element with selector '.options .update' not found in the DOM");
         }
     } catch (error) {
         console.log(">>> Error: " + error.message);
@@ -288,7 +288,7 @@ function UpdateBooking() {
 import { getApi, compareDateNow, renderDepartureDropList, ddslick, dateFormatConvert } from './global_function.js';
 
 async function start() {
-    bookingOrigin = bookings = await getApi(`/api/user/${document.head.dataset.userid}/bookings`);
+    bookings = await getApi(`/api/user/${document.head.dataset.userid}/bookings`);
     if (bookings.length > 0) {
         handleGetBooking();
     }
