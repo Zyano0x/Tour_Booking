@@ -51,15 +51,13 @@ async function renderToursHaveValidDepartureDays(tours, fatherBlock) {
   }
 }*/
 
+
 let tours = [];
 let currentPage = 1;
 let perPage = 2;
 let totalPage = 0;
 let originTours = [];
-// let sortByPriceDec = [];
-// let sortByPriceInc = [];
-// let sortByRatingDec = [];
-// let sortByRatingInc = [];
+let presentOriginTours = [];
 let toursFilter = [];
 const sortPriceBlock = document.getElementById("sort_price");
 const sortRatingBlock = document.getElementById("sort_rating");
@@ -212,8 +210,9 @@ function renderToursPagesNumber(fatherBlock) {
 
 async function handleRenderTours(data, fatherBlock) {
   try {
-    originTours = tours = data;
-    // render page number
+    originTours = data.slice(); // Không thay đổi
+    presentOriginTours = data.slice(); // Có thể thay đổi tùy theo lọc
+    tours = data.slice(); // Có thể thay đổi
 
     // render pages number
     renderToursPagesNumber(fatherBlock);
@@ -262,7 +261,7 @@ function SortByPrice() {
       } else if (sortPriceBlock.value === 'ascending') {
         funcSortByPriceInc(fatherBlock);
       } else {
-        tours = originTours.slice();
+        tours = presentOriginTours.slice();
         renderTours(tours.slice(
           (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
         ), fatherBlock);
@@ -351,7 +350,7 @@ function SortByReviewScore() {
       } else if (sortRatingBlock.value === 'ascending') {
         funcSortByRatingInc(fatherBlock);
       } else {
-        tours = originTours.slice();
+        tours = presentOriginTours.slice();
         renderTours(tours.slice(
           (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
         ), fatherBlock);
@@ -408,6 +407,7 @@ async function funcToursFilter(fatherBlock, filterDatePick) {
       }
       tours = temp;
     }
+    presentOriginTours = tours.slice();
 
     if (!(JSON.stringify(tours) === JSON.stringify(toursFilter))) {
       currentPage = 1;
@@ -436,7 +436,7 @@ function handleToursFilter(selector) {
     if (fatherBlock) {
       const filterBtn = document.querySelector(".filter-btn");
       if (filterBtn) {
-        toursFilter = originTours.slice();
+        // toursFilter = presentOriginTours.slice();
         filterBtn.addEventListener("click", async function () {
           funcToursFilter(fatherBlock, filterDatePick);
         });
