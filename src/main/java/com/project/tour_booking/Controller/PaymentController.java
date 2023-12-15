@@ -25,8 +25,11 @@ public class PaymentController {
     }
 
     @GetMapping("/payment_info")
-    public ResponseEntity<?> paymentInfo(@RequestParam(value = "vnp_ResponseCode") String response, HttpSession session) {
+    public ResponseEntity<?> paymentInfo(@RequestParam("vnp_ResponseCode") String response,
+                                         @RequestParam("vnp_TxnRef") Long transactionCode,
+                                         HttpSession session) {
         BookingDTO bookingDTO = (BookingDTO) session.getAttribute("BookingInfo");
+        bookingDTO.setTransactionCode(transactionCode);
         if (response.equals("00")) {
             bookingService.saveBooking(bookingDTO);
             return ResponseEntity.status(HttpStatus.OK).body(bookingDTO);

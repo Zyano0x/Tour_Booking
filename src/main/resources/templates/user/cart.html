@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-  <head th:replace="user/fragments/fragment :: head"></head>
+  <th:block th:replace="~{user/fragments/fragment::head}"></th:block>
 
   <body>
-    <div th:replace="user/fragments/fragment :: preloader"></div>
+    <th:block th:replace="~{user/fragments/fragment::preloader}"></th:block>
     <!-- End Preload -->
 
     <div class="layer"></div>
     <!-- Mobile menu overlay mask -->
 
     <!-- Header================================================== -->
-    <header th:replace="user/fragments/fragment :: header"></header>
+    <th:block th:replace="~{user/fragments/fragment::header}"></th:block>
     <!-- End Header -->
 
     <section
@@ -225,11 +225,11 @@
     <!-- End Search Menu -->
 
     <!-- Sign In Popup -->
-    <div th:replace="user/fragments/fragment :: sign-in-popup"></div>
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <div th:replace="user/fragments/fragment :: common_js"></div>
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
 
     <!--Review modal validation -->
     <script th:src="@{/assets/user/assets/validate.js}"></script>

@@ -6,6 +6,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -27,5 +30,9 @@ public class BookingDTO {
     @Min(value = 1, message = "Mã ngày khởi hành có giá trị bắt đầu từ '1'!")
     private Long departureDayId;
 
-    private Integer total;
+    @NonNull
+    private BigDecimal total;
+
+    @NonNull
+    private Long transactionCode;
 }
