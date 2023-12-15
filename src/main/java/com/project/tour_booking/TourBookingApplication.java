@@ -1,19 +1,15 @@
 package com.project.tour_booking;
 
-import java.time.LocalDate;
-
+import com.project.tour_booking.Entity.Role;
+import com.project.tour_booking.Entity.User;
+import com.project.tour_booking.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.project.tour_booking.Entity.Role;
-import com.project.tour_booking.Entity.User;
-import com.project.tour_booking.Repository.UserRepository;
-
-import lombok.AllArgsConstructor;
+import java.time.LocalDate;
 
 @SpringBootApplication
 @RequiredArgsConstructor

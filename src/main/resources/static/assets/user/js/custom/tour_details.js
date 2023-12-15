@@ -440,13 +440,37 @@ function booking() {
             const totalBlock = document.getElementById("total");
             const adult = document.getElementById("adults");
             const children = document.getElementById("children");
+            const departureDay = document.querySelector(".dd-option-selected .dd-option-value");
+            const userId = document.head.dataset.userid;
             const remainingQuanityBlock = document.querySelector("#remainingQuanity");
 
             bookingBtn.addEventListener("click", function () {
-                if (totalBlock.innerText != '0') {
+                if (totalBlock.innerText !== '0') {
                     let totalQuantity = parseInt(adult.value) + parseInt(children.value);
                     if (parseInt(remainingQuanityBlock.innerText) >= totalQuantity) {
-                        alert("Thông báo: Đặt vé thành công!");
+                        const payment = {
+                            "userId": userId,
+                            "total": totalBlock.innerText,
+                            "quantityOfAdult": adult.value,
+                            "quantityOfChild": children.value,
+                            "departureDayId": departureDay.value
+                        };
+
+                        fetch('/api/payment/create', {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(payment),
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                console.log(data.paymentUrl);
+                                window.location.href = data.paymentUrl;
+                            })
+                            .catch((error) => {
+                                console.error("Error creating payment:", error);
+                            });
                     } else if (parseInt(remainingQuanityBlock.innerText) === 0) {
                         alert("Thông báo: Ngày khởi hành bạn chọn đã hết vé!");
                     } else {
@@ -504,7 +528,14 @@ async function getParamId() {
     }
 }
 
-import { getDropList, renderToursRating, getApi, renderDepartureDropList, compareDate, ddslick } from './global_function.js';
+import {
+    compareDate,
+    ddslick,
+    getApi,
+    getDropList,
+    renderDepartureDropList,
+    renderToursRating
+} from './global_function.js';
 
 async function start() {
     try {
