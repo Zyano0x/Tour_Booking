@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/type-of-tour/all")
+        fetch("/api/types-of-tours")
             .then(response => response.json())
             .then(data => {
                 fetchTableTourType(data);
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchTypeDetails(id) {
-        const url = `/api/type-of-tour?id=${encodeURIComponent(id)}`;
+        const url = `/api/type-of-tours?id=${encodeURIComponent(id)}`;
         console.log('Requesting type details:', url);
 
         fetch(url)
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function updateStatus(id) {
-    const url = `/api/admin/update-type-of-tour-status?id=${encodeURIComponent(id)}`;
+    const url = `/api/admin/update-type-of-tours-status?id=${encodeURIComponent(id)}`;
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -94,7 +94,7 @@ function updateStatus(id) {
 function updateTypeTour(id) {
     event.preventDefault();
 
-    const url = `/api/admin/update-type-of-tour?id=${encodeURIComponent(id)}`;
+    const url = `/api/admin/update-type-of-tours?id=${encodeURIComponent(id)}`;
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -151,7 +151,7 @@ function addTypeTour() {
     };
 
     // Make the API request
-    fetch("/api/admin/type-of-tour", requestOptions)
+    fetch("/api/admin/type-of-tours", requestOptions)
         .then(response => response.text())
         .then(result => {
             console.log('Type Tour added successfully:', result);

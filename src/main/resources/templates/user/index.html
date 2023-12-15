@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-  <head th:replace="user/fragments/fragment :: head"></head>
+  <head th:replace="~{user/fragments/fragment::head}"></head>
   <body>
-    <div th:replace="user/fragments/fragment :: preloader"></div>
+    <div th:replace="~{user/fragments/fragment::preloader}"></div>
     <!-- End Preload -->
 
     <div class="layer"></div>
     <!-- Mobile menu overlay mask -->
 
     <!-- Header================================================== -->
-    <header th:replace="user/fragments/fragment :: header"></header>
+    <header th:replace="~{user/fragments/fragment::header}"></header>
     <!-- End Header -->
 
     <main>
@@ -343,11 +343,11 @@
     <!-- End Search Menu -->
 
     <!-- Sign In Popup -->
-    <div th:replace="user/fragments/fragment :: sign-in-popup"></div>
+    <div th:replace="~{user/fragments/fragment::sign-in-popup}"></div>
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <div th:replace="user/fragments/fragment :: common_js"></div>
+    <div th:replace="~{user/fragments/fragment::common_js}"></div>
 
     <!-- Video header scripts -->
     <script th:src="@{/assets/user/js/modernizr.js}"></script>

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/tour/all")
+        fetch("/api/tours")
             .then(response => response.json())
             .then(data => {
                 fetchTableTour(data);
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function fetchImagesByTourId(id) {
-    const url = `/api/tour-image/tour?id=${encodeURIComponent(id)}`;
+    const url = `/api/tour/${encodeURIComponent(id)}/tour-images`;
 
     fetch(url)
         .then(response => response.json())
@@ -232,7 +232,7 @@ async function addTour() {
 function dropdownWithDestination(currentDestination) {
     const dropdownUpdate = document.getElementById('destinationDropdownUpdate');
 
-    fetch('/api/destination/all')
+    fetch('/api/destinations')
         .then(response => {
             if (response.ok) return response.json();
         })
@@ -258,7 +258,7 @@ function dropdownWithDestination(currentDestination) {
 function dropdownWithTypeOfTour(currentType) {
     const dropdownUpdate = document.getElementById('typeOfTourDropdownUpdate');
 
-    fetch('/api/type-of-tour/all')
+    fetch('/api/types-of-tours')
         .then(response => {
             if (response.ok) return response.json();
         })
@@ -302,7 +302,7 @@ function fetchTourDetailsModal(data) {
 
 async function getTypeOfTourOptions() {
     try {
-        const response = await fetch('/api/type-of-tour/all');
+        const response = await fetch('/api/types-of-tours');
         if (response.ok) return await response.json();
     } catch (error) {
         console.error('Error fetching Type of Tour options:', error);
@@ -312,7 +312,7 @@ async function getTypeOfTourOptions() {
 
 async function getDestinationOptions() {
     try {
-        const response = await fetch('/api/destination/all');
+        const response = await fetch('/api/destinations');
         if (response.ok) return await response.json();
     } catch (error) {
         console.error('Error fetching Destination options:', error);
@@ -334,13 +334,16 @@ async function getDestinationIdByName(name) {
 
 async function fetchTypeOfTourAndDestinations() {
     try {
-        const typeOfTourOptions = await fetch('/api/type-of-tour/all').then(response => response.json());
-        const destinationOptions = await fetch('/api/destination/all').then(response => response.json());
-
+        const [typeOfTourOptions, destinationOptions] = await Promise.all([
+            fetch('/api/types-of-tours').then(response => response.json()),
+            fetch('/api/destinations').then(response => response.json()),
+        ]);
         populateDropdown('typeOfTourDropdownNew', typeOfTourOptions);
         populateDropdown('destinationDropdownNew', destinationOptions);
     } catch (error) {
         console.error('Error fetching data options:', error);
     }
 }
-fetchTypeOfTourAndDestinations();
+fetchTypeOfTourAndDestinations().then(() => {
+    console.log('Data fetched successfully!');
+});

@@ -50,6 +50,12 @@ public class AdminController {
         return "admin/departure-manage";
     }
 
+    @GetMapping("/articles-manage")
+    public String articlesManage(Model model) {
+        model.addAttribute("path", "/panel/articles-manage");
+        return "admin/articles-manage";
+    }
+
     @GetMapping("/booking-manage")
     public String bookingManage(Model model) {
         model.addAttribute("path", "/panel/booking-manage");

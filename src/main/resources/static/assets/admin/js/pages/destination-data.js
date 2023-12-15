@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/destination/all")
+        fetch("/api/destinations")
             .then(response => response.json())
             .then(data => {
                 fetchTableDestination(data);
@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <th scope="row">${destination.id}</th>
                 <td>${destination.name}</td>
                 <td><a href="${destination.thumbnail}" target="_blank">${destination.thumbnail}</a></td>
+                <td>${destination.isHot}</td>
                 <td><span class="badge ${badgeClass}">${destinationStatus}</span></td>
                 <td>
                     <a href="#" class="eye-icon"><i data-feather="eye"></i></a>
@@ -86,7 +87,9 @@ function updateStatus(id) {
     };
 
     fetch(url, requestOptions)
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) return response.json();
+        })
         .then(result => console.log(result))
         .catch(error => console.log('Error updating status:', error));
 }
@@ -100,11 +103,13 @@ function updateDestination(id) {
     myHeaders.append("Content-Type", "application/json");
 
     const name = document.getElementById('name').value;
+    const isHot = document.getElementById('isHot').value;
     const status = document.getElementById('status').value;
     const thumbnail = document.getElementById('thumbnail').value;
 
     let raw = JSON.stringify({
         "name": name,
+        "isHot": isHot,
         "status": status,
         "thumbnail": thumbnail
     });
@@ -118,7 +123,9 @@ function updateDestination(id) {
 
     // Make the API request
     fetch(url, requestOptions)
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) return response.json();
+        })
         .then(result => {
             console.log('Destination updated successfully:', result);
             showToast('Destination updated successfully');
@@ -134,12 +141,12 @@ function addDestination() {
     myHeaders.append("Content-Type", "application/json");
 
     const name = document.getElementById('_name').value;
-    const status = document.getElementById('_status').value;
+    const isHot = document.getElementById('_isHot').value;
     const thumbnail = document.getElementById('_thumbnail').value;
 
     let raw = JSON.stringify({
         "name": name,
-        "status": status,
+        "isHot": isHot,
         "thumbnail": thumbnail,
     });
 
@@ -164,6 +171,7 @@ function addDestination() {
 function fetchDestinationDetailsModal(data) {
     document.getElementById('id').value = data.id;
     document.getElementById('name').value = data.name;
+    document.getElementById('isHot').value = data.isHot;
     document.getElementById('status').value = data.status;
     document.getElementById('thumbnail').value = data.thumbnail;
 }
