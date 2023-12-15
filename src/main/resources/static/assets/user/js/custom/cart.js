@@ -239,7 +239,7 @@ function CancelBooking() {
                                 <p>Tổng tiền: <strong>${booking.totalPrice}.0 vnd</strong></p>
                             </div>
                             <div class="temp">
-                                <p>Số tiền hoàn trả: <strong>${compareDateNow(booking.departureDay.departureDay) === -1 ? booking.totalPrice * 0.7 + ".0 vnd (70%)" : Math.floor(((new Date(dateFormatConvert(booking.departureDay.departureDay))) - (new Date())) / (1000 * 60 * 60 * 24)) > 7 ? booking.totalPrice + ".0 vnd (100%)" : booking.totalPrice * 0.7 + ".0 vnd (70%)"}</strong ></p >
+                                <p>Số tiền hoàn trả: <strong>${compareDateNow(booking.departureDay.departureDay) === -1 ? booking.totalPrice * 0.7 + ".0 vnd (70%)" : Math.ceil(((new Date(dateFormatConvert(booking.departureDay.departureDay))) - (new Date())) / (1000 * 60 * 60 * 24)) >= 7 ? booking.totalPrice * 0.8 + ".0 vnd (80%)" : booking.totalPrice * 0.7 + ".0 vnd (70%)"}</strong ></p >
                                 <p>Hỗ trợ: 0961105747</p>
                             </div >
                             <p>Sau khi xác nhận hủy, sẽ có email xác nhận được gửi đến email đăng ký tài khoản. Vui lòng xác nhận để hoàn tất hủy vé!</p>
