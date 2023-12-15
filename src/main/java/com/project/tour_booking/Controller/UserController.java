@@ -1,5 +1,6 @@
 package com.project.tour_booking.Controller;
 
+import com.project.tour_booking.Entity.User;
 import com.project.tour_booking.Service.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UserController {
         return ResponseEntity.ok(userService.user(email));
     }
 
-    @GetMapping("/all-users")
+    @GetMapping("/users")
     public ResponseEntity<?> listUsers() {
         return ResponseEntity.ok(userService.listUsers());
     }

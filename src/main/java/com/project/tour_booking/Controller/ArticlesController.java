@@ -4,13 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.project.tour_booking.DTO.ArticlesDTO;
 import com.project.tour_booking.Entity.Articles;
@@ -32,9 +26,9 @@ public class ArticlesController {
     return new ResponseEntity<>("ĐĂNG BÀI THÀNH CÔNG!", HttpStatus.CREATED);
   }
 
-  @GetMapping("/articles/{articlesId}")
-  public ResponseEntity<Articles> getTour(@PathVariable Long articlesId) {
-    return new ResponseEntity<>(articlesService.getArticles(articlesId), HttpStatus.OK);
+  @GetMapping("/articles")
+  public ResponseEntity<Articles> getTour(@RequestParam Long id) {
+    return new ResponseEntity<>(articlesService.getArticles(id), HttpStatus.OK);
   }
 
   @GetMapping("/articles/all")
@@ -42,15 +36,15 @@ public class ArticlesController {
     return new ResponseEntity<>(articlesService.getAllArticles(), HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-articles/{articlesId}")
+  @PutMapping("/admin/update-articles")
   public ResponseEntity<Articles> updateArticles(@Valid @RequestBody Articles articles,
-      @PathVariable Long articlesId) {
-    return new ResponseEntity<>(articlesService.updateArticles(articles, articlesId), HttpStatus.OK);
+      @RequestParam Long id) {
+    return new ResponseEntity<>(articlesService.updateArticles(articles, id), HttpStatus.OK);
   }
 
-  @PutMapping("/admin/update-articles-status/{articlesId}")
-  public ResponseEntity<String> updateArticlesStatus(@PathVariable Long articlesId) {
-    articlesService.updateArticlesStatus(articlesId);
+  @PutMapping("/admin/update-articles-status")
+  public ResponseEntity<String> updateArticlesStatus(@RequestParam Long id) {
+    articlesService.updateArticlesStatus(id);
     return new ResponseEntity<String>("Updated articles status", HttpStatus.OK);
   }
 }

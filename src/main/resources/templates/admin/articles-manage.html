@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{admin/index::header}"></th:block>
+<body>
+<div class="page-container">
+    <th:block th:replace="~{admin/index::page-header}"></th:block>
+    <th:block th:replace="~{admin/index::page-sidebar}"></th:block>
+    <div class="page-content">
+        <div class="main-wrapper">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h2>Articles Manage</h2>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#newArticlesModalScrollable').modal('show')">New Articles</button>
+                            </div>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table articles-table" id="articles-table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Posting</th>
+                                            <th scope="col">Editing</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="articlesDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="articlesDetailsModalScrollableTitle">Articles Details</h5>
+            </div>
+            <div class="modal-body">
+                <form id="tour-form">
+                    <div class="form-group">
+                        <label for="id" hidden="hidden">ID</label>
+                        <input type="text" class="form-control" id="id" hidden="hidden">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="posting">Posting</label>
+                        <input type="text" class="form-control" id="posting">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="editing">Editing</label>
+                        <input type="text" class="form-control" id="editing" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <input type="text" class="form-control" id="status">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                         <textarea id="content">
+                         </textarea>
+                    </div>
+                    <p></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateArticles(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#articlesDetailsModalScrollable').modal('hide');">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newArticlesModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newDepartureModalScrollableTitle">New Departure</h5>
+            </div>
+            <div class="modal-body">
+                <form id="new-tour-form">
+                    <div class="form-group">
+                        <label for="_id" hidden="hidden">ID</label>
+                        <input type="text" class="form-control" id="_id" hidden="hidden">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_title">Title</label>
+                        <input type="text" class="form-control" id="_title">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_status">Status</label>
+                        <input type="text" class="form-control" id="_status">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                    </div>
+                    <p></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addDeparture()">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newDepartureModalScrollable').modal('hide')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="mr-auto">Notification</strong>
+    </div>
+    <div class="toast-body">
+    </div>
+</div>
+
+<!-- Javascripts -->
+<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
+<script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
+<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{https://unpkg.com/feather-icons}"></script>
+<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/assets/admin/js/main.min.js}"></script>
+<script th:src="@{/assets/admin/js/pages/articles-data.js}"></script>
+<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
+<script th:src="@{https://cdn.tiny.cloud/1/q3htlijrx9udcqbgh8a503rmci1shq3a5wjodgfqtzuu5yek/tinymce/6/tinymce.min.js}" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#content',
+        plugins: 'autolink lists link image charmap print preview',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    });
+</script>
+</body>
+</html>

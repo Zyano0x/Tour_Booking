@@ -28,7 +28,7 @@ public class DestinationController {
         return new ResponseEntity<>(destinationService.getDestination(id), HttpStatus.OK);
     }
 
-    @GetMapping("/destination/all")
+    @GetMapping("/destinations")
     public ResponseEntity<List<Destination>> getTOTS() {
         return new ResponseEntity<>(destinationService.getDestinations(), HttpStatus.OK);
     }

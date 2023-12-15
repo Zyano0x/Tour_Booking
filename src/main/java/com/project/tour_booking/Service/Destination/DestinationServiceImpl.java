@@ -33,6 +33,7 @@ public class DestinationServiceImpl implements DestinationService {
         destination.setName(destinationDTO.getName());
         destination.setThumbnail(destinationDTO.getThumbnail());
         destination.setStatus(true);
+        destination.setIsHot(destinationDTO.getIsHot());
         destinationRepository.save(destination);
     }
 
@@ -45,7 +46,7 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     public List<Destination> getDestinations() {
-        return (List<Destination>) destinationRepository.findAll();
+        return destinationRepository.findAll();
     }
 
     @Override
@@ -57,6 +58,7 @@ public class DestinationServiceImpl implements DestinationService {
 
             updateDestination.setName(destination.getName());
             updateDestination.setThumbnail(destination.getThumbnail());
+            updateDestination.setIsHot(destination.getIsHot());
 
             if (updateDestination.getStatus() != destination.getStatus()) {
                 updateDestination.setStatus(destination.getStatus());
@@ -105,6 +107,7 @@ public class DestinationServiceImpl implements DestinationService {
             Destination updateDestination = destinationOptional.get();
             if (updateDestination.getStatus()) {
                 updateDestination.setStatus(false);
+                updateDestination.setIsHot(false);
 
                 // Tìm và disable các tour thuộc địa điểm
                 List<Tour> tours = tourRepository.findAllByDestinationId(destinationId).stream().filter(tour -> tour.getStatus()).collect(Collectors.toList());
@@ -144,5 +147,4 @@ public class DestinationServiceImpl implements DestinationService {
             return destinationRepository.save(updateDestination);
         } else throw new DestinationNotFoundException(destinationId);
     }
-
 }

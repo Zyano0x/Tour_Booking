@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/admin/all-users")
+        fetch("/api/admin/users")
             .then(response => response.json())
             .then(data => {
                 fetchTableUser(data);
@@ -88,7 +88,7 @@ function updateStatus(email) {
     };
 
     fetch("/api/admin/update-user-status", requestOptions)
-        .then(response => response.text())
+        .then(response => response.json())
         .then(result => console.log(result))
         .catch(error => console.log('Error updating user status:', error));
 }

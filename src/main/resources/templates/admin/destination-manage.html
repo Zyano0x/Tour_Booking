@@ -27,6 +27,7 @@
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Thumbnail</th>
+                                            <th scope="col">Is Hot</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -61,6 +62,11 @@
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="name">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="isHot">Is Hot</label>
+                        <input type="text" class="form-control" id="isHot">
                     </div>
                     <br>
                     <div class="form-group">
@@ -103,6 +109,11 @@
                     </div>
                     <br>
                     <div class="form-group">
+                        <label for="_isHot">Is Hot</label>
+                        <input type="text" class="form-control" id="_isHot">
+                    </div>
+                    <br>
+                    <div class="form-group">
                         <label for="_thumbnail">Thumbnail</label>
                         <input type="text" class="form-control" id="_thumbnail">
                     </div>
@@ -117,12 +128,12 @@
     </div>
 </div>
 
-<div role="alert" aria-live="assertive" aria-atomic="true" class="toast position-fixed" id="toast" data-autohide="false" style="margin-right: 50px; margin-bottom: 50px; bottom: 0; right: 0;">
+<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
-        <img src="https://cdn-icons-png.flaticon.com/512/8358/8358886.png" width="20" height="20" class="rounded mr-2" alt="...">
-        <strong class="mr-auto"> Notify</strong>
+        <strong class="mr-auto">Notification</strong>
     </div>
-    <div class="toast-body"></div>
+    <div class="toast-body">
+    </div>
 </div>
 
 <!-- Javascripts -->

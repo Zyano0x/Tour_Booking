@@ -69,7 +69,8 @@ Author URI: http://themeforest.net/user/Ansonika/
 @import url("https://fonts.googleapis.com/css?family=Gochi+Hand|Lato:300,400|Open+Sans:400,400i,700,700i");	
 
 /*-------- 1.1 Typography --------*/
-body {background:#f9f9f9; font-size:12px; line-height:20px; font-family:"Open+Sans", Arial, sans-serif; color:#444;-webkit-font-smoothing: antialiased; letter-spacing: 1px; }
+/* background:#f9f9f9; */
+body {background:#2a3441; font-size:12px; line-height:20px; font-family:"Open+Sans", Arial, sans-serif; color:#444;-webkit-font-smoothing: antialiased; letter-spacing: 1px; }
 
 h1, h2, h3, h4, h5, h6 {-webkit-font-smoothing:antialiased; color:#333;}
 h3{font-size:22px;}
@@ -470,12 +471,13 @@ ul#top_links{
 	padding:0;
 	float:right;
 }
-a#access_link, a#wishlist_link{
+a#access_link, a#exit_link, a#wishlist_link{
 	position:relative;
 	display:inline-block;
-	padding-left:16px;
+	padding-left: 20px;
+	font-size: 13px;
 }
-#access_link:before, #wishlist_link:before{
+#access_link:before, #exit_link:before, #wishlist_link:before{
 	font-style: normal;
  	font-weight: normal;
  	font-family: "fontello";
@@ -487,6 +489,8 @@ a#access_link, a#wishlist_link{
 
 #wishlist_link:before{content: "\ec5e";}
 #access_link:before{content: "\e97f";}
+#exit_link:before{content: "\e97f";}
+
 
 ul#top_links li{
 	display:inline-block;
@@ -794,7 +798,7 @@ a#email_footer:before {
 .main-menu ul li a {display: block; line-height: 20px;padding:10px;}
 			
 /*First level styles */			
-.main-menu > ul > li > a {color: #fff; padding: 0 8px 15px  8px; font-size:13px;}
+.main-menu > ul > li > a {color: #fff; padding: 0 15px 15px; font-size:13px;}
 .sticky .main-menu > ul > li > a {color: #333;}
 .main-menu > ul > li:hover > a {color: #e04f67;}
 
@@ -1181,7 +1185,7 @@ a#close_in {display:block;position:absolute;right:15px;top:10px;width:20px;heigh
 .header-video {
 	position: relative;
 	overflow: hidden;
-	background: #4d536d url(../images/slide_hero.jpg) no-repeat center center;
+	background: #4d536d url(https://images.unsplash.com/photo-1605645854141-9f81b7f47fbc?q=80&w=1754&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center center;
 	background-size: cover;
 }
 
@@ -1530,11 +1534,13 @@ ul#cat_nav i {
 .img_list img {
 	width: auto;
 	height: 220px;
-	position: absolute;
+	/* position: absolute; */
 	left: -10%;
 }
 
 .img_list a img {
+	width: 100%;
+	object-fit: cover;
 	-webkit-transform: scale(1.2);
 	transform: scale(1.2);
 	-webkit-transition: all 0.5s ease;
@@ -1558,7 +1564,7 @@ ul#cat_nav i {
 }
 
 .tour_list_desc {
-	padding: 10px 20px 0 0;
+	padding: 20px 0 0;
 	border-right: 1px solid #ededed;
 	height: 220px;
 	line-height: 17px;
@@ -1566,7 +1572,7 @@ ul#cat_nav i {
 
 .tour_list_desc h3 {
 	font-size: 16px;
-	margin-top: 0;
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
@@ -1574,7 +1580,7 @@ ul#cat_nav i {
 	display: table;
 	height: 220px;
 	font-size: 38px;
-	color: #e74c3c;
+	color: #ff9900;
 	width: 100%;
 	margin-left: -15px;
 }
@@ -3073,6 +3079,7 @@ ul.list_order li span {
     color: #fff;
     background-color: #555;
     border-color: #555;
+	pointer-events: none;
 }
 
 .page-item .page-link:hover {
@@ -3172,7 +3179,7 @@ ul.list_order li span {
 
 /* Parallax bg */
 .parallax-window {
-	min-height: 470px;
+	min-height: 500px;
 	background: transparent;
 	position: relative;
 }
@@ -3180,8 +3187,8 @@ ul.list_order li span {
 .parallax-content-1 {
 	display: table;
 	width: 100%;
-	height: 470px;
-	background: rgba(0, 0, 0, 0.6);
+	height: 500px;
+	background: rgba(0, 0, 0, 0.3);
 }
 
 .parallax-content-1 > div {
@@ -3381,11 +3388,12 @@ ul.list_order li span {
 
 .short_info .price {
 	float: right;
-    font-size: 20px;
+    font-size: 18px;
     display: inline-block;
 }
 
 .short_info .price sup {
+	color: #F90;
 	font-size: 15px;
     font-weight: 600;
     position: relative;
@@ -3700,7 +3708,6 @@ ul.list_order li span {
 	font-family: "fontello";
 	position: absolute;
 	right: 0;
-	top: 2px;
 }
 
 #position ul li:last-child:after {
@@ -5084,6 +5091,7 @@ a.btn_infobox:hover, .btn_infobox:hover{
 
 /*-------- 6.1 Footer fixed --------*/
 main{
+	/* background-color: #2a3441; */
 	background-color: #f9f9f9;
 	z-index:2;
 	position:relative;
@@ -6102,12 +6110,10 @@ only screen and (min-device-pixel-ratio: 2) and (max-width: 991px) {
 	
 	.row-height {
 		height: auto;
-		min-height: ;
 	}
 	
 	.content-left {
 		height: auto;
-		min-height: ;
 		overflow-y: scroll;
 	}
 	
@@ -6163,12 +6169,10 @@ only screen and (min-device-pixel-ratio: 2) and (max-width: 991px) {
 	
 	.row-height {
 		height: auto;
-		min-height: ;
 	}
 	
 	.content-left {
 		height: auto;
-		min-height: ;
 		overflow-y: scroll;
 	}
 	
@@ -6572,6 +6576,7 @@ only screen and (min-device-pixel-ratio: 2) and (max-width: 991px) {
 	}
 	
 	a#access_link,
+	a#exit_link,
 	a#wishlist_link {
 		position: relative;
 		text-indent: -999px;
@@ -6581,6 +6586,7 @@ only screen and (min-device-pixel-ratio: 2) and (max-width: 991px) {
 	}
 	
 	#wishlist_link:before,
+	#exit_link:before,
 	#access_link:before {
 		text-indent: 0px;
 		font-size: 20px;
