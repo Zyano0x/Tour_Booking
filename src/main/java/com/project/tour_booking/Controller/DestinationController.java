@@ -29,7 +29,7 @@ public class DestinationController {
     }
 
     @GetMapping("/destinations")
-    public ResponseEntity<List<Destination>> getTOTS() {
+    public ResponseEntity<List<Destination>> getDestinations() {
         return new ResponseEntity<>(destinationService.getDestinations(), HttpStatus.OK);
     }
 
@@ -39,7 +39,7 @@ public class DestinationController {
     }
 
     @PutMapping("/admin/update-destination")
-    public ResponseEntity<Destination> updateTOT(@Valid @RequestBody Destination destination,
+    public ResponseEntity<Destination> updateDestination(@Valid @RequestBody Destination destination,
             @RequestParam Long id) {
         return new ResponseEntity<>(destinationService.updateDestination(destination, id), HttpStatus.OK);
     }
