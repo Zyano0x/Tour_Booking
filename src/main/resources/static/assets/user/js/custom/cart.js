@@ -38,8 +38,6 @@ async function handleRenderValidBookings(fatherBlock) {
                                     class="qty2 form-control"
                                     name="quantity"
                                 />
-                                <div class="inc button_inc">+</div>
-                                <div class="dec button_inc">-</div>
                             </div>
                         </div>
                     </td>
@@ -53,14 +51,12 @@ async function handleRenderValidBookings(fatherBlock) {
                                 class="qty2 form-control"
                                 name="quantity"
                                 />
-                                <div class="inc button_inc">+</div>
-                                <div class="dec button_inc">-</div>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div class="form-group none-margin-bottom">
-                            <select
+                        <div class="form-group none-margin-bottom" data-presentDepartureId="${departureDayCurrent.id}">
+                            <select 
                             id="departureDays${bookings[i].id}"
                             class="ddslick"
                             name="departureDays"
@@ -75,7 +71,7 @@ async function handleRenderValidBookings(fatherBlock) {
                     </td>
                     <td class="options" data-booking="${bookings[i].id}" >
                         <a class="cancel" href="javascript:void(0);"><i class="icon-trash"></i></a>
-                        <a class="update" href="javascript:void(0);"><i class="icon-ccw-2"></i></a>
+                        <a class="update${bookings[i].id}" href="javascript:void(0);"><i class="icon-ccw-2"></i></a>
                     </td>
                 </tr>`;
 
@@ -239,13 +235,13 @@ function CancelBooking() {
                                 <p>Tổng tiền: <strong>${booking.totalPrice}.0 vnd</strong></p>
                             </div>
                             <div class="temp">
-                                <p>Số tiền hoàn trả: <strong>${compareDateNow(booking.departureDay.departureDay) === -1 ? booking.totalPrice * 0.7 + ".0 vnd (70%)" : Math.floor(((new Date(dateFormatConvert(booking.departureDay.departureDay))) - (new Date())) / (1000 * 60 * 60 * 24)) > 7 ? booking.totalPrice + ".0 vnd (100%)" : booking.totalPrice * 0.7 + ".0 vnd (70%)"}</strong ></p >
+                                <p>Số tiền hoàn trả: <strong>${compareDateNow(booking.departureDay.departureDay) === -1 ? booking.totalPrice * 0.7 + ".0 vnd (70%)" : Math.ceil(((new Date(dateFormatConvert(booking.departureDay.departureDay))) - (new Date())) / (1000 * 60 * 60 * 24)) >= 7 ? booking.totalPrice * 0.8 + ".0 vnd (80%)" : booking.totalPrice * 0.7 + ".0 vnd (70%)"}</strong ></p >
                                 <p>Hỗ trợ: 0961105747</p>
                             </div >
                             <p>Sau khi xác nhận hủy, sẽ có email xác nhận được gửi đến email đăng ký tài khoản. Vui lòng xác nhận để hoàn tất hủy vé!</p>
                             <div class="action">
                                 <button class="action-btn cancel-btn">Hủy</button>
-                                <button class="action-btn update-btn-">Xác nhận</button>
+                                <button class="action-btn update-btn">Xác nhận</button>
                             </div>
                         </div >
                     </div > `;
@@ -268,16 +264,67 @@ function CancelBooking() {
 /*END UPDATE BOOKING*/
 function UpdateBooking() {
     try {
-        const updateBtns = document.querySelectorAll(".options .update");
+        const departureOptions = document.querySelectorAll(`.dd-option`);
 
-        if (updateBtns.length > 0) {
-            for (const updateBtn of updateBtns) {
-                updateBtn.addEventListener("click", async function () {
+        if (departureOptions.length > 0) {
+            for (const departureOption of departureOptions) {
+                departureOption.addEventListener('click', function () {
+                    let bookingId = departureOption.parentNode.parentNode.parentNode.id.slice(-1); // Sử dụng closest để tìm phần tử cha gần nhất
+                    const url = `/api/update-booking/${bookingId}`;
 
+                    const updateBtn = document.querySelector(`.update${bookingId}`);
+
+                    const departureDaysElement = document.querySelector(`#departureDays${bookingId}`);
+                    if (departureDaysElement) {
+
+                        const updateBtnClickHandler = async function () {
+                            let presentDepartureId = departureDaysElement.parentNode.dataset.presentdepartureid;
+                            let selectDepartureId = departureDaysElement.querySelector('.dd-selected-value').value;
+                            const adult = document.getElementById("adults");
+                            const children = document.getElementById("children");
+                            let totalQuantity = parseInt(adult.value) + parseInt(children.value);
+
+                            if (selectDepartureId != presentDepartureId) {
+                                if (parseInt((await getApi(`/api/departure-day?id=${selectDepartureId}`, "NotCallBack")).quantity) < totalQuantity) {
+                                    alert("Thông báo: Số lượng vé đã vượt quá số lượng vé còn lại!");
+                                } else {
+                                    let myHeaders = new Headers();
+                                    myHeaders.append("Content-Type", "application/json");
+
+                                    let raw = JSON.stringify({
+                                        "userId": document.head.dataset.userid,
+                                        "quantityOfAdult": adult.value,
+                                        "quantityOfChild": children.value,
+                                        "departureDayId": selectDepartureId,
+                                    });
+
+                                    let requestOptions = {
+                                        method: 'PUT',
+                                        headers: myHeaders,
+                                        body: raw,
+                                        redirect: 'follow'
+                                    };
+
+                                    // Make the API request
+                                    fetch(url, requestOptions)
+                                        .then(response => {
+                                            return response.text();
+                                        })
+                                        .then(result => {
+                                            alert('Booking updated successfully:', result);
+                                        })
+                                        .catch(error => console.log('Error updating booking:', error));
+                                    departureDaysElement.parentNode.setAttribute('data-presentdepartureid', `${selectDepartureId}`);
+                                }
+                            }
+                            updateBtn.removeEventListener("click", updateBtnClickHandler);
+                        };
+                        updateBtn.addEventListener("click", updateBtnClickHandler);
+                    }
                 });
             }
         } else {
-            throw new Error("Element with selector '.options .update' not found in the DOM");
+            throw new Error("Element with selector '.dd-selected-value' not found in the DOM");
         }
     } catch (error) {
         console.log(">>> Error: " + error.message);
