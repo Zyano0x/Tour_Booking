@@ -1,4 +1,26 @@
-export function compareDate(dateStr) {
+export function compareDates(dateString1, dateString2) {
+    if (dateString1 < dateString2) {
+        return -1;
+    } else if (dateString1 > dateString2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+
+export function dateFormatConvert(date) {
+    var parts = date.split("-");
+    var d = parts[0];
+    var m = parts[1];
+    var y = parts[2];
+
+    var dateObj = new Date(`${y}-${m}-${d}`);
+
+    return dateObj;
+}
+
+export function compareDateNow(dateStr) {
     /*Phải chuyển đổi định dạng dd-MM-yyyy sang "MM/dd/yyyy" hoặc "yyyy-MM-dd" để JavaScript có thể hiểu */
     const dateParts = dateStr.split("-");
     const inputDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
@@ -17,21 +39,24 @@ export function compareDate(dateStr) {
 
     // So sánh ngày tháng năm
     if (inputYear > currentYear) {
-        return true;
+        return 1;
     } else if (inputYear < currentYear) {
-        return false;
+        return 0;
     } else {
         // Nếu cùng năm, so sánh tháng
         if (inputMonth > currentMonth) {
-            return true;
+            return 0;
         } else if (inputMonth < currentMonth) {
-            return false;
+            return 0;
         } else {
             // Nếu cùng tháng, so sánh ngày
             if (inputDay > currentDay) {
-                return true;
-            } else
-                return false;
+                return 1;
+            } else if (inputDay < currentDay) {
+                return 0;
+            }
+            else
+                return -1;
         }
     }
 }
@@ -46,6 +71,60 @@ export function ddslick(selector) {
         });
     } else {
         console.error("ddslick library is not loaded");
+    }
+}
+
+export function changeQuantity(priceForAdult, priceForChildren) {
+    try {
+        const totalBlock = document.getElementById("total");
+
+        if (!totalBlock) {
+            throw new Error(">>> Element with selector '#total' not found in the DOM");
+        }
+        totalBlock.innerText = priceForAdult;
+
+        const adult = document.getElementById("adults");
+        const adultInc = document.querySelector("#adults-numbers-row .inc");
+        const adultDec = document.querySelector("#adults-numbers-row .dec");
+        const children = document.getElementById("children");
+        const childrenInc = document.querySelector("#children-numbers-row .inc");
+        const childrenDec = document.querySelector("#children-numbers-row .dec");
+
+        if (!adult || !adultInc || !adultDec || !children || !childrenInc || !childrenDec) {
+            throw new Error(`>>> Element with selector '#adults-numbers-row .inc or #adults-numbers-row .dec or #children-numbers-row .inc or #children-numbers-row .dec or #adults or #children' not found in the DOM`);
+        }
+
+        const btnStatus = (element, option) => {
+            if (option) {
+                adultDec.style.pointerEvents = element.value === '0' ? "none" : "";
+            } else {
+                childrenDec.style.pointerEvents = element.value === '0' ? "none" : "";
+            }
+        };
+
+        const updateTotal = (quantity, price) => {
+            totalBlock.innerText = parseInt(totalBlock.innerText, 10) + quantity * price;
+        };
+
+        btnStatus(children, 0);
+        adultInc.addEventListener("click", () => {
+            updateTotal(1, priceForAdult)
+            btnStatus(adult, 1);
+        });
+        adultDec.addEventListener("click", () => {
+            updateTotal(-1, priceForAdult);
+            btnStatus(adult, 1);
+        });
+        childrenInc.addEventListener("click", () => {
+            updateTotal(1, priceForChildren)
+            btnStatus(children, 0);
+        });
+        childrenDec.addEventListener("click", () => {
+            updateTotal(-1, priceForChildren);
+            btnStatus(children, 0);
+        });
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
     }
 }
 
@@ -66,17 +145,27 @@ export function renderSearchDropList(data, fatherBlock, icon) {
     }
 }
 
-export function renderDepartureDropList(data, fatherBlock, icon) {
+export function renderDepartureDropList(data, fatherBlock, icon, option) {
     try {
-        var htmls = data.map(item =>
-            item.status && item.status && compareDate(item.departureDay) && item.quantity > 0 ?
+        if (option) {
+            var htmls = data.map(item =>
+                item.status && compareDateNow(item.departureDay) && item.quantity > 0 ?
+                    `<option
+                    value="${item.id}"
+                    data-imagesrc="/assets/user/images/icons_search/${icon}">
+                    ${item.departureDay}
+                </option>`
+                    : ''
+            );
+        } else {
+            var htmls = data.map(item =>
                 `<option
                     value="${item.id}"
                     data-imagesrc="/assets/user/images/icons_search/${icon}">
                     ${item.departureDay}
                 </option>`
-                : ''
-        );
+            );
+        }
         fatherBlock.insertAdjacentHTML("beforeend", htmls.join(''));
     } catch (error) {
         console.log(">>> Error: " + error.message);
@@ -86,7 +175,7 @@ export function renderDepartureDropList(data, fatherBlock, icon) {
 export function renderDeparturesDropList(data, fatherBlock, icon) {
     try {
         var htmls = data.map(item =>
-            item.status && compareDate(item.departureDay) && item.quantity > 0 ?
+            item.status && compareDateNow(item.departureDay) && item.quantity > 0 ?
                 `<option
                     value="${item.id}"
                     data-imagesrc="/assets/user/images/icons_search/${icon}">

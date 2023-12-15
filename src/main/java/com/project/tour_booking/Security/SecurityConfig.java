@@ -18,7 +18,8 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITE_LIST = {"/assets/**", "/api/**", "/panel/login", "/tours/*", "/",};
+  
+    private static final String[] WHITE_LIST = {"/assets/**", "/api/**", "/panel/*", "/tours/*", "/",};
 
     private static final String[] BLACK_LIST = {"/api/admin/**", "/panel/**",};
 
