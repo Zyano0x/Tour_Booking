@@ -53,10 +53,14 @@ public class BookingController {
         return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId), HttpStatus.OK);
     }
 
-    @PutMapping("/admin/update-booking-status/{bookingId}")
-    public ResponseEntity<String> updateBookingStatus(@PathVariable Long bookingId) {
-        bookingService.updateBookingStatus(bookingId);
-        return new ResponseEntity<>("CẬP NHẬT TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
+    @PutMapping("/update-booking-status")
+    public ResponseEntity<?> updateBookingStatus(@RequestParam Long id) {
+        return ResponseEntity.ok(bookingService.updateBookingStatus(id));
+    }
+
+    @GetMapping("/confirm-cancel")
+    public ResponseEntity<?> confirmCancel(@RequestParam("token") String confirmationToken, @RequestParam("transaction") Long transactionCode) {
+        return ResponseEntity.ok(bookingService.confirmCancel(transactionCode, confirmationToken));
     }
 
     @PutMapping("/update-booking/{bookingId}")

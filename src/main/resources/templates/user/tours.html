@@ -278,12 +278,12 @@
     <!-- End Search Menu -->
 
     <!-- Sign In Popup -->
-    <th:block th:replace="user/fragments/fragment::sign-in-popup"></th:block>
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
 
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <th:block th:replace="user/fragments/fragment::common_js"></th:block>
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
 
     <!-- Specific scripts -->
     <!-- Cat nav mobile -->
@@ -293,7 +293,7 @@
     </script>
 
     <!-- Map -->
-    <th:block th:replace="user/fragments/fragment::map_js"></th:block>
+    <th:block th:replace="~{user/fragments/fragment::map_js}"></th:block>
 
     <script th:src="@{/assets/user/js/jquery.ddslick.js}"></script>
 

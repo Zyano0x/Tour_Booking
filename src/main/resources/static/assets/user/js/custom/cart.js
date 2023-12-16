@@ -250,6 +250,20 @@ function CancelBooking() {
                         const dialog = document.querySelector("#customPrompt");
                         dialog.parentNode.removeChild(dialog);
                     });
+                    document.querySelector(".action-btn.update-btn-").addEventListener("click", function () {
+                            const url = `/api/update-booking-status?id=${cancelBtn.parentNode.dataset.booking}`;
+                            fetch(url, {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                            })
+                                .then((response) => response.json())
+                                .then((data) => console.log(data))
+                                .catch((error) => {
+                                    console.error("Error creating payment:", error);
+                                });
+                    });
                 });
             }
         } else {
@@ -330,9 +344,10 @@ function UpdateBooking() {
         console.log(">>> Error: " + error.message);
     }
 }
+
 /*END CANCEL BOOKING*/
 
-import { getApi, compareDateNow, renderDepartureDropList, ddslick, dateFormatConvert } from './global_function.js';
+import {compareDateNow, dateFormatConvert, ddslick, getApi, renderDepartureDropList} from './global_function.js';
 
 async function start() {
     bookings = await getApi(`/api/user/${document.head.dataset.userid}/bookings`);
