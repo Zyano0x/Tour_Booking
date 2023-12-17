@@ -44,7 +44,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Update Type Tour -->
 <div class="modal fade" id="typeDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -77,14 +77,14 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateTypeTour(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="update-typeTour">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#typeDetailsModalScrollable').modal('hide');">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Add Type Tour -->
 <div class="modal fade" id="newTypeModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -111,18 +111,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addTypeTour()">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="add-typeTour">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newTypeModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-        <strong class="mr-auto">Notification</strong>
-    </div>
-    <div class="toast-body">
     </div>
 </div>
 
@@ -134,6 +126,6 @@
 <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/assets/admin/js/main.min.js}"></script>
 <script th:src="@{/assets/admin/js/pages/tour-type-data.js}"></script>
-<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
+<script th:src="@{/assets/admin/js/pages/iziToast.js}"></script>
 </body>
 </html>

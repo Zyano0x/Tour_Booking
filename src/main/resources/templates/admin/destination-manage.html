@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Update Destination -->
 <div class="modal fade" id="destinationDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -82,14 +82,14 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateDestination(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="update-destination">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#destinationDetailsModalScrollable').modal('hide');">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Add Destination -->
 <div class="modal fade" id="newDestinationModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -121,18 +121,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addDestination()">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="add-destination">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newDestinationModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-        <strong class="mr-auto">Notification</strong>
-    </div>
-    <div class="toast-body">
     </div>
 </div>
 
@@ -144,6 +136,6 @@
 <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/assets/admin/js/main.min.js}"></script>
 <script th:src="@{/assets/admin/js/pages/destination-data.js}"></script>
-<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
+<script th:src="@{/assets/admin/js/pages/izitoast.js}"></script>
 </body>
 </html>

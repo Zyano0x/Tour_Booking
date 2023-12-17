@@ -13,8 +13,8 @@ public class DepartureDayDTO {
     @NotNull(message = "Số lượng khách không được để trống!")
     @Min(value = 0, message = "Số lượng khách không được nhỏ hơn '0'")
     private Integer quantity;
-  
-    @JsonFormat(pattern = "MM-dd-yyyy")
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ValidDepartureDay(message = "Ngày khởi hành phải lớn hơn thời điểm khởi tạo!")
     private LocalDate departureDay;
 

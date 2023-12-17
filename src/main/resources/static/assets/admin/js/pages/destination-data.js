@@ -65,8 +65,24 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.lock-icon').forEach(item => {
             item.addEventListener('click', event => {
                 event.preventDefault();
-                let id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                updateStatus(id);
+                const id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
+                const url = `/api/admin/update-destination-status?id=${encodeURIComponent(id)}`;
+
+                let myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                let requestOptions = {
+                    method: 'PUT',
+                    headers: myHeaders,
+                    redirect: 'follow'
+                };
+
+                fetch(url, requestOptions)
+                    .then(response => {
+                        if (response.ok) return response.json();
+                        else throw new Error("Error Status: " + response.status);
+                    })
+                    .then(result => console.log(result))
+                    .catch(error => console.log('Error updating status:', error));
             });
         });
     }
@@ -75,28 +91,10 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-function updateStatus(id) {
-    const url = `/api/admin/update-destination-status?id=${encodeURIComponent(id)}`;
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        redirect: 'follow'
-    };
-
-    fetch(url, requestOptions)
-        .then(response => {
-            if (response.ok) return response.json();
-        })
-        .then(result => console.log(result))
-        .catch(error => console.log('Error updating status:', error));
-}
-
-function updateDestination(id) {
+document.getElementById('update-destination').addEventListener('click', function(event) {
     event.preventDefault();
 
+    const id = document.getElementById('id').value;
     const url = `/api/admin/update-destination?id=${encodeURIComponent(id)}`;
 
     let myHeaders = new Headers();
@@ -121,20 +119,19 @@ function updateDestination(id) {
         redirect: 'follow'
     };
 
-    // Make the API request
     fetch(url, requestOptions)
         .then(response => {
             if (response.ok) return response.json();
+            else throw new Error('Failed to update destination. Status: ' + response.status);
         })
         .then(result => {
-            console.log('Destination updated successfully:', result);
-            showToast('Destination updated successfully');
+            showToast('Succeed Update Destination', 'Success', 'green');
             $('#destinationDetailsModalScrollable').modal('hide');
         })
-        .catch(error => console.log('Error updating destination:', error));
-}
+        .catch(error => showToast('Failed Update Destination', 'Error', 'red'));
+})
 
-function addDestination() {
+document.getElementById('add-destination').addEventListener('click', function(event) {
     event.preventDefault();
 
     let myHeaders = new Headers();
@@ -159,19 +156,28 @@ function addDestination() {
 
     // Make the API request
     fetch("/api/admin/destination", requestOptions)
-        .then(response => response.text())
+        .then(response => {
+            if (response.ok) return response.text();
+            else throw new Error('Failed to add destination. Status: ' + response.status);
+        })
         .then(result => {
-            console.log('Destination added successfully:', result);
-            showToast('Destination added successfully');
+            showToast('Succeed Add Destination', 'Success', 'green');
             $('#newDestinationModalScrollable').modal('hide');
         })
-        .catch(error => console.log('Error adding destination:', error));
-}
+        .catch(error => showToast('Failed Add Destination', 'Error', 'red'));
+})
 
 function fetchDestinationDetailsModal(data) {
-    document.getElementById('id').value = data.id;
-    document.getElementById('name').value = data.name;
-    document.getElementById('isHot').value = data.isHot;
-    document.getElementById('status').value = data.status;
-    document.getElementById('thumbnail').value = data.thumbnail;
+    const setElementValue = (elementId, value) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.value = value;
+        }
+    };
+
+    setElementValue('id', data.id);
+    setElementValue('name', data.name);
+    setElementValue('isHot', data.isHot);
+    setElementValue('status', data.status);
+    setElementValue('thumbnail', data.thumbnail);
 }

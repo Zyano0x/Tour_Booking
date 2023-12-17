@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
   
-    private static final String[] WHITE_LIST = {"/assets/**", "/api/**", "/panel/*", "/tours/*", "/",};
+    private static final String[] WHITE_LIST = {"/resources/**", "/api/**", "/panel/*", "/tours/*", "/",};
 
     private static final String[] BLACK_LIST = {"/api/admin/**", "/panel/**",};
 

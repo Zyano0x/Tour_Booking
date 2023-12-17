@@ -46,7 +46,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Update Tour -->
 <div class="modal fade" id="tourDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -132,35 +132,27 @@
                     <br>
                     <div class="form-group">
                         <label>Type Of Tour</label>
-                        <label for="typeOfTourDropdownUpdate"></label>
-                        <select class="form-control" id="typeOfTourDropdownUpdate"></select>
-                        <option th:each="typeOfTour : ${typeOfTours}"
-                                th:value="${typeOfTour.name}"
-                                th:text="${typeOfTour.name}">
-                        </option>
+                        <label for="typesOfTour"></label>
+                        <select class="form-control" id="typesOfTour"></select>
                     </div>
                     <br>
                     <div class="form-group">
                         <label>Destination</label>
-                        <label for="destinationDropdownUpdate"></label>
-                        <select class="form-control" id="destinationDropdownUpdate"></select>
-                            <option th:each="destination : ${destinations}"
-                                    th:value="${destination.name}"
-                                    th:text="${destination.name}">
-                            </option>
+                        <label for="destinations"></label>
+                        <select class="form-control" id="destinations"></select>
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateTour(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="update-tour">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#tourDetailsModalScrollable').modal('hide');">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Add Tour -->
 <div class="modal fade" id="newTourModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -236,51 +228,35 @@
                     <br>
                     <div class="form-group">
                         <label>Type Of Tour</label>
-                        <label for="typeOfTourDropdownNew"></label>
-                        <select class="form-control" id="typeOfTourDropdownNew"></select>
-                        <option th:each="typeOfTour : ${typeOfTours}"
-                                th:value="${typeOfTour.name}"
-                                th:text="${typeOfTour.name}">
-                        </option>
+                        <label for="_typesOfTour"></label>
+                        <select class="form-control" id="_typesOfTour"></select>
                     </div>
                     <br>
                     <div class="form-group">
                         <label>Destination</label>
-                        <label for="destinationDropdownNew"></label>
-                        <select class="form-control" id="destinationDropdownNew"></select>
-                        <option th:each="destination : ${destinations}"
-                                th:value="${destination.name}"
-                                th:text="${destination.name}">
-                        </option>
+                        <label for="_destinations"></label>
+                        <select class="form-control" id="_destinations"></select>
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addTour()">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="add-tour">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newTourModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-        <strong class="mr-auto">Notification</strong>
-    </div>
-    <div class="toast-body">
-    </div>
-</div>
-
-<!-- Javascripts -->
+<!-- Javascript -->
 <script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
 <script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
 <script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
 <script th:src="@{https://unpkg.com/feather-icons}"></script>
 <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/assets/admin/js/main.min.js}"></script>
-<script th:src="@{/assets/admin/js/pages/tour-data.js}"></script>
-<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
+<script th:type="module" th:src="@{/assets/admin/js/pages/tour-data.js}"></script>
+<script th:src="@{/assets/admin/js/pages/iziToast.js}"></script>
 <script th:src="@{/assets/admin/js/pages/dropdown.js}"></script>
 </body>
 </html>

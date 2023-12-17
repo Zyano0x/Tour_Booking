@@ -258,7 +258,7 @@ public class BookingServiceImpl implements BookingService {
                 return new ResponseEntity<>("Verification token already expired.", HttpStatus.BAD_REQUEST);
             } else if (validateToken(confirmationToken) == UserServiceImpl.VerificationResult.VALID) {
                 SecureToken token = secureTokenRepository.findByToken(confirmationToken);
-                BigDecimal refund = updateStatusBooking.getTotalPrice().multiply(BigDecimal.valueOf(0.7));;
+                BigDecimal refund = updateStatusBooking.getTotalPrice();
 
                 // Lưu vào csdl
                 departureDayRepository.save(updateQuantityDepartureDay);
