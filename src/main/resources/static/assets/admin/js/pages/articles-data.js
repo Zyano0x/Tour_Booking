@@ -121,6 +121,35 @@ document.getElementById('update-articles').addEventListener('click', function (e
         .catch(error => showToast('Failed Update Articles', 'Error', 'red'));
 })
 
+document.getElementById('add-articles').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const title = document.getElementById('_title').value;
+    const content = document.getElementById('_content').value;
+    const id = document.head.getAttribute('data-user-id');
+
+    let raw = JSON.stringify({
+        "title": title, "content": content, "userId": id
+    });
+
+    let requestOptions = {
+        method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
+    };
+
+    fetch("/api/post-articles", requestOptions)
+        .then(response => {
+            if (response.ok) return response.text(); else throw new Error("Error Status: " + response.status);
+        })
+        .then(result => {
+            showToast('Succeed Add Articles', 'Success', 'green');
+            $('#newArticlesModalScrollable').modal('hide');
+        })
+        .catch(error => showToast('Failed Add Articles', 'Error', 'red'));
+});
+
 function fetchArticlesDetailsModal(data) {
     const setElementValue = (elementId, value) => {
         const element = document.getElementById(elementId);

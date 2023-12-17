@@ -127,7 +127,7 @@
             </li>
         </ul>
     </div>
-    <div class="page-content">
+    <div class="page-content" id="content" th:fragment="page-content">
         <div class="main-wrapper">
             <div class="row">
                 <div class="col-md-6 col-xl-3">
@@ -350,7 +350,7 @@
 
 <!-- Javascript -->
 <div th:fragment="javascript">
-    <script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
+    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
     <script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
     <script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
     <script th:src="@{https://unpkg.com/feather-icons}"></script>

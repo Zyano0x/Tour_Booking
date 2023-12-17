@@ -21,11 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                console.log('Received data:', data);
                 fetchTourDetailsModal(data);
                 $('#tourDetailsModalScrollable').modal('show'); // Show the modal
             })
-            .catch(error => console.error('Error fetching user details:', error));
+            .catch(error => console.error('Error fetching tour details:', error));
     }
 
     function fetchTableTour(data) {
@@ -91,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
+const ckEditorInstances = new Map();
+
 function fetchImagesByTourId(id) {
     const url = `/api/tour/${encodeURIComponent(id)}/tour-images`;
 
@@ -119,7 +120,6 @@ function fetchTourDetailsModal(data) {
     setElementValue('content', data.description);
     setElementValue('service', data.service);
     setElementValue('time', data.time);
-    setElementValue('schedule', data.schedule);
     setElementValue('priceForAdult', data.priceForAdult);
     setElementValue('priceForChildren', data.priceForChildren);
     setElementValue('departurePoint', data.departurePoint);
@@ -130,6 +130,28 @@ function fetchTourDetailsModal(data) {
     setElementValue('thumbnail', data.thumbnail);
     setElementValue('typesOfTour', data.typeOfTour.id);
     setElementValue('destinations', data.destination.id);
+
+    const content = document.getElementById('schedule');
+
+    // Check if CKEditor is already initialized for the 'content' textarea
+    if (!ckEditorInstances.has(content)) {
+        // Initialize CKEditor only if it hasn't been initialized yet
+        initializeCKEditor(content).then(editor => {
+            ckEditorInstances.set(content, editor);
+            editor.setData(data.schedule);
+        });
+    } else {
+        // If CKEditor is already initialized, set the content directly
+        ckEditorInstances.get(content).setData(data.schedule);
+    }
+}
+
+function initializeCKEditor(content) {
+    return ClassicEditor
+        .create(content)
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 import {fetchData} from './utils.js';
@@ -167,7 +189,7 @@ document.getElementById('update-tour').addEventListener('click', function(event)
     const description = document.getElementById('content').value;
     const service = document.getElementById('service').value;
     const time = document.getElementById('time').value;
-    const schedule = document.getElementById('schedule').value;
+    const schedule = ckEditorInstances.get(document.getElementById('schedule')).getData();
     const priceForAdult = document.getElementById('priceForAdult').value;
     const priceForChildren = document.getElementById('priceForChildren').value;
     const departurePoint = document.getElementById('departurePoint').value;

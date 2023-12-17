@@ -134,49 +134,17 @@
 <script th:src="@{/assets/admin/js/pages/iziToast.js}"></script>
 <script th:src="@{https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js}"></script>
 <script>
-    let editor;
-
     ClassicEditor
         .create(document.getElementById('_content'))
-        .then(ckEditor => {
-            editor = ckEditor;
+        .then(editor => {
+            editor.model.document.on('change', () => {
+                // Update the hidden textarea with the editor content
+                document.querySelector('textarea[name="_content"]').value = editor.getData();
+            });
         })
         .catch(error => {
             console.error(error);
         });
-
-    document.getElementById('add-articles').addEventListener('click', function (event) {
-        event.preventDefault();
-
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        const title = document.getElementById('_title').value;
-
-        // Get CKEditor content
-        const contentTextarea = document.getElementById('_content');
-        const content = editor ? editor.getData() : contentTextarea.value;
-
-        const id = document.head.getAttribute('data-user-id');
-
-        let raw = JSON.stringify({
-            "title": title, "content": content, "userId": id
-        });
-
-        let requestOptions = {
-            method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
-        };
-
-        fetch("/api/post-articles", requestOptions)
-            .then(response => {
-                if (response.ok) return response.text(); else throw new Error("Error Status: " + response.status);
-            })
-            .then(result => {
-                showToast('Succeed Add Articles', 'Success', 'green');
-                $('#newArticlesModalScrollable').modal('hide');
-            })
-            .catch(error => showToast('Failed Add Articles', 'Error', 'red'));
-    });
 </script>
 </body>
 </html>
