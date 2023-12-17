@@ -70,15 +70,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 let myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
                 let requestOptions = {
-                    method: 'PUT',
-                    headers: myHeaders,
-                    redirect: 'follow'
+                    method: 'PUT', headers: myHeaders, redirect: 'follow'
                 };
 
                 fetch(url, requestOptions)
                     .then(response => {
-                        if (response.ok) return response.json();
-                        else throw new Error("Error Status: " + response.status);
+                        if (response.ok) return response.json(); else throw new Error("Error Status: " + response.status);
                     })
                     .then(result => console.log(result))
                     .catch(error => console.log('Error updating status:', error));
@@ -90,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-document.getElementById('update-day').addEventListener('click', function(event) {
+document.getElementById('update-day').addEventListener('click', function (event) {
     event.preventDefault();
 
     const id = document.getElementById('id').value;
@@ -105,25 +102,18 @@ document.getElementById('update-day').addEventListener('click', function(event) 
     const tourId = document.getElementById('tours').value;
 
     let raw = JSON.stringify({
-        "departureDay": day,
-        "quantity": slots,
-        "status": status,
-        "tourId": tourId
+        "departureDay": day, "quantity": slots, "status": status, "tourId": tourId
     });
 
     console.log('Parsed Luxon Date:', day);
 
     let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+        method: 'PUT', headers: myHeaders, body: raw, redirect: 'follow'
     };
 
     fetch(url, requestOptions)
         .then(response => {
-            if (response.ok) return response.json();
-            else throw new Error('Failed to update departure day. Status: ' + response.status);
+            if (response.ok) return response.json(); else throw new Error('Failed to update departure day. Status: ' + response.status);
         })
         .then(result => {
             showToast('Succeed Update Departure Day', 'Success', 'green');
@@ -132,7 +122,7 @@ document.getElementById('update-day').addEventListener('click', function(event) 
         .catch(error => showToast('Failed Update Departure Day', 'Error', 'red'));
 })
 
-document.getElementById('add-day').addEventListener('click', function(event) {
+document.getElementById('add-day').addEventListener('click', function (event) {
     event.preventDefault();
 
     let myHeaders = new Headers();
@@ -144,23 +134,16 @@ document.getElementById('add-day').addEventListener('click', function(event) {
     const tourId = document.getElementById('_tours').value;
 
     let raw = JSON.stringify({
-        "departureDay": day,
-        "quantity": slots,
-        "status": status,
-        "tourId": tourId
+        "departureDay": day, "quantity": slots, "status": status, "tourId": tourId
     });
 
     let requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+        method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
     };
 
     fetch("/api/admin/departure-day", requestOptions)
         .then(response => {
-            if (response.ok) return response.text();
-            else throw new Error('Failed to update type tour. Status: ' + response.status);
+            if (response.ok) return response.text(); else throw new Error('Failed to update type tour. Status: ' + response.status);
         })
         .then(result => {
             showToast('Succeed Add Departure Day', 'Success', 'green');
@@ -217,9 +200,9 @@ function formatDate(isoDate, inputFormat) {
 
 import {fetchData} from './utils.js';
 
-fetchData('/api/tours', function(data, dropdownId) {
+fetchData('/api/tours', function (data, dropdownId) {
     const typeOfTourDropdown = document.getElementById(dropdownId);
-    data.forEach(function(typeOfTour) {
+    data.forEach(function (typeOfTour) {
         const option = document.createElement('option');
         option.value = typeOfTour.id;
         option.text = typeOfTour.name;
@@ -227,9 +210,9 @@ fetchData('/api/tours', function(data, dropdownId) {
     });
 }, 'tours');
 
-fetchData('/api/tours', function(data, dropdownId) {
+fetchData('/api/tours', function (data, dropdownId) {
     const typeOfTourDropdown = document.getElementById(dropdownId);
-    data.forEach(function(typeOfTour) {
+    data.forEach(function (typeOfTour) {
         const option = document.createElement('option');
         option.value = typeOfTour.id;
         option.text = typeOfTour.name;

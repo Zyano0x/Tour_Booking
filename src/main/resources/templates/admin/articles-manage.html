@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Update Articles -->
 <div class="modal fade" id="articlesDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -79,26 +79,26 @@
                     </div>
                     <br>
                     <div class="form-group">
-                         <textarea id="content">
-                         </textarea>
+                        <label for="content"></label>
+                        <textarea id="content" name="content"></textarea>
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateArticles(document.getElementById('id').value)">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#articlesDetailsModalScrollable').modal('hide');">Close</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="update-articles">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#articlesDetailsModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Add Articles -->
 <div class="modal fade" id="newArticlesModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="newDepartureModalScrollableTitle">New Departure</h5>
+                <h5 class="modal-title" id="newDepartureModalScrollableTitle">New Articles</h5>
             </div>
             <div class="modal-body">
                 <form id="new-tour-form">
@@ -112,47 +112,70 @@
                         <input type="text" class="form-control" id="_title">
                     </div>
                     <br>
-                    <div class="form-group">
-                        <label for="_status">Status</label>
-                        <input type="text" class="form-control" id="_status">
-                    </div>
-                    <br>
-                    <div class="form-group">
+                    <div class="form-group" id="editor-container">
+                        <label for="_content"></label>
+                        <textarea id="_content" name="_content"></textarea>
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addDeparture()">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newDepartureModalScrollable').modal('hide')">Close</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="add-articles">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newArticlesModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-        <strong class="mr-auto">Notification</strong>
-    </div>
-    <div class="toast-body">
-    </div>
-</div>
+<!-- Javascript -->
+<th:block th:replace="~{admin/index::javascript}"></th:block>
 
-<!-- Javascripts -->
-<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
-<script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
-<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
-<script th:src="@{https://unpkg.com/feather-icons}"></script>
-<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
-<script th:src="@{/assets/admin/js/main.min.js}"></script>
 <script th:src="@{/assets/admin/js/pages/articles-data.js}"></script>
-<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
-<script th:src="@{https://cdn.tiny.cloud/1/q3htlijrx9udcqbgh8a503rmci1shq3a5wjodgfqtzuu5yek/tinymce/6/tinymce.min.js}" referrerpolicy="origin"></script>
+<script th:src="@{/assets/admin/js/pages/iziToast.js}"></script>
+<script th:src="@{https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js}"></script>
 <script>
-    tinymce.init({
-        selector: 'textarea#content',
-        plugins: 'autolink lists link image charmap print preview',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    let editor;
+
+    ClassicEditor
+        .create(document.getElementById('_content'))
+        .then(ckEditor => {
+            editor = ckEditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    document.getElementById('add-articles').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const title = document.getElementById('_title').value;
+
+        // Get CKEditor content
+        const contentTextarea = document.getElementById('_content');
+        const content = editor ? editor.getData() : contentTextarea.value;
+
+        const id = document.head.getAttribute('data-user-id');
+
+        let raw = JSON.stringify({
+            "title": title, "content": content, "userId": id
+        });
+
+        let requestOptions = {
+            method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
+        };
+
+        fetch("/api/post-articles", requestOptions)
+            .then(response => {
+                if (response.ok) return response.text(); else throw new Error("Error Status: " + response.status);
+            })
+            .then(result => {
+                showToast('Succeed Add Articles', 'Success', 'green');
+                $('#newArticlesModalScrollable').modal('hide');
+            })
+            .catch(error => showToast('Failed Add Articles', 'Error', 'red'));
     });
 </script>
 </body>

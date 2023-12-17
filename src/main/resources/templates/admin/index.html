@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="header">
+<head th:fragment="header" th:attr="data-user-id=${id}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -348,14 +348,18 @@
     </div>
 </div>
 
-<!-- Javascripts -->
-<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
-<script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
-<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
-<script th:src="@{https://unpkg.com/feather-icons}"></script>
-<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+<!-- Javascript -->
+<div th:fragment="javascript">
+    <script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
+    <script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
+    <script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{https://unpkg.com/feather-icons}"></script>
+    <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+    <script th:src="@{/assets/admin/js/main.min.js}"></script>
+</div>
+
 <script th:src="@{/assets/admin/plugins/apexcharts/apexcharts.min.js}"></script>
-<script th:src="@{/assets/admin/js/main.min.js}"></script>
 <script th:src="@{/assets/admin/js/pages/dashboard.js}"></script>
+
 </body>
 </html>

@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                console.log('Received data:', data);
                 fetchArticlesDetailsModal(data);
                 $('#articlesDetailsModalScrollable').modal('show'); // Show the modal
             })
@@ -65,8 +64,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.lock-icon').forEach(item => {
             item.addEventListener('click', event => {
                 event.preventDefault();
-                let id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                updateStatus(id);
+                const id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
+                const url = `/api/admin/update-articles-status?id=${encodeURIComponent(id)}`;
+
+                let myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                let requestOptions = {
+                    method: 'PUT', headers: myHeaders, redirect: 'follow'
+                };
+
+                fetch(url, requestOptions)
+                    .then(response => {
+                        if (response.ok) return response.json(); else throw new Error("Error Status: " + response.status);
+                    })
+                    .then(result => console.log(result))
+                    .catch(error => console.log('Error updating status:', error));
             });
         });
     }
@@ -75,69 +87,73 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-function updateStatus(id) {
-    const url = `/api/admin/update-articles-status?id=${encodeURIComponent(id)}`;
+const ckEditorInstances = new Map();
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        redirect: 'follow'
-    };
-
-    fetch(url, requestOptions)
-        .then(response => {
-            if (response.ok) return response.json();
-        })
-        .then(result => console.log(result))
-        .catch(error => console.log('Error updating status:', error));
-}
-
-function updateArticles(id) {
+document.getElementById('update-articles').addEventListener('click', function (event) {
     event.preventDefault();
 
+    const id = document.getElementById('id').value;
     const url = `/api/admin/update-articles?id=${encodeURIComponent(id)}`;
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const title = document.getElementById('title').value;
-    const content = document.getElementById('content').value;
     const status = document.getElementById('status').value;
+    const content = ckEditorInstances.get(document.getElementById('content')).getData();
 
     let raw = JSON.stringify({
-        "title": title,
-        "content": content,
-        "status": status,
+        "title": title, "content": content, "status": status,
     });
 
     let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+        method: 'PUT', headers: myHeaders, body: raw, redirect: 'follow'
     };
 
-    // Make the API request
     fetch(url, requestOptions)
         .then(response => {
-            if (response.ok)
-            {
-                showToast('Articles updated successfully');
-                $('#articlesDetailsModalScrollable').modal('hide');
-                return response.json();
-            }
+            if (response.ok) return response.json(); else throw new Error("Error Status: " + response.status);
         })
-        .then(result => console.log(result))
-        .catch(error => console.log('Error updating articles:', error));
-}
+        .then(result => {
+            showToast('Succeed Update Articles', 'Success', 'green');
+            $('#articlesDetailsModalScrollable').modal('hide');
+        })
+        .catch(error => showToast('Failed Update Articles', 'Error', 'red'));
+})
 
 function fetchArticlesDetailsModal(data) {
-    document.getElementById('id').value = data.id;
-    document.getElementById('title').value = data.title;
-    document.getElementById('posting').value = data.dateOfPosting;
-    document.getElementById('editing').value = data.editDate;
-    document.getElementById('status').value = data.status;
-    document.getElementById('content').value = data.content;
+    const setElementValue = (elementId, value) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.value = value;
+        }
+    };
+
+    setElementValue('id', data.id);
+    setElementValue('title', data.title);
+    setElementValue('posting', data.dateOfPosting);
+    setElementValue('editing', data.editDate);
+    setElementValue('status', data.status);
+
+    const content = document.getElementById('content');
+
+    // Check if CKEditor is already initialized for the 'content' textarea
+    if (!ckEditorInstances.has(content)) {
+        // Initialize CKEditor only if it hasn't been initialized yet
+        initializeCKEditor(content).then(editor => {
+            ckEditorInstances.set(content, editor);
+            editor.setData(data.content);
+        });
+    } else {
+        // If CKEditor is already initialized, set the content directly
+        ckEditorInstances.get(content).setData(data.content);
+    }
+}
+
+function initializeCKEditor(content) {
+    return ClassicEditor
+        .create(content)
+        .catch(error => {
+            console.error(error);
+        });
 }
