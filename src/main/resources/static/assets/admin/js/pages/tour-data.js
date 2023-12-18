@@ -263,7 +263,6 @@ document.getElementById('add-tour').addEventListener('click', function(event) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    // Example: Get values from your form fields
     const name = document.getElementById('_name').value;
     const description = document.getElementById('_content').value;
     const service = document.getElementById('_service').value;
@@ -285,8 +284,8 @@ document.getElementById('add-tour').addEventListener('click', function(event) {
         "service": service,
         "time": time,
         "schedule": schedule,
-        "priceForAdult": parseFloat(priceForAdult), // Parse to ensure it's a number
-        "priceForChildren": parseFloat(priceForChildren), // Parse to ensure it's a number
+        "priceForAdult": parseFloat(priceForAdult),
+        "priceForChildren": parseFloat(priceForChildren),
         "departurePoint": departurePoint,
         "isHot": isHot,
         "status": status,
@@ -300,14 +299,10 @@ document.getElementById('add-tour').addEventListener('click', function(event) {
         method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
     };
 
-    // Make the API request
     fetch("/api/admin/tour", requestOptions)
         .then(response => {
-            if (response.ok) {
-                return response.text();
-            } else {
-                throw new Error('Failed to add tour. Status: ' + response.status);
-            }
+            if (response.ok) return response.text();
+            else throw new Error('Failed to add tour. Status: ' + response.status);
         })
         .then(result => {
             showToast('Succeed Add Tour', 'Success', 'green');

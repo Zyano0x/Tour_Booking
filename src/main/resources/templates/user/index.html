@@ -343,11 +343,11 @@
     <!-- End Search Menu -->
 
     <!-- Sign In Popup -->
-    <div th:replace="~{user/fragments/fragment::sign-in-popup}"></div>
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <div th:replace="~{user/fragments/fragment::common_js}"></div>
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
 
     <!-- Video header scripts -->
     <script th:src="@{/assets/user/js/modernizr.js}"></script>

@@ -2,10 +2,6 @@ package com.project.tour_booking.Controller;
 
 import com.project.tour_booking.Entity.User;
 import com.project.tour_booking.Service.User.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,23 +52,5 @@ public class PageController {
         }
 
         return null;
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse res, Model m, HttpSession session) {
-        String msg = null;
-
-        Cookie[] cookies2 = request.getCookies();
-        for(int i = 0; i < cookies2.length; i++)
-        {
-            if (cookies2[i].getName().equals("Authorization"))
-            {
-                cookies2[i].setMaxAge(0);
-                res.addCookie(cookies2[i]);
-                msg = "Logout successfully";
-            }
-        }
-        session.setAttribute("msg", msg);
-        return "redirect:/";
     }
 }

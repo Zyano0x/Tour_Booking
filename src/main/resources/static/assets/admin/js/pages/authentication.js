@@ -33,3 +33,17 @@ function login(email, password) {
         })
         .catch((error) => console.log(error));
 }
+
+document.getElementById('logout').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    fetch("/api/auth/logout", {method: "POST"})
+        .then((response) => {
+            if (response.ok) return response.text();
+            else throw new Error("Error: " + response.statusText);
+        })
+        .then((result) => {
+            window.location.href = "/panel/login";
+        })
+        .catch((error) => console.log(error));
+})

@@ -34,25 +34,16 @@ function login(email, password) {
         .catch((error) => console.error("Login Error:", error.message));
 }
 
-function handleLogout() {
-    fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-        .then(response => response.json()) // Parse the response to JSON
-        .then(data => {
-            if (data.success) {
-                window.location.href = "/";
-            } else {
-                console.error("Logout failed", data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Error logging out", error);
-        });
-}
+document.getElementById('exit_link').addEventListener('click', function (event) {
+    event.preventDefault();
 
-const exitLink = document.getElementById('exit_link');
-exitLink.addEventListener('click', handleLogout);
+    fetch("/api/auth/logout", {method: "POST"})
+        .then((response) => {
+            if (response.ok) return response.text();
+            else throw new Error("Error: " + response.statusText);
+        })
+        .then((result) => {
+            window.location.href = "/";
+        })
+        .catch((error) => console.log(error));
+})

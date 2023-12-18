@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:attr="data-userId=${userId}" th:fragment="head">
     <meta charset="utf-8"/>
     <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
@@ -96,10 +96,10 @@
                 <div class="col-6">
                     <ul id="top_links">
                         <li sec:authorize="isAnonymous()">
-                            <a href="#sign-in-dialog" id="access_link"></i> Đăng Nhập</a>
+                            <a href="#sign-in-dialog" id="access_link">Đăng Nhập</a>
                         </li>
                         <li sec:authorize="isAuthenticated()">
-                            <a href="/logout" id="exit_link"></i> Đăng Xuất</a>
+                            <a href="" id="exit_link">Đăng Xuất</a>
                         </li>
                     </ul>
                 </div>
@@ -232,7 +232,7 @@
         <form id="form-login">
             <div class="sign-in-wrapper">
                 <div class="form-group">
-                    <label>Email</label>
+                    <label for="email">Email</label>
                     <input
                             class="form-control"
                             id="email"
@@ -242,7 +242,7 @@
                     <i class="icon_mail_alt"></i>
                 </div>
                 <div class="form-group">
-                    <label>Mật khẩu</label>
+                    <label for="password">Mật khẩu</label>
                     <input
                             class="form-control"
                             id="password"
@@ -269,7 +269,7 @@
                 </div>
                 <div id="forgot_pw">
                     <div class="form-group">
-                        <label>Please confirm login email below</label>
+                        <label>Please confirm authentication email below</label>
                         <input
                                 class="form-control"
                                 id="email_forgot"
@@ -297,10 +297,7 @@
     <script th:src="@{/assets/user/js/jquery-2.2.4.min.js}"></script>
     <script th:src="@{/assets/user/js/common_scripts_min.js}"></script>
     <script th:src="@{/assets/user/js/functions.js}"></script>
-    <script
-            sec:authorize="isAnonymous()"
-            th:src="@{/assets/user/js/custom/login.js}"
-    ></script>
+    <script th:src="@{/assets/user/js/custom/login.js}"></script>
 </div>
 
 <div th:fragment="map_js">
