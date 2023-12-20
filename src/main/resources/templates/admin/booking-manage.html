@@ -22,10 +22,10 @@
                                         <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Customer</th>
+                                            <th scope="col">Transaction</th>
                                             <th scope="col">Email</th>
                                             <th scope="col">Tour Name</th>
-                                            <th scope="col">Schedule</th>
+                                            <th scope="col">Booking Date</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -44,44 +44,77 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="bookingDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">User Details</h5>
+                <h5 class="modal-title" id="bookingDetailsModalScrollableTitle">Booking Details</h5>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" class="form-control" id="email" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    <input type="text" class="form-control" id="gender" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="birthday">Birthday</label>
-                    <input type="text" class="form-control" id="birthday" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="cid">CID</label>
-                    <input type="text" class="form-control" id="cid" disabled>
-                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="id" hidden="hidden">ID</label>
+                        <input type="text" class="form-control" id="id" hidden="hidden">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="transaction">Transaction Code</label>
+                        <input type="text" class="form-control" id="transaction" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="email">User Email</label>
+                        <input type="text" class="form-control" id="email" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" class="form-control" id="full-name" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="booking-date">Booking Date</label>
+                        <input type="text" class="form-control" id="booking-date" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="tour">Tour Name</label>
+                        <input type="text" class="form-control" id="tour" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="price-adult">Price Adult</label>
+                        <input type="text" class="form-control" id="price-adult" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="price-child">Price Child</label>
+                        <input type="text" class="form-control" id="price-child" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="schedule">Schedule</label>
+                        <textarea name="schedule" id="schedule"></textarea>
+                    </div><br>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="text" class="form-control" id="time" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <input type="text" class="form-control" id="destination" disabled>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="departure-day">Departure Day</label>
+                        <input type="text" class="form-control" id="departure-day" disabled>
+                    </div>
+                    <p></p>
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal()">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#bookingDetailsModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
@@ -89,6 +122,7 @@
 
 <!-- Javascript -->
 <th:block th:replace="~{admin/index::javascript}"></th:block>
-
+<script th:src="@{https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js}"></script>
+<script th:src="@{/assets/admin/js/pages/booking-data.js}"></script>
 </body>
 </html>

@@ -146,7 +146,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-dismiss="modal" id="update-tour">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#tourDetailsModalScrollable').modal('hide');">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#tourDetailsModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
@@ -261,6 +261,18 @@
             editor.model.document.on('change', () => {
                 // Update the hidden textarea with the editor content
                 document.querySelector('textarea[name="_schedule"]').value = editor.getData();
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.getElementById('_service'))
+        .then(editor => {
+            editor.model.document.on('change', () => {
+                // Update the hidden textarea with the editor content
+                document.querySelector('textarea[name="_service"]').value = editor.getData();
             });
         })
         .catch(error => {

@@ -215,6 +215,7 @@
                 </div>
                 <!-- End main-menu -->
                 <div>
+                    <a class="cart_bt" href="#"><i class="icon-user"></i></a>
                     <a class="cart_bt" href="/cart"><i class="icon_bag_alt"></i></a>
                 </div>
             </nav>
@@ -297,7 +298,14 @@
     <script th:src="@{/assets/user/js/jquery-2.2.4.min.js}"></script>
     <script th:src="@{/assets/user/js/common_scripts_min.js}"></script>
     <script th:src="@{/assets/user/js/functions.js}"></script>
-    <script th:src="@{/assets/user/js/custom/login.js}"></script>
+    <script
+            sec:authorize="isAnonymous()"
+            th:src="@{/assets/user/js/custom/login.js}"
+    ></script>
+    <script
+            sec:authorize="isAuthenticated()"
+            th:src="@{/assets/user/js/custom/logout.js}"
+    ></script>
 </div>
 
 <div th:fragment="map_js">

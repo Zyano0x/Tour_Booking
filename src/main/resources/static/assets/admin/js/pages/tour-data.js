@@ -118,7 +118,6 @@ function fetchTourDetailsModal(data) {
     setElementValue('id', data.id);
     setElementValue('name', data.name);
     setElementValue('content', data.description);
-    setElementValue('service', data.service);
     setElementValue('time', data.time);
     setElementValue('priceForAdult', data.priceForAdult);
     setElementValue('priceForChildren', data.priceForChildren);
@@ -132,6 +131,7 @@ function fetchTourDetailsModal(data) {
     setElementValue('destinations', data.destination.id);
 
     const content = document.getElementById('schedule');
+    const service = document.getElementById('service');
 
     // Check if CKEditor is already initialized for the 'content' textarea
     if (!ckEditorInstances.has(content)) {
@@ -143,6 +143,16 @@ function fetchTourDetailsModal(data) {
     } else {
         // If CKEditor is already initialized, set the content directly
         ckEditorInstances.get(content).setData(data.schedule);
+    }
+
+    // Check if CKEditor is already initialized for the 'service' textarea
+    if (!ckEditorInstances.has(service)) {
+        initializeCKEditor(service).then(editor => {
+            ckEditorInstances.set(service, editor);
+            editor.setData(data.service);
+        });
+    } else {
+        ckEditorInstances.get(service).setData(data.service);
     }
 }
 
