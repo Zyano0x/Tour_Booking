@@ -38,19 +38,22 @@ public class PageController {
         return "user/cart";
     }
 
+    @GetMapping("/my-account")
+    public String myAccount() {
+        return "user/profile";
+    }
+
     @ModelAttribute("userId")
-    public Long getUserId() {
+    public Long getUserId(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             User user = userService.user(userDetails.getUsername());
 
             if (user != null) {
                 return user.getId();
             }
         }
-
         return null;
     }
 }
