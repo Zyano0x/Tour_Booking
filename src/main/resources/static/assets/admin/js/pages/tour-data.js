@@ -118,7 +118,6 @@ function fetchTourDetailsModal(data) {
     setElementValue('id', data.id);
     setElementValue('name', data.name);
     setElementValue('content', data.description);
-    setElementValue('service', data.service);
     setElementValue('time', data.time);
     setElementValue('priceForAdult', data.priceForAdult);
     setElementValue('priceForChildren', data.priceForChildren);
@@ -132,6 +131,7 @@ function fetchTourDetailsModal(data) {
     setElementValue('destinations', data.destination.id);
 
     const content = document.getElementById('schedule');
+    const service = document.getElementById('service');
 
     // Check if CKEditor is already initialized for the 'content' textarea
     if (!ckEditorInstances.has(content)) {
@@ -143,6 +143,16 @@ function fetchTourDetailsModal(data) {
     } else {
         // If CKEditor is already initialized, set the content directly
         ckEditorInstances.get(content).setData(data.schedule);
+    }
+
+    // Check if CKEditor is already initialized for the 'service' textarea
+    if (!ckEditorInstances.has(service)) {
+        initializeCKEditor(service).then(editor => {
+            ckEditorInstances.set(service, editor);
+            editor.setData(data.service);
+        });
+    } else {
+        ckEditorInstances.get(service).setData(data.service);
     }
 }
 
@@ -263,7 +273,6 @@ document.getElementById('add-tour').addEventListener('click', function(event) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    // Example: Get values from your form fields
     const name = document.getElementById('_name').value;
     const description = document.getElementById('_content').value;
     const service = document.getElementById('_service').value;
@@ -285,8 +294,8 @@ document.getElementById('add-tour').addEventListener('click', function(event) {
         "service": service,
         "time": time,
         "schedule": schedule,
-        "priceForAdult": parseFloat(priceForAdult), // Parse to ensure it's a number
-        "priceForChildren": parseFloat(priceForChildren), // Parse to ensure it's a number
+        "priceForAdult": parseFloat(priceForAdult),
+        "priceForChildren": parseFloat(priceForChildren),
         "departurePoint": departurePoint,
         "isHot": isHot,
         "status": status,
@@ -300,14 +309,10 @@ document.getElementById('add-tour').addEventListener('click', function(event) {
         method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
     };
 
-    // Make the API request
     fetch("/api/admin/tour", requestOptions)
         .then(response => {
-            if (response.ok) {
-                return response.text();
-            } else {
-                throw new Error('Failed to add tour. Status: ' + response.status);
-            }
+            if (response.ok) return response.text();
+            else throw new Error('Failed to add tour. Status: ' + response.status);
         })
         .then(result => {
             showToast('Succeed Add Tour', 'Success', 'green');

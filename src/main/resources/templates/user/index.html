@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-  <head th:replace="~{user/fragments/fragment::head}"></head>
+  <th:block th:replace="~{user/fragments/fragment::head}"></th:block>
   <body>
-    <div th:replace="~{user/fragments/fragment::preloader}"></div>
+    <th:block th:replace="~{user/fragments/fragment::preloader}"></th:block>
     <!-- End Preload -->
 
     <div class="layer"></div>
     <!-- Mobile menu overlay mask -->
 
     <!-- Header================================================== -->
-    <header th:replace="~{user/fragments/fragment::header}"></header>
+    <th:block th:replace="~{user/fragments/fragment::header}"></th:block>
     <!-- End Header -->
 
     <main>
@@ -255,7 +255,7 @@
         <div class="row">
           <div class="col-md-4">
             <h3>Need help?</h3>
-            <a href="tel://004542344599" id="phone">+45 423 445 99</a>
+            <a href="tel://0988887631" id="phone">+84988887631</a>
             <a href="mailto:help@citytours.com" id="email_footer"
               >help@citytours.com</a
             >
@@ -352,11 +352,11 @@
     <!-- End Search Menu -->
 
     <!-- Sign In Popup -->
-    <div th:replace="~{user/fragments/fragment::sign-in-popup}"></div>
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <div th:replace="~{user/fragments/fragment::common_js}"></div>
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
 
     <!-- Video header scripts -->
     <script th:src="@{/assets/user/js/modernizr.js}"></script>

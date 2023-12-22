@@ -33,28 +33,3 @@ function login(email, password) {
         })
         .catch((error) => console.error("Login Error:", error.message));
 }
-
-function handleLogout() {
-    fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-        .then(response => response.json()) // Parse the response to JSON
-        .then(data => {
-            if (data.success) {
-                window.location.href = "/";
-            } else {
-                console.error("Logout failed", data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Error logging out", error);
-        });
-}
-
-const exitLink = document.getElementById('exit_link');
-if (exitLink) {
-    exitLink.addEventListener('click', handleLogout);
-}

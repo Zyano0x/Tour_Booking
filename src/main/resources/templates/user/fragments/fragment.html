@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:attr="data-userId=${userId}" th:fragment="head">
     <meta charset="utf-8"/>
     <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
@@ -99,7 +99,7 @@
                             <a href="#sign-in-dialog" id="access_link" class="access_link"></i> Đăng Nhập</a>
                         </li>
                         <li sec:authorize="isAuthenticated()">
-                            <a href="/logout" id="exit_link"></i> Đăng Xuất</a>
+                            <a href="" id="exit_link">Đăng Xuất</a>
                         </li>
                     </ul>
                 </div>
@@ -215,6 +215,7 @@
                 </div>
                 <!-- End main-menu -->
                 <div>
+                    <a class="cart_bt" href="/my-account"><i class="icon-user"></i></a>
                     <a class="cart_bt" href="/cart"><i class="icon_bag_alt"></i></a>
                 </div>
             </nav>
@@ -232,7 +233,7 @@
         <form id="form-login">
             <div class="sign-in-wrapper">
                 <div class="form-group">
-                    <label>Email</label>
+                    <label for="email">Email</label>
                     <input
                             class="form-control"
                             id="email"
@@ -242,7 +243,7 @@
                     <i class="icon_mail_alt"></i>
                 </div>
                 <div class="form-group">
-                    <label>Mật khẩu</label>
+                    <label for="password">Mật khẩu</label>
                     <input
                             class="form-control"
                             id="password"
@@ -269,7 +270,7 @@
                 </div>
                 <div id="forgot_pw">
                     <div class="form-group">
-                        <label>Please confirm login email below</label>
+                        <label>Please confirm authentication email below</label>
                         <input
                                 class="form-control"
                                 id="email_forgot"
@@ -300,6 +301,10 @@
     <script
             sec:authorize="isAnonymous()"
             th:src="@{/assets/user/js/custom/login.js}"
+    ></script>
+    <script
+            sec:authorize="isAuthenticated()"
+            th:src="@{/assets/user/js/custom/logout.js}"
     ></script>
 </div>
 
