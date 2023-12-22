@@ -67,7 +67,7 @@ async function handleRenderValidBookings(fatherBlock) {
                         <span class="departurePoint text-align-center">${tour.departurePoint}</span>
                     </td>
                     <td>
-                        <div class="text-align-center"><strong>${bookings[i].totalPrice}.0</strong></div>
+                        <div class="text-align-center"><strong>${moneyFormat(bookings[i].totalPrice, true)}</strong></div>
                     </td>
                     <td class="options" data-booking="${bookings[i].id}" >
                         <a class="cancel" href="javascript:void(0);"><i class="icon-trash"></i></a>
@@ -131,7 +131,7 @@ async function renderExpiredBookings(fatherBlock) {
                     </td>
                     <td>
                         <div class="text-align-center">
-                            <strong>${bookings[i].totalPrice}.0</strong>
+                            <strong>${moneyFormat(bookings[i].totalPrice, true)}</strong>
                         </div>
                     </td>
                     <td class="text-align-center">
@@ -185,7 +185,7 @@ async function renderCancelledBookings(fatherBlock) {
                     </td>
                     <td>
                         <div class="text-align-center">
-                            <strong>${booking.totalPrice}.0</strong>
+                            <strong>${moneyFormat(booking.totalPrice, true)}</strong>
                         </div>
                     </td>
                     <td class="text-align-center">
@@ -215,6 +215,8 @@ async function handleGetBooking() {
     }
 }
 /*END GET BOOKINGS*/
+
+////////////////////////////////////////
 
 /*CANCEL BOOKING*/
 function CancelBooking() {
@@ -251,18 +253,18 @@ function CancelBooking() {
                         dialog.parentNode.removeChild(dialog);
                     });
                     document.querySelector(".action-btn.update-btn-").addEventListener("click", function () {
-                            const url = `/api/update-booking-status?id=${cancelBtn.parentNode.dataset.booking}`;
-                            fetch(url, {
-                                method: "PUT",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                            })
-                                .then((response) => response.json())
-                                .then((data) => console.log(data))
-                                .catch((error) => {
-                                    console.error("Error creating payment:", error);
-                                });
+                        const url = `/api/update-booking-status?id=${cancelBtn.parentNode.dataset.booking}`;
+                        fetch(url, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((data) => console.log(data))
+                            .catch((error) => {
+                                console.error("Error creating payment:", error);
+                            });
                     });
                 });
             }
@@ -275,7 +277,9 @@ function CancelBooking() {
 }
 /*END CANCEL BOOKING*/
 
-/*END UPDATE BOOKING*/
+////////////////////////////////////////
+
+/*UPDATE BOOKING*/
 function UpdateBooking() {
     try {
         const departureOptions = document.querySelectorAll(`.dd-option`);
@@ -344,10 +348,11 @@ function UpdateBooking() {
         console.log(">>> Error: " + error.message);
     }
 }
+/*END UPDATE BOOKING*/
 
-/*END CANCEL BOOKING*/
+////////////////////////////////////////
 
-import {compareDateNow, dateFormatConvert, ddslick, getApi, renderDepartureDropList} from './global_function.js';
+import { compareDateNow, dateFormatConvert, ddslick, getApi, moneyFormat, renderDepartureDropList } from './global_function.js';
 
 async function start() {
     bookings = await getApi(`/api/user/${document.head.dataset.userid}/bookings`);

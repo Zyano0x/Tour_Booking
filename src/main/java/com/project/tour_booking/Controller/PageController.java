@@ -29,15 +29,24 @@ public class PageController {
     }
 
     @GetMapping("tours/{tourId}")
-    public String detail() {
+    public String tourDetail() {
         return "user/tour_details";
     }
 
     @GetMapping("/cart")
-    public String cart(Model model) {
+    public String cart() {
         return "user/cart";
     }
 
+    @GetMapping("/articles")
+    public String articles() {
+        return "user/articles";
+    }
+
+    @GetMapping("/articles/{articleId}")
+    public String articleDetail() {
+        return "user/article_details";
+      
     @GetMapping("/my-account")
     public String myAccount() {
         return "user/profile";

@@ -29,7 +29,8 @@ public class TourReviewController {
     }
 
     @GetMapping("/admin/user/{userId}/tour/{tourId}/tour-review")
-    public ResponseEntity<TourReview> getTourReviewByTourIdAndUserId(@PathVariable Long userId, @PathVariable Long tourId) {
+    public ResponseEntity<TourReview> getTourReviewByTourIdAndUserId(@PathVariable Long userId,
+            @PathVariable Long tourId) {
         return new ResponseEntity<>(tourReviewService.getTourReviewByTourIdAndUserId(tourId, userId), HttpStatus.OK);
     }
 
@@ -44,8 +45,9 @@ public class TourReviewController {
     }
 
     @PutMapping("/update-tour-review/{tourReviewId}")
-    public ResponseEntity<TourReview> updateTourReview(@Valid @RequestBody TourReview tourReview, @PathVariable Long tourReviewId) {
-        return new ResponseEntity<>(tourReviewService.updateTourReview(tourReview, tourReviewId), HttpStatus.OK);
+    public ResponseEntity<TourReview> updateTourReview(@Valid @RequestBody TourReviewDTO tourReviewDTO,
+            @PathVariable Long tourReviewId) {
+        return new ResponseEntity<>(tourReviewService.updateTourReview(tourReviewDTO, tourReviewId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-tour-review/{tourReviewId}")

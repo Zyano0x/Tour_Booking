@@ -18,7 +18,7 @@ public interface TourReviewService {
 
   List<TourReview> getAllTourReviewByUserId(Long userId);
 
-  TourReview updateTourReview(TourReview tourReview, Long tourReviewId);
+  TourReview updateTourReview(TourReviewDTO tourReviewDTO, Long tourReviewId);
 
   void deleteTourReview(Long tourReviewId);
 }

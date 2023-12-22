@@ -22,7 +22,7 @@
     >
       <div class="parallax-content-1">
         <div class="animated fadeInDown">
-          <h1>Danh sách tours</h1>
+          <h1>Danh sách bài viết</h1>
         </div>
       </div>
     </section>
@@ -33,7 +33,7 @@
           /
           <ul>
             <li><a href="">Trang chủ</a></li>
-            <li>Tours</li>
+            <li>Bài viết</li>
           </ul>
         </div>
       </div>
@@ -41,111 +41,44 @@
 
       <div class="container padding_42">
         <div class="row">
-          <aside class="col-lg-3">
-            <p class="search_caption">Tìm kiếm</p>
-
-            <section id="search_container" class="tours_list_filter_container">
-              <div id="search" class="tours_list_filter">
-                <div class="tab-content">
-                  <div class="tab-pane active show" id="tours">
-                    <!-- <h3>Tìm kiếm chuyến đi của bạn</h3> -->
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label>Địa điểm</label>
-                          <select
-                            id="destinationsDropList"
-                            class="ddslick"
-                            name="destinationsDropList"
-                          >
-                            <option
-                              value="0"
-                              data-imagesrc="/assets/user/images/icons_search/walking.png"
-                              selected
-                            >
-                              Tất cả
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- End row -->
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label>Loại tour</label>
-                          <select
-                            id="typeOfTourDropList"
-                            class="ddslick"
-                            name="typeOfTourDropList"
-                          >
-                            <option
-                              value="0"
-                              data-imagesrc="/assets/user/images/icons_search/all_tours.png"
-                              selected
-                            >
-                              Tất cả
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- End row -->
-
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label
-                            ><i class="icon-calendar-7"></i> Ngày khởi
-                            hành</label
-                          >
-                          <input class="date-pick form-control" type="text" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- End row -->
-                  <hr />
-                  <button class="btn_1 green filter-btn outline-none">
-                    Lọc
-                  </button>
-                </div>
-                <!-- End rab -->
-              </div>
-            </section>
-            <!-- End hero -->
-
-            <!--End filters col-->
-          </aside>
-          <!--End aside -->
-          <div class="col-lg-9">
+          <div class="col-lg-12">
             <div id="tools">
-              <div class="row display-space-evenly">
-                <div class="col-md-3 col-sm-4 col-6">
+              <div class="row">
+                <div class="col-md-3 col-sm-3">
                   <div class="styled-select-filters">
-                    <select name="sort_price" id="sort_price">
-                      <option value="" selected>Sắp xếp theo giá</option>
-                      <option value="decrease">Giá giảm dần</option>
-                      <option value="ascending">Giá tăng dần</option>
+                    <select name="sort_time" id="sort_time">
+                      <option value="" selected>Mới nhất</option>
+                      <option value="ascending">Cũ nhất</option>
                     </select>
                   </div>
                 </div>
-                <div class="col-md-3 col-sm-4 col-6">
+                <div class="col-md-3 col-sm-3">
                   <div class="styled-select-filters">
                     <select name="sort_rating" id="sort_rating">
-                      <option value="" selected>Sắp xếp theo điểm số</option>
+                      <option value="">Sắp xếp theo điểm số</option>
                       <option value="decrease">Điểm số giảm dần</option>
                       <option value="ascending">Điểm số tăng dần</option>
                     </select>
                   </div>
                 </div>
+                <form
+                  action="javascript:void(0)"
+                  class="search-container col-md-6 col-sm-6"
+                >
+                  <input
+                    type="text"
+                    class="search-input outline-none"
+                    placeholder="Nhập văn bản..."
+                  />
+                  <button class="search-button outline-none">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </form>
               </div>
             </div>
             <!--/tools -->
 
-            <div id="tours_list" class="tours_list"></div>
+            <div id="articles_list" class="articles_list"></div>
 
             <hr />
 
@@ -277,81 +210,7 @@
       $("#cat_nav").mobileMenu();
     </script>
 
-    <script th:src="@{/assets/user/js/jquery.ddslick.js}"></script>
-
     <!-- search  -->
-    <!-- jQuery UI library -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
-    />
-
-    <!-- jQuery UI Vietnamese localization -->
-    <script src="https://raw.githubusercontent.com/jquery/jquery-ui/master/ui/i18n/datepicker-vi.js"></script>
-
-    <script>
-      $.datepicker.regional["vi"] = {
-        closeText: "Đóng",
-        prevText: "&#x3c;Trước",
-        nextText: "Tiếp&#x3e;",
-        currentText: "Hôm nay",
-        monthNames: [
-          "Tháng 1",
-          "Tháng 2",
-          "Tháng 3",
-          "Tháng 4",
-          "Tháng 5",
-          "Tháng 6",
-          "Tháng 7",
-          "Tháng 8",
-          "Tháng 9",
-          "Tháng 10",
-          "Tháng 11",
-          "Tháng 12",
-        ],
-        monthNamesShort: [
-          "Tháng 1",
-          "Tháng 2",
-          "Tháng 3",
-          "Tháng 4",
-          "Tháng 5",
-          "Tháng 6",
-          "Tháng 7",
-          "Tháng 8",
-          "Tháng 9",
-          "Tháng 10",
-          "Tháng 11",
-          "Tháng 12",
-        ],
-        dayNames: [
-          "Chủ Nhật",
-          "Thứ Hai",
-          "Thứ Ba",
-          "Thứ Tư",
-          "Thứ Năm",
-          "Thứ Sáu",
-          "Thứ Bảy",
-        ],
-        dayNamesShort: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
-        dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
-        weekHeader: "Tuần",
-        dateFormat: "dd/mm/yy",
-        firstDay: 0,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: "",
-      };
-      $.datepicker.setDefaults($.datepicker.regional["vi"]); // Đặt ngôn ngữ mặc định là tiếng Việt
-
-      $("input.date-pick").datepicker({
-        dateFormat: "dd-mm-yy", // Đặt định dạng ngày giờ thành tiếng Việt
-        changeDay: true,
-        changeMonth: true,
-        changeYear: true,
-      });
-      // .attr("readonly", "readonly"); // Sử dụng new Date() để đặt ngày là hôm nay
-    </script>
 
     <!-- Check box and radio style iCheck -->
     <script>
@@ -369,6 +228,9 @@
       });
     </script>
 
-    <script type="module" th:src="@{/assets/user/js/custom/tours.js}"></script>
+    <script
+      type="module"
+      th:src="@{/assets/user/js/custom/articles.js}"
+    ></script>
   </body>
 </html>

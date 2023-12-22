@@ -23,7 +23,7 @@ async function renderToursHaveValidDepartureDays(tours, fatherBlock) {
               <div class="col-lg-6 col-md-6">
               <div class="tour_list_desc">
                   <div class="tourRating">
-                    ${await renderToursRating(tour.id)}
+                    ${await renderRating(tour.id)}
                   </div>
                   <h3><strong>${tour.name}</strong></h3>
                   <p>${tour.description}</p>
@@ -51,14 +51,11 @@ async function renderToursHaveValidDepartureDays(tours, fatherBlock) {
   }
 }*/
 
-
 let tours = [];
 let currentPage = 1;
 let perPage = 2;
-let totalPage = 0;
 let originTours = [];
 let presentOriginTours = [];
-let toursFilter = [];
 const sortPriceBlock = document.getElementById("sort_price");
 const sortRatingBlock = document.getElementById("sort_rating");
 
@@ -71,7 +68,7 @@ async function renderTours(perTours, fatherBlock) {
           `<div class="strip_all_tour_list wow fadeIn" data-wow-delay="0.1s">
           <div class="row">
               <div class="col-lg-4 col-md-4">
-              ${perTour.isHot ? `<div class="ribbon_3 popular"><span>Popular</span></div>` : ''}
+              ${perTour.isHot ? `<div class="ribbon_3 popular"><span>Nổi bật</span></div>` : ''}
               <div class="img_list">
                   <a href="/tours/${perTour.id}"
                   ><img src="${perTour.thumbnail}" alt="${perTour.name}" />
@@ -80,18 +77,18 @@ async function renderTours(perTours, fatherBlock) {
               </div>
               </div>
               <div class="col-lg-6 col-md-6">
-              <div class="tour_list_desc">
-                  <div class="tourRating">
-                    ${await renderToursRating(perTour.id)}
+              <div class="list_desc">
+                  <div class="rating">
+                    ${await renderRating(`/api/tour/${perTour.id}/tour-reviews`)}
                   </div>
-                  <h3><strong>${perTour.name}</strong></h3>
+                  <h4><strong>${perTour.name}</strong></h4>
                   <p>${perTour.description}</p>
               </div>
               </div>
               <div class="col-lg-2 col-md-2">
               <div class="price_list">
                   <div>
-                  ${perTour.priceForAdult}.0<span
+                  ${moneyFormat(perTour.priceForAdult, true)}<span
                       class="normal_price_list"
                   ></span
                   <p>
@@ -112,19 +109,13 @@ async function renderTours(perTours, fatherBlock) {
   }
 }
 
-function handleToursPagesNumber(fatherBlock) {
-  renderTours(tours.slice(
-    (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-  ), fatherBlock);
-}
-
 function renderToursPagesNumber(fatherBlock) {
   try {
     const pagination = document.querySelector("ul.pagination");
     if (!pagination)
       throw new Error(`>>> Element with selector 'ul.pagination' not found in the DOM`);
 
-    totalPage = Math.ceil(tours.length / perPage);
+    let totalPage = Math.ceil(tours.length / perPage);
     if (totalPage > 1) {
       let htmls = '';
       htmls += `
@@ -155,6 +146,12 @@ function renderToursPagesNumber(fatherBlock) {
       const pageItemPrevious = document.querySelector(".page-item-previous");
       const pageItemNext = document.querySelector(".page-item-next");
 
+      let renderList = () => {
+        renderTours(tours.slice(
+          (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
+        ), fatherBlock);
+      }
+
       pageItemsNumber.forEach(function (element) {
         element.addEventListener("click", function () {
           pageItemsNumber.forEach(function (item) {
@@ -173,7 +170,7 @@ function renderToursPagesNumber(fatherBlock) {
             pageItemNext.style.pointerEvents = "none";
           }
           element.classList.add("active");
-          handleToursPagesNumber(fatherBlock);
+          renderList();
         })
       });
 
@@ -186,7 +183,7 @@ function renderToursPagesNumber(fatherBlock) {
           this.setAttribute("style", "pointer-events: none;");
         }
         document.querySelector(`.page-item-number-${currentPage}`).classList.add("active");
-        handleToursPagesNumber(fatherBlock);
+        renderList();
       });
 
       pageItemNext.addEventListener("click", function () {
@@ -198,7 +195,7 @@ function renderToursPagesNumber(fatherBlock) {
           this.setAttribute("style", "pointer-events: none;");
         }
         document.querySelector(`.page-item-number-${currentPage}`).classList.add("active");
-        handleToursPagesNumber(fatherBlock);
+        renderList();
       });
     } else {
       pagination.innerHTML = '';
@@ -228,23 +225,19 @@ async function handleRenderTours(data, fatherBlock) {
 }
 /*END TOURS AND PAGINATION*/
 
+////////////////////////////////////////
+
 /*SORT TOURS*/
-function funcSortByPriceDec(fatherBlock) {
+function funcSortByPriceDec() {
   tours.sort(function (a, b) {
     return b.priceForAdult - a.priceForAdult;
   });
-  renderTours(tours.slice(
-    (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-  ), fatherBlock);
 }
 
-function funcSortByPriceInc(fatherBlock) {
+function funcSortByPriceInc() {
   tours.sort(function (a, b) {
     return a.priceForAdult - b.priceForAdult;
   });
-  renderTours(tours.slice(
-    (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-  ), fatherBlock);
 }
 
 function SortByPrice() {
@@ -257,15 +250,15 @@ function SortByPrice() {
     const fatherBlock = document.querySelector("#tours_list");
     if (fatherBlock) {
       if (sortPriceBlock.value === 'decrease') {
-        funcSortByPriceDec(fatherBlock);
+        funcSortByPriceDec();
       } else if (sortPriceBlock.value === 'ascending') {
-        funcSortByPriceInc(fatherBlock);
+        funcSortByPriceInc();
       } else {
         tours = presentOriginTours.slice();
-        renderTours(tours.slice(
-          (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-        ), fatherBlock);
       }
+      currentPage = 1;
+      renderTours(tours.slice(0, perPage), fatherBlock);
+      renderToursPagesNumber(fatherBlock);
     } else {
       throw new Error(">>> Element with id '#tours_list' not found in the DOM");
     }
@@ -277,6 +270,7 @@ function SortByPrice() {
 function handleSortByPrice() {
   try {
     if (sortPriceBlock) {
+      sortPriceBlock.value = '';
       sortPriceBlock.addEventListener("change", function () {
         SortByPrice();
       });
@@ -288,55 +282,29 @@ function handleSortByPrice() {
   }
 }
 
-async function getReviewScore(tourId) {
-  try {
-    let tourReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
-    if (tourReviews.length === 0)
-      return 0;
-    let totalRating = 0;
-    let totalQuantity = 0;
-    for (let tourReview of tourReviews) {
-      totalRating += tourReview.vote;
-      totalQuantity++;
-    }
-    return Math.floor(totalRating / totalQuantity);
-  } catch (error) {
-    console.log(">>> Error: " + error.message);
-    throw error; // Re-throw the error to be caught later
-  }
-}
-
-async function funcSortByRatingDec(fatherBlock) {
+async function funcSortByRatingDec() {
   tours = (await Promise.all(
     tours.map(async (tour) => {
       return {
         tour,
-        reviewScore: await getReviewScore(tour.id),
+        reviewScore: await getReviewScore(`/api/tour/${tour.id}/tour-reviews`),
       };
     })
   )).sort((a, b) => b.reviewScore - a.reviewScore).map(item => item.tour);
-
-  renderTours(tours.slice(
-    (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-  ), fatherBlock);
 }
 
-async function funcSortByRatingInc(fatherBlock) {
+async function funcSortByRatingInc() {
   tours = (await Promise.all(
     tours.map(async (tour) => {
       return {
         tour,
-        reviewScore: await getReviewScore(tour.id),
+        reviewScore: await getReviewScore(`/api/tour/${tour.id}/tour-reviews`),
       };
     })
   )).sort((a, b) => a.reviewScore - b.reviewScore).map(item => item.tour);
-
-  renderTours(tours.slice(
-    (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-  ), fatherBlock);
 }
 
-function SortByReviewScore() {
+async function SortByReviewScore() {
   try {
     if (sortPriceBlock)
       sortPriceBlock.value = '';
@@ -346,15 +314,15 @@ function SortByReviewScore() {
     const fatherBlock = document.querySelector("#tours_list");
     if (fatherBlock) {
       if (sortRatingBlock.value === 'decrease') {
-        funcSortByRatingDec(fatherBlock);
+        await funcSortByRatingDec();
       } else if (sortRatingBlock.value === 'ascending') {
-        funcSortByRatingInc(fatherBlock);
+        await funcSortByRatingInc();
       } else {
         tours = presentOriginTours.slice();
-        renderTours(tours.slice(
-          (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-        ), fatherBlock);
       }
+      currentPage = 1;
+      renderTours(tours.slice(0, perPage), fatherBlock);
+      renderToursPagesNumber(fatherBlock);
     } else {
       throw new Error(">>> Element with id '#tours_list' not found in the DOM");
     }
@@ -366,6 +334,7 @@ function SortByReviewScore() {
 function handleSortByReviewScore() {
   try {
     if (sortRatingBlock) {
+      sortRatingBlock.value = '';
       sortRatingBlock.addEventListener("change", async function () {
         SortByReviewScore();
       });
@@ -377,6 +346,8 @@ function handleSortByReviewScore() {
   }
 }
 /*END SORT TOURS*/
+
+////////////////////////////////////////
 
 /*TOURS FILTER*/
 async function funcToursFilter(fatherBlock, filterDatePick) {
@@ -407,19 +378,17 @@ async function funcToursFilter(fatherBlock, filterDatePick) {
       }
       tours = temp;
     }
-    presentOriginTours = tours.slice();
 
-    if (!(JSON.stringify(tours) === JSON.stringify(toursFilter))) {
-      currentPage = 1;
+    if (JSON.stringify(tours) != JSON.stringify(presentOriginTours)) {
       if (sortPriceBlock.value != '') {
         SortByPrice(sortPriceBlock);
       } else if (sortRatingBlock.value != '') {
         SortByReviewScore(sortRatingBlock);
-      } else {
-        renderTours(tours.slice(0, perPage), fatherBlock);
       }
+      currentPage = 1;
+      renderTours(tours.slice(0, perPage), fatherBlock);
       renderToursPagesNumber(fatherBlock);
-      toursFilter = tours.slice();
+      presentOriginTours = tours.slice();
     }
   } catch (error) {
     console.log(">>> Error: " + error.message);
@@ -436,7 +405,6 @@ function handleToursFilter(selector) {
     if (fatherBlock) {
       const filterBtn = document.querySelector(".filter-btn");
       if (filterBtn) {
-        // toursFilter = presentOriginTours.slice();
         filterBtn.addEventListener("click", async function () {
           funcToursFilter(fatherBlock, filterDatePick);
         });
@@ -448,11 +416,12 @@ function handleToursFilter(selector) {
 }
 /*END TOURS FILTER*/
 
+////////////////////////////////////////
 
-import { getDropList, renderSearchDropList, handleGetTours, renderToursRating, getApi, compareDates, compareDateNow } from './global_function.js';
+import { getDropList, renderSearchDropList, handleGetData, renderRating, getApi, compareDates, compareDateNow, moneyFormat, getReviewScore } from './global_function.js';
 
 function start() {
-  handleGetTours(handleRenderTours, "#tours_list");
+  handleGetData("/api/tours", handleRenderTours, "#tours_list");
   Promise.all([getDropList("/api/destinations", renderSearchDropList, "#destinationsDropList", "walking.png"), getDropList("/api/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png")]).then(data => handleToursFilter("#tours_list")).catch(error => console.log(">>> Error: " + error.message));
 }
 

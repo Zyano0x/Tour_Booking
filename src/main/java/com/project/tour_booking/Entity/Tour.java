@@ -36,7 +36,7 @@ public class Tour {
 
     @NonNull
     @NotBlank(message = "Nội dung của tour không được để trống!")
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "LONGTEXT")
     private String description;
 
     @NonNull
