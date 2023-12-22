@@ -23,7 +23,7 @@ public class TourReview {
 
   @NonNull
   @NotBlank(message = "Nội dung đánh giá không thể để trống!")
-  @Column(name = "content")
+  @Column(name = "content", columnDefinition = "LONGTEXT")
   private String content;
 
   @NonNull
@@ -31,7 +31,6 @@ public class TourReview {
   @Column(name = "vote")
   private Integer vote;
 
-  @NonNull
   @Column(name = "date_of_posting")
   private LocalDate dateOfPosting;
 

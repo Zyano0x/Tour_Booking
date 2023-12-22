@@ -16,10 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-  
-    private static final String[] WHITE_LIST = {"/resources/**", "/api/**", "/panel/*", "/tours/*", "/",};
 
-    private static final String[] BLACK_LIST = {"/api/admin/**", "/panel/**",};
+    private static final String[] WHITE_LIST = { "/assets/**", "/api/**", "/panel/*", "/tours/*", "/articless/*",
+            "/", };
+
+    private static final String[] BLACK_LIST = { "/api/admin/**", "/panel/**", };
 
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -36,10 +37,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .formLogin(login -> login
-                        .loginProcessingUrl("/api/auth/login")
-                        .defaultSuccessUrl("/").permitAll());
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
         return http.build();
     }
 }

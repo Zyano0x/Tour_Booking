@@ -21,15 +21,16 @@ function renderSlider(sliders) {
 }
 /*END SLIDER*/
 
+////////////////////////////////////////
+
 /*FAVOURITE TOURS*/
 async function renderFavouriteTours(tours, fatherBlock) {
   const favouriteTours = tours.filter(tour => tour.status && tour.isHot);
   if (favouriteTours.length > 0) {
     for (const favouriteTour of favouriteTours) {
-      let html = favouriteTour.status && favouriteTour.isHot ?
-        `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.2s">
+      let html = `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.2s">
             <div div class="tour_container" >
-              <div class="ribbon_3 popular"><span>Popular</span></div>
+              <div class="ribbon_3 popular"><span>Nổi bật</span></div>
               <div class="img_container">
                 <a href="/tours/${favouriteTour.id}">
                   <img
@@ -40,7 +41,7 @@ async function renderFavouriteTours(tours, fatherBlock) {
                   />
                   <div class="short_info">
                     <i class="icon_set_1_icon-43"></i
-                    ><span class="price"><sup>VND</sup>${favouriteTour.priceForAdult}.0</span>
+                    ><span class="price"><sup>VND</sup>${moneyFormat(favouriteTour.priceForAdult, true)}</span>
                   </div>
                 </a>
               </div>
@@ -48,20 +49,20 @@ async function renderFavouriteTours(tours, fatherBlock) {
                 <h3>
                   <strong>${favouriteTour.name}</strong>
                 </h3>
-                <div id="tour_rating${favouriteTour.id}" class="tourRating">
-                  ${await renderToursRating(favouriteTour.id)}
+                <div id="rating${favouriteTour.id}" class="rating">
+                  ${await renderRating(`/api/tour/${favouriteTour.id}/tour-reviews`)}
               </div >
             </div >
           </div >
-        </div >`
-        :
-        '';
+        </div >`;
       if (html != '')
         fatherBlock.insertAdjacentHTML("beforeend", html);
     }
   }
 }
 /*END FAVOURITE TOURS*/
+
+////////////////////////////////////////
 
 /*FAVOURITE DESTINATIONS*/
 function renderFavouriteDestinations(destinations) {
@@ -72,7 +73,7 @@ function renderFavouriteDestinations(destinations) {
         let html = destination.status && destination.isHot ?
           `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
               <div class="hotel_container">
-                <div class="ribbon_3 popular"><span>Popular</span></div>
+                <div class="ribbon_3 popular"><span>Nổi bật</span></div>
                 <div class="img_container">
                   <a href="single_hotel.html">
                     <img src="${destination.thumbnail}" width="800" height="533"  alt="image">
@@ -98,14 +99,60 @@ function renderFavouriteDestinations(destinations) {
 }
 /*END FAVOURITE DESTINATIONS*/
 
-import { getApi, getDropList, renderSearchDropList, handleGetTours, renderToursRating } from './global_function.js';
+////////////////////////////////////////
+
+/*NEW ARTICLES*/
+async function renderNewArticles(articles, fatherBlock) {
+  const newArticles = articles.filter(article => article.status);
+  if (newArticles.length > 0) {
+    let count = 0;
+    for (const newArticle of newArticles) {
+      let html =
+        `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.2s">
+            <div div class="tour_container" >
+              <div class="ribbon_3 popular"><span>Mới</span></div>
+              <div class="img_container">
+                <a href="/articles/${newArticle.id}">
+                  <img
+                    src="${newArticle.thumbnail}"
+                    width="800"
+                    height="533"
+                    alt="Image"
+                  />
+                  <div class="short_info">
+                    <i class="icon_set_1_icon-43"></i
+                    >
+                  </div>
+                </a>
+              </div>
+              <div class="tour_title">
+                <h3>
+                  <strong>${newArticle.title}</strong>
+                </h3>
+                <div id="rating${newArticle.id}" class="rating">
+                  ${await renderRating(`/api/article/${newArticle.id}/article-reviews`)}
+              </div >
+            </div >
+          </div >
+        </div >`;
+      if (html != '')
+        fatherBlock.insertAdjacentHTML("beforeend", html);
+      if (count++ == 6)
+        break;
+    }
+  }
+}
+/*END NEW ARTICLES*/
+
+////////////////////////////////////////
+
+import { getApi, handleGetData, renderRating, moneyFormat } from './global_function.js';
 
 function start() {
   getApi("/api/sliders", renderSlider);
-  // getDropList("/api/destinations", renderSearchDropList, "#destinationsDropList", "walking.png");
-  // getDropList("/api/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png");
-  handleGetTours(renderFavouriteTours, "#favourite-tours");
+  handleGetData("/api/tours", renderFavouriteTours, "#favourite-tours");
   getApi("/api/destinations", renderFavouriteDestinations);
+  handleGetData("/api/articles/all", renderNewArticles, "#new-articles");
 }
 
 document.addEventListener("DOMContentLoaded", function () {

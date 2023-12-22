@@ -55,4 +55,6 @@ function handleLogout() {
 }
 
 const exitLink = document.getElementById('exit_link');
-exitLink.addEventListener('click', handleLogout);
+if (exitLink) {
+    exitLink.addEventListener('click', handleLogout);
+}

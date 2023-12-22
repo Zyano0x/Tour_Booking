@@ -1,123 +1,37 @@
-let tourId = getParamId();
-let tour;
-let tourReview;
+let articleId = getParamId();
+let article;
+let articleReview;
 const userId = document.head.dataset.userid;
 const ratingOption = document.querySelector("#quality_review");
 const reviewContent = document.querySelector("#review_text");
 
-async function renderTourHeader() {
+async function renderArticleHeader() {
     const parallaxWindow = document.querySelector(".parallax-window");
     const greyLayout = document.querySelector(".grey-layout");
     const name = document.getElementById("name");
-    const destination = document.querySelector(".destination");
-    const typeOfTour = document.querySelector(".type-of-tour");
-    const priceForAdult = document.querySelector("#price_single_main span");
-    const priceForChildren = document.querySelector("#price_single_main_for_children span");
+    const author = document.querySelector("#author p span");
+    const dateOfPosting = document.querySelector("#date-of-posting p span");
     const navigationName = document.querySelector(".navigation-name");
 
-    parallaxWindow ? parallaxWindow.style.background = `url(${tour.thumbnail}) no-repeat center/cover` : '';
+    parallaxWindow ? parallaxWindow.style.background = `url(${article.thumbnail}) no-repeat center/cover` : '';
     greyLayout ? greyLayout.style.height = "500px" : '';
-    name ? name.textContent = tour.name : '';
-    destination ? destination.textContent = tour.destination.name : '';
-    typeOfTour ? typeOfTour.textContent = tour.typeOfTour.name : '';
-    priceForAdult ? priceForAdult.textContent = moneyFormat(tour.priceForAdult, true) : '';
-    priceForChildren ? priceForChildren.textContent = moneyFormat(tour.priceForChildren, true) : '';
-    navigationName ? navigationName.textContent = tour.name : '';
+    name ? name.textContent = article.title : '';
+    author ? author.textContent = article.user.name : '';
+    dateOfPosting ? dateOfPosting.textContent = dateFormatConvert1(article.dateOfPosting) : '';
+    navigationName ? navigationName.textContent = articleId : '';
 
-    const rating = await renderRating(`/api/tour/${tourId}/tour-reviews`);
+    const rating = await renderRating(`/api/article/${articleId}/article-reviews`);
     document.querySelectorAll(".genarateRating").forEach(element => {
         element.innerHTML = rating;
     });
 }
 
-/*TOUR IMAGES*/
-function renderTourImages(tourImages) {
-    try {
-        const slide = document.querySelector(".sp-slides");
-        const thumbnails = document.querySelector(".sp-thumbnails");
-
-        if (!slide || !thumbnails) {
-            throw new Error("Elements with id '#slide or #thumbnails' not found in the DOM");
-        }
-
-        if (tourImages.length > 0) {
-            const slideHtmls = tourImages.map(tourImage => `
-                <div class="sp-slide">
-                    <img
-                        class="sp-image"
-                        src="${tourImage.path}"
-                        data-src="${tourImage.path}"
-                        data-small="${tourImage.path}"
-                        data-medium="${tourImage.path}"
-                        data-large="${tourImage.path}"
-                        data-retina="${tourImage.path}"
-                    />
-                </div>`
-            ).join('');
-
-            const thumbnailsHtmls = tourImages.map(tourImage => `
-                <img
-                    alt="Image"
-                    class="sp-thumbnail"
-                    src="${tourImage.path}"
-                />`
-            ).join('');
-
-            if (slideHtmls) {
-                slide.insertAdjacentHTML('beforeend', slideHtmls);
-            }
-
-            if (thumbnailsHtmls) {
-                thumbnails.insertAdjacentHTML('beforeend', thumbnailsHtmls);
-            }
-        }
-    } catch (error) {
-        console.error(">>> Error: " + error.message);
-    }
-}
-
-function loadScript(src) {
-    return new Promise(function (resolve, reject) {
-        var script = document.createElement("script");
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.body.insertAdjacentElement("beforeend", script);
-    });
-}
-
-async function handleGetTourImages() {
-    await getApi(`/api/tour/${tourId}/tour-images`, renderTourImages);
-
-    // Create layout & animation slider
-    await loadScript("/assets/user/js/jquery.sliderPro.min.js")
-        .then(function () {
-            // Mã sliderPro sẽ được thực hiện khi script đã được tải xong.
-            $("#Img_carousel").sliderPro({
-                width: 960,
-                height: 500,
-                fade: true,
-                arrows: true,
-                buttons: false,
-                fullScreen: false,
-                smallSize: 500,
-                startSlide: 0,
-                mediumSize: 1000,
-                largeSize: 3000,
-                thumbnailArrows: true,
-                autoplay: false,
-            });
-        })
-        .catch(function (error) {
-            console.error(">>> Error loading script:", error);
-        });
-}
-/*END TOUR IMAGES*/
+/* END RENDER HEADER */
 
 ////////////////////////////////////////
 
-/*TOUR INFO {description, schedule, service}*/
-function renderInfo(tourInfo, fatherBlockSelector) {
+/* RENDER CONTENT */
+function renderContent(tourInfo, fatherBlockSelector) {
     try {
         const fatherBlock = document.querySelector(fatherBlockSelector);
         if (fatherBlock) {
@@ -129,7 +43,7 @@ function renderInfo(tourInfo, fatherBlockSelector) {
         console.error(">>> Error: " + error.message);
     }
 }
-/*END TOUR INFO {description, schedule, service}*/
+/* END RENDER CONTENT */
 
 ////////////////////////////////////////
 
@@ -146,10 +60,10 @@ function renderReviewOption() {
         if (reviewOptionBlock && submitOptionBlock) {
             let reviewOption;
             let submitOption;
-            tourReview = userReviews.find(function (obj) {
+            articleReview = userReviews.find(function (obj) {
                 return obj.user.id == userId; // Thay id bằng thuộc tính cụ thể bạn muốn so sánh
             });
-            if (tourReview !== undefined) {
+            if (articleReview !== undefined) {
                 reviewOption = `<a
                 href="javascript:void(0);"
                 class="btn_1 add_bottom_30 .none-padding-right"
@@ -168,8 +82,8 @@ function renderReviewOption() {
                     id="submit_delete_review"
                 >Xóa</button>`;
 
-                ratingOption ? ratingOption.value = tourReview.vote : '';
-                reviewContent ? reviewContent.value = tourReview.content : '';
+                ratingOption ? ratingOption.value = articleReview.vote : '';
+                reviewContent ? reviewContent.value = articleReview.content : '';
             } else {
                 reviewOption = `<a
                 href="javascript:void(0);"
@@ -224,7 +138,7 @@ async function renderUsersReviews(userReviews) {
         const boxReview = document.querySelector("#boxReview");
         if (boxReview) {
             var htmls = '';
-            for (const tourReview of userReviews) {
+            for (const articleReview of userReviews) {
                 htmls += `<hr />
                         <div class="review_strip_single">
                         <img
@@ -232,13 +146,13 @@ async function renderUsersReviews(userReviews) {
                             alt="Image"
                             class="rounded-circle"
                         />
-                        <small> - ${tourReview.editDate ? "Chỉnh sửa - " + dateFormatConvert1(tourReview.editDate) : dateFormatConvert1(tourReview.dateOfPosting)} -</small>
-                        <h4>${tourReview.user ? tourReview.user.name : ''}</h4>
+                        <small> - ${articleReview.editDate ? "Chỉnh sửa - " + dateFormatConvert1(articleReview.editDate) : dateFormatConvert1(articleReview.dateOfPosting)} -</small>
+                        <h4>${articleReview.user ? articleReview.user.name : ''}</h4>
                         <p>
-                            ${tourReview.content}
+                            ${articleReview.content}
                         </p>
                         <div class="rating userRating">
-                            ${renderUserRating(parseInt(tourReview.vote))}
+                            ${renderUserRating(parseInt(articleReview.vote))}
                         </div>
                         </div>
                         <!-- End review strip -->
@@ -256,7 +170,7 @@ async function renderUsersReviews(userReviews) {
 
 async function handleRenderUserReviews() {
     try {
-        userReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
+        userReviews = await getApi(`/api/article/${articleId}/article-reviews`, "NotCallBack");
         renderReviewOption();
 
         // render page number
@@ -363,149 +277,7 @@ async function handleRenderUserReviews() {
 
 ////////////////////////////////////////
 
-/*BOOKING*/
-let deparuteDayIdForUpdate;
-
-function updateBookingQuantity() {
-    try {
-        const remainingQuanityBlock = document.querySelector("#remainingQuanity");
-        if (remainingQuanityBlock) {
-            setInterval(async function () {
-                remainingQuanityBlock.innerText = (await getApi(`/api/departure-day?id=${deparuteDayIdForUpdate}`, "NotCallBack")).quantity;
-            }, 1000);
-        } else {
-            throw new Error(`>>> Element with selector '#remainingQuanity' not found in the DOM`);
-        }
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
-
-async function bookingOverLay() {
-    try {
-        var departureDays = await getApi(`/api/tour/${tourId}/departure-days`, "NotCallBack");
-        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDateNow(departureDay.departureDay) && departureDay.quantity > 0);
-
-        if (validDepartureDays.length <= 0) {
-            document.querySelector("#booking_box").style.pointerEvents = "none";
-            document.querySelector(".booking_overlay").style.display = "flex";
-            return true;
-        }
-        return false;
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
-
-function changeDepartureDay() {
-    try {
-        var selectedValueInputs = document.querySelectorAll(".dd-option");
-
-        if (selectedValueInputs.length > 0) {
-            selectedValueInputs.forEach(function (option) {
-                option.addEventListener('click', function () {
-                    const optionValue = document.querySelector(".dd-option-selected .dd-option-value");
-                    if (optionValue) {
-                        deparuteDayIdForUpdate = parseInt(optionValue.value);
-                    } else {
-                        console.log("Not found element with selector '.dd-option-selected .dd-option-value' in DOM");
-                    }
-                });
-            });
-        } else {
-            console.log("Not found element with selector '.dd-option' in DOM");
-        }
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
-
-function booking() {
-    try {
-        const bookingBtn = document.querySelector("#booking_btn");
-        if (bookingBtn) {
-            const totalBlock = document.getElementById("total");
-            const adult = document.getElementById("adults");
-            const children = document.getElementById("children");
-            const departureDay = document.querySelector(".dd-option-selected .dd-option-value");
-            const remainingQuanityBlock = document.querySelector("#remainingQuanity");
-
-            bookingBtn.addEventListener("click", function () {
-                if (totalBlock.innerText !== '0') {
-                    let totalQuantity = parseInt(adult.value) + parseInt(children.value);
-                    if (parseInt(remainingQuanityBlock.innerText) >= totalQuantity) {
-                        const payment = {
-                            "userId": userId,
-                            "total": totalBlock.innerText,
-                            "quantityOfAdult": adult.value,
-                            "quantityOfChild": children.value,
-                            "departureDayId": departureDay.value
-                        };
-
-                        fetch('/api/payment/create', {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(payment),
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                console.log(data.paymentUrl);
-                                window.location.href = data.paymentUrl;
-                            })
-                            .catch((error) => {
-                                console.error("Error creating payment:", error);
-                            });
-                    } else if (parseInt(remainingQuanityBlock.innerText) === 0) {
-                        alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Ngày khởi hành bạn chọn đã hết vé!");
-                    } else {
-                        alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé còn lại không đủ!");
-                    }
-                } else {
-                    alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé phải lớn hơn 0!");
-                }
-            })
-        } else {
-            console.log("Not found element width selector '#bookingBtn' in DOM");
-        }
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
-
-async function handleBooking() {
-    try {
-        if (!(await bookingOverLay(tourId))) {
-            await getDropList(`/api/tour/${tourId}/departure-days`, renderDepartureDropList, "#departureDays", "all_tours.png");
-
-            // Set departureDayId ban đầu
-            deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
-            // Chạy cập nhật
-            updateBookingQuantity();
-
-            changeDepartureDay();
-
-            changeQuantity(tour.priceForAdult, tour.priceForChildren);
-
-            booking();
-        } else {
-            document.querySelector("#departureDays").innerHTML += `<option
-                value=""
-                data-imagesrc="/assets/user/images/icons_search/all_tours.png">
-                ...
-            </option>`;
-            ddslick("#departureDays");
-        }
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
-/*END BOOKING*/
-
-////////////////////////////////////////
-
-/*CRUD TOUR REVIEW */
+/* CRUD ARTICLE REVIEWS */
 const closeModalReview = document.getElementById("close-modal-review");
 
 function containsUnwantedWords(comment) {
@@ -553,7 +325,7 @@ function addNewReview(rating, review) {
             "content": review,
             "vote": rating,
             "userId": userId,
-            "tourId": tourId,
+            "articleId": articleId,
         });
 
         let requestOptions = {
@@ -561,17 +333,17 @@ function addNewReview(rating, review) {
         };
 
         // Make the API request
-        fetch("/api/tour-review", requestOptions)
+        fetch("/api/article-review", requestOptions)
             .then(response => {
                 if (response.ok) {
                     return response.text();
                 } else {
-                    throw new Error('Failed to add tour review. Status: ' + response.status);
+                    throw new Error('Failed to add review. Status: ' + response.status);
                 }
             })
             .then(result => {
                 alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Thêm đánh giá thành công!");
-                renderTourHeader();
+                renderArticleHeader();
                 handleRenderUserReviews();
                 closeModalReview.click();
             })
@@ -592,7 +364,7 @@ function updateReview(rating, review) {
             "content": review,
             "vote": rating,
             "userId": userId,
-            "tourId": tourId,
+            "articleId": articleId,
         });
 
         let requestOptions = {
@@ -600,19 +372,19 @@ function updateReview(rating, review) {
         };
 
         // Make the API request
-        fetch(`/api/update-tour-review/${tourReview.id}`, requestOptions)
+        fetch(`/api/update-article-review/${articleReview.id}`, requestOptions)
             .then(response => {
                 if (response.ok) {
                     return response.text();
                 } else {
-                    throw new Error('Failed to update tour review. Status: ' + response.status);
+                    throw new Error('Failed to update review. Status: ' + response.status);
                 }
             })
             .then(result => {
                 renderReviewOption();
 
                 alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Cập nhật đánh giá thành công!");
-                renderTourHeader();
+                renderArticleHeader();
                 currentPage = 1;
                 handleRenderUserReviews();
                 closeModalReview.click();
@@ -627,7 +399,7 @@ function updateReview(rating, review) {
 
 async function deleteReview() {
     try {
-        const response = await fetch(`/api/delete-tour-review/${tourReview.id}`, {
+        const response = await fetch(`/api/delete-article-review/${articleReview.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json', // Nếu API yêu cầu header có kiểu dữ liệu
@@ -642,7 +414,7 @@ async function deleteReview() {
         renderReviewOption();
 
         alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Xóa đánh giá thành công!");
-        renderTourHeader();
+        renderArticleHeader();
         currentPage = 1;
         handleRenderUserReviews();
         closeModalReview.click();
@@ -670,7 +442,7 @@ function handleCRUDReview() {
             if (submitUpdateReviewBtn) {
                 submitUpdateReviewBtn.addEventListener("click", function () {
                     ratingOption && ratingOption.value != '' ? reviewContent && reviewContent.value != '' ?
-                        ratingOption.value == tourReview.vote && reviewContent.value == tourReview.content ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Nội dung đánh giá không có thay đổi!") : containsUnwantedWords(reviewContent.value) ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Bình luận có từ ngữ không phù hợp!") : updateReview(ratingOption.value, reviewContent.value, modal) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
+                        ratingOption.value == articleReview.vote && reviewContent.value == articleReview.content ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Nội dung đánh giá không có thay đổi!") : containsUnwantedWords(reviewContent.value) ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Bình luận có từ ngữ không phù hợp!") : updateReview(ratingOption.value, reviewContent.value, modal) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
                         : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra điểm đánh giá!");
                 });
             }
@@ -687,20 +459,7 @@ function handleCRUDReview() {
         console.log(">>> Error: " + error.message);
     }
 }
-/*END CRUD TOUR REVIEW */
-
-////////////////////////////////////////
-
-/*MAP*/
-function renderMAP(locationSRC) {
-    const ggMapIframe = document.querySelector("#gg-map iframe");
-    ggMapIframe && ggMapIframe.getAttribute("src") != locationSRC ? ggMapIframe.setAttribute("src", `${locationSRC}`) : '';
-}
-
-function handleGetMap() {
-    // Chạy renderMap lần đầu tiên và hiển thị departurePoint của departureDay được chọn đầu tiên
-}
-/*END MAP*/
+/* END CRUD ARTICLE REVIEWS */
 
 ////////////////////////////////////////
 
@@ -719,18 +478,14 @@ function getParamId() {
     }
 }
 
-import { getDropList, renderRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity, dateFormatConvert1, unwantedKeywords, moneyFormat } from './global_function.js';
+import { getApi, dateFormatConvert1, unwantedKeywords, renderRating } from './global_function.js';
 
 async function start() {
     try {
-        tour = await getApi(`/api/tour?id=${tourId}`, "NotCallBack");
-        if (tour !== undefined) {
-            renderTourHeader();
-            handleGetTourImages();
-            handleBooking();
-            renderInfo(tour.description, ".description-content");
-            renderInfo(tour.schedule, ".schedule-content");
-            renderInfo(tour.service, ".service-content");
+        article = await getApi(`/api/articles?id=${articleId}`, "NotCallBack");
+        if (article !== undefined) {
+            renderArticleHeader();
+            renderContent(article.content, "#article-content");
             handleRenderUserReviews();
         }
     } catch (error) {

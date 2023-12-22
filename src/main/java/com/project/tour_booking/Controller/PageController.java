@@ -33,13 +33,23 @@ public class PageController {
     }
 
     @GetMapping("tours/{tourId}")
-    public String detail() {
+    public String tourDetail() {
         return "user/tour_details";
     }
 
     @GetMapping("/cart")
-    public String cart(Model model) {
+    public String cart() {
         return "user/cart";
+    }
+
+    @GetMapping("/articles")
+    public String articles() {
+        return "user/articles";
+    }
+
+    @GetMapping("/articles/{articleId}")
+    public String articleDetail() {
+        return "user/article_details";
     }
 
     @ModelAttribute("userId")
@@ -63,10 +73,8 @@ public class PageController {
         String msg = null;
 
         Cookie[] cookies2 = request.getCookies();
-        for(int i = 0; i < cookies2.length; i++)
-        {
-            if (cookies2[i].getName().equals("Authorization"))
-            {
+        for (int i = 0; i < cookies2.length; i++) {
+            if (cookies2[i].getName().equals("Authorization")) {
                 cookies2[i].setMaxAge(0);
                 res.addCookie(cookies2[i]);
                 msg = "Logout successfully";

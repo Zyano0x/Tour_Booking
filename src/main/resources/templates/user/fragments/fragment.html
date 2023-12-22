@@ -96,7 +96,7 @@
                 <div class="col-6">
                     <ul id="top_links">
                         <li sec:authorize="isAnonymous()">
-                            <a href="#sign-in-dialog" id="access_link"></i> Đăng Nhập</a>
+                            <a href="#sign-in-dialog" id="access_link" class="access_link"></i> Đăng Nhập</a>
                         </li>
                         <li sec:authorize="isAuthenticated()">
                             <a href="/logout" id="exit_link"></i> Đăng Xuất</a>
@@ -146,7 +146,7 @@
                             <a class="show-submenu" href="/tours">TOURS </a>
                         </li>
                         <li class="submenu">
-                            <a class="show-submenu" href="javascript:void(0);"
+                            <a class="show-submenu" href="/articles"
                             >BÀI VIẾT
                             </a>
                         </li>

@@ -85,12 +85,12 @@ public class TourReviewServiceImpl implements TourReviewService {
   }
 
   @Override
-  public TourReview updateTourReview(TourReview tourReview, Long tourReviewId) {
+  public TourReview updateTourReview(TourReviewDTO tourReviewDTO, Long tourReviewId) {
     Optional<TourReview> tourReviewOptional = tourReviewRepository.findById(tourReviewId);
     if (tourReviewOptional.isPresent()) {
       TourReview updateTourReview = tourReviewOptional.get();
-      updateTourReview.setContent(tourReview.getContent());
-      updateTourReview.setVote(tourReview.getVote());
+      updateTourReview.setContent(tourReviewDTO.getContent());
+      updateTourReview.setVote(tourReviewDTO.getVote());
       updateTourReview.setEditDate(LocalDate.now());
       return tourReviewRepository.save(updateTourReview);
     } else
