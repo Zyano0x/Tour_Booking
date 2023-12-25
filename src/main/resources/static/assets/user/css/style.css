@@ -653,7 +653,7 @@ a#wishlist_link {
 	position: relative;
 	display: inline-block;
 	padding-left: 20px;
-	font-size: 13px;
+	font-size: 12px;
 }
 
 #access_link:before,
@@ -7418,7 +7418,8 @@ only screen and (min-device-pixel-ratio: 2) and (max-width: 991px) {
 	border-bottom: 1px solid #ccc;
 }
 
-.myaccount-tab-menu a:hover, .myaccount-tab-menu a.active {
+.myaccount-tab-menu a:hover,
+.myaccount-tab-menu a.active {
 	background-color: #ff2f2f;
 	border-color: #ff2f2f;
 	color: #ffffff;

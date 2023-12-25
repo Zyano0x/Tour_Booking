@@ -101,8 +101,8 @@
           <div class="row">
             <div class="col-lg-2">
               <h3>ĐÁNH GIÁ</h3>
-
-              <div id="review_option"></div>
+              <a sec:authorize="isAnonymous()" href="#sign-in-dialog" class="btn_1 access_link"></i> Đăng Nhập</a>
+              <div sec:authorize="isAuthenticated()" id="review_option"></div>
             </div>
             <div class="col-lg-10">
               <div id="general_rating">

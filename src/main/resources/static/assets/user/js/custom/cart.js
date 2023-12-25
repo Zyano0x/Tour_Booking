@@ -252,7 +252,7 @@ function CancelBooking() {
                         const dialog = document.querySelector("#customPrompt");
                         dialog.parentNode.removeChild(dialog);
                     });
-                    document.querySelector(".action-btn.update-btn-").addEventListener("click", function () {
+                    document.querySelector(".action-btn.update-btn").addEventListener("click", function () {
                         const url = `/api/update-booking-status?id=${cancelBtn.parentNode.dataset.booking}`;
                         fetch(url, {
                             method: "PUT",
@@ -282,64 +282,60 @@ function CancelBooking() {
 /*UPDATE BOOKING*/
 function UpdateBooking() {
     try {
-        const departureOptions = document.querySelectorAll(`.dd-option`);
+        const selectedOptions = document.querySelectorAll(`.dd-selected`);
 
-        if (departureOptions.length > 0) {
-            for (const departureOption of departureOptions) {
-                departureOption.addEventListener('click', function () {
-                    let bookingId = departureOption.parentNode.parentNode.parentNode.id.slice(-1); // Sử dụng closest để tìm phần tử cha gần nhất
-                    const url = `/api/update-booking/${bookingId}`;
+        if (selectedOptions.length > 0) {
+            for (const selectedOption of selectedOptions) {
+                let bookingId = selectedOption.parentNode.parentNode.id.slice(-1); // Sử dụng closest để tìm phần tử cha gần nhất
+                console.log(bookingId);
+                const url = `/api/update-booking/${bookingId}`;
 
-                    const updateBtn = document.querySelector(`.update${bookingId}`);
+                const updateBtn = document.querySelector(`.update${bookingId}`);
 
-                    const departureDaysElement = document.querySelector(`#departureDays${bookingId}`);
-                    if (departureDaysElement) {
+                const departureDaysElement = document.querySelector(`#departureDays${bookingId}`);
+                if (departureDaysElement) {
+                    updateBtn.addEventListener("click", async function () {
+                        let presentDepartureId = departureDaysElement.parentNode.dataset.presentdepartureid;
+                        let selectDepartureId = departureDaysElement.querySelector('.dd-selected-value').value;
+                        const adult = document.getElementById("adults");
+                        const children = document.getElementById("children");
+                        let totalQuantity = parseInt(adult.value) + parseInt(children.value);
 
-                        const updateBtnClickHandler = async function () {
-                            let presentDepartureId = departureDaysElement.parentNode.dataset.presentdepartureid;
-                            let selectDepartureId = departureDaysElement.querySelector('.dd-selected-value').value;
-                            const adult = document.getElementById("adults");
-                            const children = document.getElementById("children");
-                            let totalQuantity = parseInt(adult.value) + parseInt(children.value);
+                        if (selectDepartureId != presentDepartureId) {
+                            if (parseInt((await getApi(`/api/departure-day?id=${selectDepartureId}`, "NotCallBack")).quantity) < totalQuantity) {
+                                alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé đã vượt quá số lượng vé còn lại!");
+                            } else {
+                                let myHeaders = new Headers();
+                                myHeaders.append("Content-Type", "application/json");
 
-                            if (selectDepartureId != presentDepartureId) {
-                                if (parseInt((await getApi(`/api/departure-day?id=${selectDepartureId}`, "NotCallBack")).quantity) < totalQuantity) {
-                                    alert("Thông báo: Số lượng vé đã vượt quá số lượng vé còn lại!");
-                                } else {
-                                    let myHeaders = new Headers();
-                                    myHeaders.append("Content-Type", "application/json");
+                                let raw = JSON.stringify({
+                                    "userId": document.head.dataset.userid,
+                                    "quantityOfAdult": adult.value,
+                                    "quantityOfChild": children.value,
+                                    "departureDayId": selectDepartureId,
+                                });
 
-                                    let raw = JSON.stringify({
-                                        "userId": document.head.dataset.userid,
-                                        "quantityOfAdult": adult.value,
-                                        "quantityOfChild": children.value,
-                                        "departureDayId": selectDepartureId,
-                                    });
+                                let requestOptions = {
+                                    method: 'PUT',
+                                    headers: myHeaders,
+                                    body: raw,
+                                    redirect: 'follow'
+                                };
 
-                                    let requestOptions = {
-                                        method: 'PUT',
-                                        headers: myHeaders,
-                                        body: raw,
-                                        redirect: 'follow'
-                                    };
-
-                                    // Make the API request
-                                    fetch(url, requestOptions)
-                                        .then(response => {
-                                            return response.text();
-                                        })
-                                        .then(result => {
-                                            alert('Booking updated successfully:', result);
-                                        })
-                                        .catch(error => console.log('Error updating booking:', error));
-                                    departureDaysElement.parentNode.setAttribute('data-presentdepartureid', `${selectDepartureId}`);
-                                }
+                                // Make the API request
+                                fetch(url, requestOptions)
+                                    .then(response => {
+                                        return response.text();
+                                    })
+                                    .then(result => {
+                                        alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", 'Cập nhật thành công', result);
+                                    })
+                                    .catch(error => console.log('Error updating booking:', error));
+                                departureDaysElement.parentNode.setAttribute('data-presentdepartureid', `${selectDepartureId}`);
                             }
-                            updateBtn.removeEventListener("click", updateBtnClickHandler);
-                        };
-                        updateBtn.addEventListener("click", updateBtnClickHandler);
-                    }
-                });
+                        }
+                    });
+                }
             }
         } else {
             throw new Error("Element with selector '.dd-selected-value' not found in the DOM");
@@ -352,7 +348,7 @@ function UpdateBooking() {
 
 ////////////////////////////////////////
 
-import { compareDateNow, dateFormatConvert, ddslick, getApi, moneyFormat, renderDepartureDropList } from './global_function.js';
+import { compareDateNow, dateFormatConvert, ddslick, getApi, moneyFormat, renderDepartureDropList, alertFunc } from './global_function.js';
 
 async function start() {
     bookings = await getApi(`/api/user/${document.head.dataset.userid}/bookings`);

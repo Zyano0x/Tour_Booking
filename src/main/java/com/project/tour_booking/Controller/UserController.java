@@ -1,6 +1,5 @@
 package com.project.tour_booking.Controller;
 
-import com.project.tour_booking.Entity.User;
 import com.project.tour_booking.Service.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

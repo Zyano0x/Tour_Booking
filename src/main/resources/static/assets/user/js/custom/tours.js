@@ -58,6 +58,10 @@ let originTours = [];
 let presentOriginTours = [];
 const sortPriceBlock = document.getElementById("sort_price");
 const sortRatingBlock = document.getElementById("sort_rating");
+const filterBtn = document.querySelector(".filter-btn");
+const filterDatePick = document.querySelector(".date-pick");
+let fatherBlock;
+const descriptionFilter = localStorage.getItem("descriptionFilter");
 
 async function renderTours(perTours, fatherBlock) {
   try {
@@ -205,11 +209,17 @@ function renderToursPagesNumber(fatherBlock) {
   }
 }
 
-async function handleRenderTours(data, fatherBlock) {
+function handleRenderTours(data, fatherBlock) {
   try {
     originTours = data.slice(); // Không thay đổi
     presentOriginTours = data.slice(); // Có thể thay đổi tùy theo lọc
     tours = data.slice(); // Có thể thay đổi
+
+    // Lọc tours theo destination từ trang chủ
+    if (descriptionFilter && descriptionFilter != '') {
+      tours = tours.filter(tour => tour.destination.id == descriptionFilter);
+      presentOriginTours = tours.slice();
+    }
 
     // render pages number
     renderToursPagesNumber(fatherBlock);
@@ -350,7 +360,7 @@ function handleSortByReviewScore() {
 ////////////////////////////////////////
 
 /*TOURS FILTER*/
-async function funcToursFilter(fatherBlock, filterDatePick) {
+async function funcToursFilter() {
   try {
     tours = originTours.slice();
     const filterDestination = document.querySelector("#destinationsDropList .dd-option-selected .dd-option-value");
@@ -397,19 +407,36 @@ async function funcToursFilter(fatherBlock, filterDatePick) {
 
 function handleToursFilter(selector) {
   try {
-    const fatherBlock = document.querySelector(selector);
-    const filterDatePick = document.querySelector(".date-pick");
+    fatherBlock = document.querySelector(selector);
     if (filterDatePick)
       filterDatePick.value = '';
 
     if (fatherBlock) {
-      const filterBtn = document.querySelector(".filter-btn");
       if (filterBtn) {
-        filterBtn.addEventListener("click", async function () {
+        filterBtn.addEventListener("click", function () {
           funcToursFilter(fatherBlock, filterDatePick);
         });
       }
     }
+
+    // Setup filter theo destination từ trang chủ
+    if (descriptionFilter && descriptionFilter != '') {
+      let options = document.querySelectorAll("#destinationsDropList .dd-option-value");
+      for (const option of options) {
+        if (option.value == '0')
+          option.parentNode.classList.remove("dd-option-selected")
+        if (option.value == descriptionFilter) {
+          option.parentNode.classList.add("dd-option-selected");
+          document.querySelector(".dd-selected-value").value = descriptionFilter;
+          document.querySelector(".dd-selected-text").textContent = option.parentNode.querySelector(".dd-option-text").textContent;
+          break;
+        }
+      }
+
+      // Xóa trạng thái từ local storage để tránh thực hiện nhiều lần
+      localStorage.removeItem("descriptionFilter");
+    }
+
   } catch (error) {
     console.log(">>> Error: " + error.message);
   }
@@ -420,7 +447,7 @@ function handleToursFilter(selector) {
 
 import { getDropList, renderSearchDropList, handleGetData, renderRating, getApi, compareDates, compareDateNow, moneyFormat, getReviewScore } from './global_function.js';
 
-function start() {
+async function start() {
   handleGetData("/api/tours", handleRenderTours, "#tours_list");
   Promise.all([getDropList("/api/destinations", renderSearchDropList, "#destinationsDropList", "walking.png"), getDropList("/api/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png")]).then(data => handleToursFilter("#tours_list")).catch(error => console.log(">>> Error: " + error.message));
 }
