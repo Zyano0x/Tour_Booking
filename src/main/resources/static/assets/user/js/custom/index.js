@@ -75,7 +75,7 @@ function renderFavouriteDestinations(destinations) {
               <div class="hotel_container">
                 <div class="ribbon_3 popular"><span>Nổi bật</span></div>
                 <div class="img_container">
-                  <a href="single_hotel.html">
+                  <a href="single_hotel.html" class="destination-link${destination.id}">
                     <img src="${destination.thumbnail}" width="800" height="533"  alt="image">
                   </a>
                 </div>
@@ -90,6 +90,17 @@ function renderFavouriteDestinations(destinations) {
           : ''
         if (html != '')
           favouriteDestinationsBlock.insertAdjacentHTML("afterbegin", html);
+        document
+          .querySelector(`.destination-link${destination.id}`)
+          .addEventListener("click", function (event) {
+            event.preventDefault();
+
+            // Lưu trạng thái vào local storage
+            localStorage.setItem("descriptionFilter", `${destination.id}`);
+
+            // Chuyển đến trang tours
+            window.location.href = "/tours";
+          });
       }
     } else
       throw new Error("Element with id '#favourite-destinations' not found in the DOM");

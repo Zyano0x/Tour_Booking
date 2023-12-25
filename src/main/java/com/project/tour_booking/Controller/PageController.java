@@ -46,9 +46,19 @@ public class PageController {
     @GetMapping("/articles/{articleId}")
     public String articleDetail() {
         return "user/article_details";
-      
+    }
+
     @GetMapping("/my-account")
-    public String myAccount() {
+    public String myAccount(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+            User user = userService.user(userDetails.getUsername());
+
+            if (user != null) {
+                model.addAttribute("user", user);
+            }
+        }
         return "user/profile";
     }
 

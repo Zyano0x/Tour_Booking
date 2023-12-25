@@ -104,8 +104,6 @@ function renderReviewOption() {
             reviewOptionBlock.innerHTML = reviewOption;
             submitOptionBlock.innerHTML = submitOption;
             handleCRUDReview();
-        } else {
-            console.log("Not found element width selector '#review_option' or '#submit_option' in DOM");
         }
     } catch (error) {
         console.log(">>> Error: " + error.message);

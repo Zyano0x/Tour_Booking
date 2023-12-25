@@ -190,8 +190,6 @@ function renderReviewOption() {
             reviewOptionBlock.innerHTML = reviewOption;
             submitOptionBlock.innerHTML = submitOption;
             handleCRUDReview();
-        } else {
-            console.log("Not found element width selector '#review_option' or '#submit_option' in DOM");
         }
     } catch (error) {
         console.log(">>> Error: " + error.message);
@@ -431,12 +429,13 @@ function booking() {
             const remainingQuanityBlock = document.querySelector("#remainingQuanity");
 
             bookingBtn.addEventListener("click", function () {
-                if (totalBlock.innerText !== '0') {
+                let totalPrice = moneyFormat(totalBlock.innerText);
+                if (totalPrice !== '0') {
                     let totalQuantity = parseInt(adult.value) + parseInt(children.value);
                     if (parseInt(remainingQuanityBlock.innerText) >= totalQuantity) {
                         const payment = {
                             "userId": userId,
-                            "total": totalBlock.innerText,
+                            "total": totalPrice,
                             "quantityOfAdult": adult.value,
                             "quantityOfChild": children.value,
                             "departureDayId": departureDay.value
@@ -481,6 +480,11 @@ async function handleBooking() {
 
             // Set departureDayId ban đầu
             deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
+
+            // Hiển thị thời gian
+            const timeBlock = document.querySelector("#time");
+            timeBlock ? timeBlock.textContent = tour.time : '';
+
             // Chạy cập nhật
             updateBookingQuantity();
 
@@ -516,32 +520,6 @@ function containsUnwantedWords(comment) {
         }
     }
     return false; // Nếu không tìm thấy từ khóa không mong muốn, trả về false
-}
-
-function alertFunc(icon, color, bg, content) {
-    let animatedAlert = document.getElementById("animatedAlert");
-    if (animatedAlert) {
-        animatedAlert.insertAdjacentHTML("afterbegin", `<div class="animated-alert-item"><i class="${icon}" style="color: ${color}"></i> ${content}</div>`)
-        let animatedAlertItem = animatedAlert.firstChild;
-        // let animatedAlertItem = document.getElementsByClassName("animated-alert-item");
-
-        animatedAlertItem.setAttribute("style", `background: ${bg}`)
-        // Hiển thị thông báo
-        animatedAlertItem.classList.add("show");
-        animatedAlertItem.style.animation = "fadeIn 1s ease";
-
-        // Đặt thời gian để di chuyển và biến mất sau 3 giây
-        setTimeout(function () {
-            animatedAlertItem.classList.remove("show");
-            animatedAlertItem.style.animation = "slideOut 1s ease";
-
-            // // Đặt thời gian để ẩn thông báo sau khi kết thúc animation
-            setTimeout(function () {
-                animatedAlertItem.style.animation = "";
-                animatedAlertItem.parentNode.removeChild(animatedAlertItem);
-            }, 2000);
-        }, 3000);
-    }
 }
 
 function addNewReview(rating, review) {
@@ -719,7 +697,7 @@ function getParamId() {
     }
 }
 
-import { getDropList, renderRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity, dateFormatConvert1, unwantedKeywords, moneyFormat } from './global_function.js';
+import { getDropList, renderRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity, dateFormatConvert1, unwantedKeywords, moneyFormat, alertFunc } from './global_function.js';
 
 async function start() {
     try {

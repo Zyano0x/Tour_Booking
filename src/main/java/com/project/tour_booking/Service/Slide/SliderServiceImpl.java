@@ -21,7 +21,7 @@ public class SliderServiceImpl implements SliderService {
     public void savSlider(SliderDTO sliderDTO) {
         Slider slider = new Slider();
         slider.setPath(sliderDTO.getPath());
-        slider.setStatus(true);
+        slider.setStatus(false);
         sliderRepository.save(slider);
     }
 

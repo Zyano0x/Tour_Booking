@@ -212,6 +212,10 @@
                 <br />
                 <table class="table table_summary">
                   <tbody>
+                    <tr class="time">
+                      <td>Thời gian</td>
+                      <td class="text-right" id="time">...</td>
+                    </tr>
                     <tr class="remainingQuanity">
                       <td>Số lượng còn lại</td>
                       <td class="text-right" id="remainingQuanity">0</td>
@@ -224,9 +228,11 @@
                     </tr>
                   </tbody>
                 </table>
-                <a id="booking_btn" class="btn_full outline-none" href="javascript:void(0)"
-                  >Đặt vé ngay</a
-                >
+                <a sec:authorize="isAnonymous()" href="#sign-in-dialog" class="btn_full access_link outline-none"></i> ĐĂNG NHẬP</a>
+                <a sec:authorize="isAuthenticated()" id="booking_btn" class="btn_full outline-none" href="javascript:void(0)"
+                >Đặt vé ngay</a>
+                <!-- <a id="booking_btn" class="btn_full outline-none" href="javascript:void(0)"
+                >Đặt vé ngay</a> -->
               </div>
               <!--/box_style_1 -->
             </div>

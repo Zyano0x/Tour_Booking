@@ -283,6 +283,32 @@ export async function getApi(apiUrl, callBack) {
     }
 }
 
+export function alertFunc(icon, color, bg, content) {
+    let animatedAlert = document.getElementById("animatedAlert");
+    if (animatedAlert) {
+        animatedAlert.insertAdjacentHTML("afterbegin", `<div class="animated-alert-item"><i class="${icon}" style="color: ${color}"></i> ${content}</div>`)
+        let animatedAlertItem = animatedAlert.firstChild;
+        // let animatedAlertItem = document.getElementsByClassName("animated-alert-item");
+
+        animatedAlertItem.setAttribute("style", `background: ${bg}`)
+        // Hiển thị thông báo
+        animatedAlertItem.classList.add("show");
+        animatedAlertItem.style.animation = "fadeIn 1s ease";
+
+        // Đặt thời gian để di chuyển và biến mất sau 3 giây
+        setTimeout(function () {
+            animatedAlertItem.classList.remove("show");
+            animatedAlertItem.style.animation = "slideOut 1s ease";
+
+            // // Đặt thời gian để ẩn thông báo sau khi kết thúc animation
+            setTimeout(function () {
+                animatedAlertItem.style.animation = "";
+                animatedAlertItem.parentNode.removeChild(animatedAlertItem);
+            }, 2000);
+        }, 3000);
+    }
+}
+
 export async function getDropList(apiUrl, callBack, fatherBlockSelector, icon) {
     try {
         const fatherBlock = document.querySelector(fatherBlockSelector);
