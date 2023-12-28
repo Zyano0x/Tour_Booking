@@ -48,6 +48,11 @@ public class PageController {
         return "user/article_details";
     }
 
+    @GetMapping("/register")
+    public String register() {
+        return "user/register";
+    }
+
     @GetMapping("/my-account")
     public String myAccount(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
