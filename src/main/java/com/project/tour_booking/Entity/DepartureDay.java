@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -34,6 +36,11 @@ public class DepartureDay {
     @Column(name = "departure_day")
     @ValidDepartureDay(message = "Ngày khởi hành phải lớn hơn thời điểm khởi tạo!")
     private LocalDate departureDay;
+
+    @NonNull
+    @JsonFormat(pattern = "HH:mm")
+    @Column(name = "departure_time")
+    private LocalTime departureTime;
 
     @NonNull
     @NotNull(message = "Trạng thái không được để trống!")

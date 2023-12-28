@@ -288,7 +288,6 @@ export function alertFunc(icon, color, bg, content) {
     if (animatedAlert) {
         animatedAlert.insertAdjacentHTML("afterbegin", `<div class="animated-alert-item"><i class="${icon}" style="color: ${color}"></i> ${content}</div>`)
         let animatedAlertItem = animatedAlert.firstChild;
-        // let animatedAlertItem = document.getElementsByClassName("animated-alert-item");
 
         animatedAlertItem.setAttribute("style", `background: ${bg}`)
         // Hiển thị thông báo

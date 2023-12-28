@@ -19,15 +19,16 @@ public class PaymentController {
     private final BookingService bookingService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPayment(@RequestBody BookingDTO bookingDTO, HttpSession session) throws UnsupportedEncodingException {
+    public ResponseEntity<?> createPayment(@RequestBody BookingDTO bookingDTO, HttpSession session)
+            throws UnsupportedEncodingException {
         session.setAttribute("BookingInfo", bookingDTO);
         return vnPayService.createPayment(bookingDTO);
     }
 
     @GetMapping("/payment_info")
     public ResponseEntity<?> paymentInfo(@RequestParam("vnp_ResponseCode") String response,
-                                         @RequestParam("vnp_TxnRef") Long transactionCode,
-                                         HttpSession session) {
+            @RequestParam("vnp_TxnRef") Long transactionCode,
+            HttpSession session) {
         BookingDTO bookingDTO = (BookingDTO) session.getAttribute("BookingInfo");
         bookingDTO.setTransactionCode(transactionCode);
         if (response.equals("00")) {

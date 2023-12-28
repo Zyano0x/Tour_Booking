@@ -32,6 +32,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
   public void saveDepartureDay(DepartureDayDTO departureDayDTO) {
     System.out.println(departureDayDTO.getDepartureDay());
     DepartureDay newDepartureDay = new DepartureDay(departureDayDTO.getQuantity(), departureDayDTO.getDepartureDay(),
+        departureDayDTO.getDepartureTime(),
         departureDayDTO.getStatus());
 
     Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
@@ -76,6 +77,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
       if (updateDepartureDay.getDepartureDay().isAfter(LocalDate.now())) {
         updateDepartureDay.setQuantity(departureDayDTO.getQuantity());
         updateDepartureDay.setDepartureDay(departureDayDTO.getDepartureDay());
+        updateDepartureDay.setDepartureTime(departureDayDTO.getDepartureTime());
 
         // Kiểm tra có thay đổi status không
         if (departureDayDTO.getStatus() != updateDepartureDay.getStatus()) {
