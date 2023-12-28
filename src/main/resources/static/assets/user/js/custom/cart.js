@@ -286,8 +286,7 @@ function UpdateBooking() {
 
         if (selectedOptions.length > 0) {
             for (const selectedOption of selectedOptions) {
-                let bookingId = selectedOption.parentNode.parentNode.id.slice(-1); // Sử dụng closest để tìm phần tử cha gần nhất
-                console.log(bookingId);
+                let bookingId = selectedOption.parentNode.parentNode.id.slice().substring("departureDays".length);
                 const url = `/api/update-booking/${bookingId}`;
 
                 const updateBtn = document.querySelector(`.update${bookingId}`);
