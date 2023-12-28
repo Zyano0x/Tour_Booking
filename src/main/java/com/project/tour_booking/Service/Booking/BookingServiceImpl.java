@@ -96,7 +96,6 @@ public class BookingServiceImpl implements BookingService {
                 } else throw new DepartureDayCannotEnableException(departureDay.getDepartureDay());
             } else throw new DepartureDayNotFoundException(bookingDTO.getDepartureDayId());
         } else throw new UserNotFoundException(bookingDTO.getUserId());
-
     }
 
     @Override

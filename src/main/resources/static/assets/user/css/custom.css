@@ -730,3 +730,10 @@ button.action-btn:hover {
 .main-menu>ul>li>a {
     padding: 0 35px 15px;
 }
+
+#hero.login {
+    background-image: linear-gradient(to top right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(https://images.unsplash.com/photo-1703114011338-65bef5287b5e?q=80&w=2075&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+    background-repeat: no-repeat;
+    background-position: center center;
+}

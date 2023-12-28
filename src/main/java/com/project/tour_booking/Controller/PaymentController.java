@@ -3,12 +3,13 @@ package com.project.tour_booking.Controller;
 import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Service.Booking.BookingService;
 import com.project.tour_booking.Service.VNPay.VNPayService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @RestController
@@ -26,16 +27,17 @@ public class PaymentController {
     }
 
     @GetMapping("/payment_info")
-    public ResponseEntity<?> paymentInfo(@RequestParam("vnp_ResponseCode") String response,
-            @RequestParam("vnp_TxnRef") Long transactionCode,
-            HttpSession session) {
+    public void paymentInfo(@RequestParam("vnp_ResponseCode") String response,
+                                         @RequestParam("vnp_TxnRef") Long transactionCode,
+                                         HttpSession session,
+                                         HttpServletResponse res) throws IOException {
         BookingDTO bookingDTO = (BookingDTO) session.getAttribute("BookingInfo");
         bookingDTO.setTransactionCode(transactionCode);
         if (response.equals("00")) {
             bookingService.saveBooking(bookingDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(bookingDTO);
+            res.sendRedirect("/"); // Success
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            res.sendRedirect("/"); // Fail
         }
     }
 }

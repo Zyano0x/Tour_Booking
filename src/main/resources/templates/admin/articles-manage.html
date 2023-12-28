@@ -79,6 +79,16 @@
                     </div>
                     <br>
                     <div class="form-group">
+                        <label for="thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="thumbnail">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="description"></label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-group">
                         <label for="content"></label>
                         <textarea id="content" name="content"></textarea>
                     </div>
@@ -112,6 +122,16 @@
                         <input type="text" class="form-control" id="_title">
                     </div>
                     <br>
+                    <div class="form-group">
+                        <label for="_thumbnail">Thumbnail</label>
+                        <input type="text" class="form-control" id="_thumbnail">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="_description"></label>
+                        <textarea id="_description" name="_description"></textarea>
+                    </div>
+                    <br>
                     <div class="form-group" id="editor-container">
                         <label for="_content"></label>
                         <textarea id="_content" name="_content"></textarea>
@@ -140,6 +160,18 @@
             editor.model.document.on('change', () => {
                 // Update the hidden textarea with the editor content
                 document.querySelector('textarea[name="_content"]').value = editor.getData();
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.getElementById('_description'))
+        .then(editor => {
+            editor.model.document.on('change', () => {
+                // Update the hidden textarea with the editor content
+                document.querySelector('textarea[name="_description"]').value = editor.getData();
             });
         })
         .catch(error => {

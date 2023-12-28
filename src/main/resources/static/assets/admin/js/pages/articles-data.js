@@ -100,10 +100,12 @@ document.getElementById('update-articles').addEventListener('click', function (e
 
     const title = document.getElementById('title').value;
     const status = document.getElementById('status').value;
+    const thumbnail = document.getElementById('thumbnail').value;
+    const description = ckEditorInstances.get(document.getElementById('description')).getData();
     const content = ckEditorInstances.get(document.getElementById('content')).getData();
 
     let raw = JSON.stringify({
-        "title": title, "content": content, "status": status,
+        "title": title, "content": content, "description": description, "thumbnail": thumbnail, "status": status
     });
 
     let requestOptions = {
@@ -129,10 +131,12 @@ document.getElementById('add-articles').addEventListener('click', function (even
 
     const title = document.getElementById('_title').value;
     const content = document.getElementById('_content').value;
+    const description = document.getElementById('_description').value;
+    const thumbnail = document.getElementById('_thumbnail').value;
     const id = document.head.getAttribute('data-user-id');
 
     let raw = JSON.stringify({
-        "title": title, "content": content, "userId": id
+        "title": title, "content": content, "thumbnail": thumbnail, "description": description, "userId": id
     });
 
     let requestOptions = {
@@ -163,8 +167,10 @@ function fetchArticlesDetailsModal(data) {
     setElementValue('posting', data.dateOfPosting);
     setElementValue('editing', data.editDate);
     setElementValue('status', data.status);
+    setElementValue('thumbnail', data.thumbnail);
 
     const content = document.getElementById('content');
+    const description = document.getElementById('description');
 
     // Check if CKEditor is already initialized for the 'content' textarea
     if (!ckEditorInstances.has(content)) {
@@ -176,6 +182,17 @@ function fetchArticlesDetailsModal(data) {
     } else {
         // If CKEditor is already initialized, set the content directly
         ckEditorInstances.get(content).setData(data.content);
+    }
+
+    if (!ckEditorInstances.has(description)) {
+        // Initialize CKEditor only if it hasn't been initialized yet
+        initializeCKEditor(description).then(editor => {
+            ckEditorInstances.set(description, editor);
+            editor.setData(data.description);
+        });
+    } else {
+        // If CKEditor is already initialized, set the content directly
+        ckEditorInstances.get(description).setData(data.description);
     }
 }
 
