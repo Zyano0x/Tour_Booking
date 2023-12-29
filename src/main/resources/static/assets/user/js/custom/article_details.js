@@ -169,6 +169,7 @@ async function renderUsersReviews(userReviews) {
 async function handleRenderUserReviews() {
     try {
         userReviews = await getApi(`/api/article/${articleId}/article-reviews`, "NotCallBack");
+        userReviews.reverse();
         renderReviewOption();
 
         // render page number

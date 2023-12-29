@@ -96,7 +96,7 @@ function renderFavouriteDestinations(destinations) {
             event.preventDefault();
 
             // Lưu trạng thái vào local storage
-            localStorage.setItem("descriptionFilter", `${destination.id}`);
+            localStorage.setItem("destinationFilter", `${destination.id}`);
 
             // Chuyển đến trang tours
             window.location.href = "/tours";

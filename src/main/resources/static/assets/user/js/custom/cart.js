@@ -404,8 +404,6 @@ function CancelBooking() {
                     });
                 });
             }
-        } else {
-            throw new Error("Element with selector '.options .cancel' not found in the DOM");
         }
     } catch (error) {
         console.log(">>> Error: " + error.message);
@@ -472,8 +470,6 @@ function UpdateBooking() {
                     });
                 }
             }
-        } else {
-            throw new Error("Element with selector '.dd-selected-value' not found in the DOM");
         }
     } catch (error) {
         console.log(">>> Error: " + error.message);
