@@ -84,12 +84,12 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="description"></label>
+                        <label for="description">Description</label>
                         <textarea id="description" name="description"></textarea>
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="content"></label>
+                        <label for="content">Content</label>
                         <textarea id="content" name="content"></textarea>
                     </div>
                     <p></p>
@@ -128,12 +128,12 @@
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="_description"></label>
+                        <label for="_description">Description</label>
                         <textarea id="_description" name="_description"></textarea>
                     </div>
                     <br>
                     <div class="form-group" id="editor-container">
-                        <label for="_content"></label>
+                        <label for="_content">Content</label>
                         <textarea id="_content" name="_content"></textarea>
                     </div>
                     <p></p>
@@ -158,8 +158,10 @@
         .create(document.getElementById('_content'))
         .then(editor => {
             editor.model.document.on('change', () => {
-                // Update the hidden textarea with the editor content
-                document.querySelector('textarea[name="_content"]').value = editor.getData();
+                let textarea = document.querySelector('textarea[name="_content"]');
+                if (textarea) {
+                    textarea.value = editor.getData();
+                }
             });
         })
         .catch(error => {
@@ -170,8 +172,10 @@
         .create(document.getElementById('_description'))
         .then(editor => {
             editor.model.document.on('change', () => {
-                // Update the hidden textarea with the editor content
-                document.querySelector('textarea[name="_description"]').value = editor.getData();
+                let textarea = document.querySelector('textarea[name="_description"]');
+                if (textarea) {
+                    textarea.value = editor.getData();
+                }
             });
         })
         .catch(error => {

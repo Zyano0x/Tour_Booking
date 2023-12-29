@@ -67,12 +67,12 @@
                     <br>
                     <div class="form-group">
                         <label for="content">Description</label>
-                        <textarea class="form-control" id="content"></textarea>
+                        <input type="text" class="form-control" id="content">
                     </div>
                     <br>
                     <div class="form-group">
                         <label for="service">Service</label>
-                        <input type="text" class="form-control" id="service">
+                        <textarea class="form-control" id="service"></textarea>
                     </div>
                     <br>
                     <div class="form-group">
@@ -173,12 +173,12 @@
                     <br>
                     <div class="form-group">
                         <label for="_content">Description</label>
-                        <textarea class="form-control" id="_content"></textarea>
+                        <input type="text" class="form-control" id="_content">
                     </div>
                     <br>
                     <div class="form-group">
                         <label for="_service">Service</label>
-                        <input type="text" class="form-control" id="_service">
+                        <textarea class="form-control" id="_service"></textarea>
                     </div>
                     <br>
                     <div class="form-group">
@@ -259,8 +259,10 @@
         .create(document.getElementById('_schedule'))
         .then(editor => {
             editor.model.document.on('change', () => {
-                // Update the hidden textarea with the editor content
-                document.querySelector('textarea[name="_schedule"]').value = editor.getData();
+                let textarea = document.querySelector('textarea[name="_schedule"]');
+                if (textarea) {
+                    textarea.value = editor.getData();
+                }
             });
         })
         .catch(error => {
@@ -271,13 +273,16 @@
         .create(document.getElementById('_service'))
         .then(editor => {
             editor.model.document.on('change', () => {
-                // Update the hidden textarea with the editor content
-                document.querySelector('textarea[name="_service"]').value = editor.getData();
+                let textarea = document.querySelector('textarea[name="_service"]');
+                if (textarea) {
+                    textarea.value = editor.getData();
+                }
             });
         })
         .catch(error => {
             console.error(error);
         });
+
 </script>
 </body>
 </html>
