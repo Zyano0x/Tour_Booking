@@ -400,9 +400,14 @@ function changeDepartureDay() {
         var selectedValueInputs = document.querySelectorAll(".dd-option");
 
         if (selectedValueInputs.length > 0) {
+            const departureTimeBlock = document.querySelector("#departureTime");
             selectedValueInputs.forEach(function (option) {
-                option.addEventListener('click', function () {
+                option.addEventListener('click', async function () {
                     const optionValue = document.querySelector(".dd-option-selected .dd-option-value");
+
+
+                    // Cập nhật thời gian khởi hành tương ứng cho từng ngày khởi hành
+                    departureTimeBlock ? departureTimeBlock.textContent = (await getApi(`/api/departure-day?id=${optionValue.value}`)).departureTime : '';
                     if (optionValue) {
                         deparuteDayIdForUpdate = parseInt(optionValue.value);
                     } else {
@@ -430,7 +435,7 @@ function booking() {
 
             bookingBtn.addEventListener("click", function () {
                 let totalPrice = moneyFormat(totalBlock.innerText);
-                if (totalPrice !== '0') {
+                if (adult.value != '0' || children.value != '0') {
                     let totalQuantity = parseInt(adult.value) + parseInt(children.value);
                     if (parseInt(remainingQuanityBlock.innerText) >= totalQuantity) {
                         const payment = {
@@ -484,6 +489,9 @@ async function handleBooking() {
             // Hiển thị thời gian
             const timeBlock = document.querySelector("#time");
             timeBlock ? timeBlock.textContent = tour.time : '';
+
+            // Hiển thị giờ khởi hành
+            getDepartureTime("#departureTime", deparuteDayIdForUpdate);
 
             // Chạy cập nhật
             updateBookingQuantity();
@@ -697,7 +705,7 @@ function getParamId() {
     }
 }
 
-import { getDropList, renderRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity, dateFormatConvert1, unwantedKeywords, moneyFormat, alertFunc } from './global_function.js';
+import { getDropList, renderRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity, dateFormatConvert1, unwantedKeywords, moneyFormat, alertFunc, getDepartureTime } from './global_function.js';
 
 async function start() {
     try {
@@ -706,6 +714,7 @@ async function start() {
             renderTourHeader();
             handleGetTourImages();
             handleBooking();
+            renderInfo(tour.departurePoint, ".departure-point-content");
             renderInfo(tour.description, ".description-content");
             renderInfo(tour.schedule, ".schedule-content");
             renderInfo(tour.service, ".service-content");

@@ -34,7 +34,7 @@ public class DepartureDay {
     @NonNull
     @JsonFormat(pattern = "dd-MM-yyyy")
     @Column(name = "departure_day")
-    @ValidDepartureDay(message = "Ngày khởi hành phải lớn hơn thời điểm khởi tạo!")
+    @ValidDepartureDay(message = "Ngày khởi hành phải sau ngày khởi tạo!")
     private LocalDate departureDay;
 
     @NonNull

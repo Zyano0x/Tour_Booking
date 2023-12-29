@@ -17,7 +17,7 @@ async function renderArticles(perArticles, fatherBlock) {
                         <div class="row">
                             <div class="col-lg-4 col-md-4">
                                 <div class="img_list">
-                                    <a href="/articles?id=${perArticle.id}"
+                                    <a href="/articles/${perArticle.id}"
                                     ><img src="${perArticle.thumbnail}" alt="${perArticle.title}" />
                                     <div class="short_info"><i class="icon_set_1_icon-4"></i></div>
                                     </a>

@@ -161,31 +161,85 @@ export function renderSearchDropList(data, fatherBlock, icon) {
     }
 }
 
+/*
 export function renderDepartureDropList(data, fatherBlock, icon, option) {
     try {
-        if (option) {
-            var htmls = data.map(item =>
-                item.status && compareDateNow(item.departureDay) && item.quantity > 0 ?
-                    `<option
-                    value="${item.id}"
-                    data-imagesrc="/assets/user/images/icons_search/${icon}">
-                    ${item.departureDay}
-                </option>`
-                    : ''
-            );
-        } else {
-            var htmls = data.map(item =>
-                `<option
-                    value="${item.id}"
-                    data-imagesrc="/assets/user/images/icons_search/${icon}">
+        let htmls = [];
+        let departureTime = '';
+        let count = 0;
+
+        data.forEach(item => {
+            if (item.status && compareDateNow(item.departureDay) && item.quantity > 0) {
+                htmls.push(`
+                    <option value="${item.id}" data-imagesrc="/assets/user/images/icons_search/${icon}">
+                        ${item.departureDay}
+                    </option>`
+                );
+                count == 0 ? (departureTime = item.departureTime, count++) : '';
+            }
+        });
+
+        if (!option) {
+            // Include all options if the 'option' parameter is not provided
+            htmls = data.map(item => `
+                <option value="${item.id}" data-imagesrc="/assets/user/images/icons_search/${icon}">
                     ${item.departureDay}
                 </option>`
             );
         }
+
+        fatherBlock.insertAdjacentHTML("beforeend", htmls.join(''));
+
+        // Hiển thị giờ khởi hành
+        if (departureTime) {
+            const departureTimeBlock = document.querySelector("#departureTime");
+            departureTimeBlock && htmls.length > 0 ? departureTimeBlock.textContent = departureTime : '';
+        }
+
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+*/
+
+export function renderDepartureDropList(data, fatherBlock, icon, option) {
+    try {
+        let htmls = [];
+
+        data.forEach(item => {
+            if (item.status && compareDateNow(item.departureDay) == 1 && item.quantity > 0) {
+                htmls.push(`
+                    <option value="${item.id}" data-imagesrc="/assets/user/images/icons_search/${icon}">
+                        ${item.departureDay}
+                    </option>`
+                );
+            }
+        });
+
+        if (!option) {
+            // Include all options if the 'option' parameter is not provided
+            htmls = data.map(item => `
+                <option value="${item.id}" data-imagesrc="/assets/user/images/icons_search/${icon}">
+                    ${item.departureDay}
+                </option>`
+            );
+        }
+
         fatherBlock.insertAdjacentHTML("beforeend", htmls.join(''));
     } catch (error) {
         console.log(">>> Error: " + error.message);
     }
+}
+
+export async function getDepartureTime(departureTimeSelector, departureDayId, bigBlockSelector) {
+    let departureTime;
+    if (bigBlockSelector !== undefined) {
+        const bigBlock = document.querySelector(bigBlockSelector);
+        bigBlock ? departureTime = bigBlock.querySelector(departureTimeSelector) : '';
+    } else {
+        departureTime = document.querySelector(departureTimeSelector);
+    }
+    departureTime ? departureTime.textContent = (await getApi(`/api/departure-day?id=${departureDayId}`)).departureTime : '';
 }
 
 export function renderDeparturesDropList(data, fatherBlock, icon) {
@@ -313,7 +367,7 @@ export async function getDropList(apiUrl, callBack, fatherBlockSelector, icon) {
         const fatherBlock = document.querySelector(fatherBlockSelector);
         if (fatherBlock) {
             const data = await getApi(apiUrl, "NotCallBack");
-            callBack(data, fatherBlock, icon);
+            callBack(data, fatherBlock, icon, true);
 
             ddslick(fatherBlockSelector);
         } else

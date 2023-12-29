@@ -363,7 +363,7 @@
             contactPhone.textContent = "ZALO : 0961105747";
 
             const contactImage = document.createElement("img");
-            contactImage.src = "assets/user/images/custom/QR.png";
+            contactImage.src = "/assets/user/images/custom/QR.png";
             contactImage.alt = "Liên hệ (contact)";
 
             contactBlock.appendChild(contactPhone);
@@ -372,8 +372,6 @@
             document.body.appendChild(contactBlock);
 
             function closeContact() {
-              // contactOverlay.style.animation = "slideOut 1s ease";
-              // contactBlock.style.animation = "slideOut 1s ease";
               document.body.removeChild(contactOverlay);
               document.body.removeChild(contactBlock);
               contactOverlay.removeEventListener("click", closeContact);

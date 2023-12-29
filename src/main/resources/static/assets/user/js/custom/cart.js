@@ -2,6 +2,7 @@ let bookings = [];
 
 /*GET BOOKINGS*/
 // Booking còn hạn
+/*
 async function handleRenderValidBookings(fatherBlock) {
     try {
         for (let i = bookings.length - 1; i >= 0; i--) {
@@ -21,38 +22,18 @@ async function handleRenderValidBookings(fatherBlock) {
                 departureDays.push(departureDayCurrent);
 
                 htmls += `
-                <tr>
-                    <td>
+                <tr id="booking${bookings[i].id}">
+                    <td class="cart-td-tour-info">
                         <div class="thumb_cart">
                             <img src="${tour.thumbnail}" alt="Image" />
                         </div>
                         <span class="item_cart">${tour.name}</span>
                     </td>
                     <td>
-                        <div class="form-group none-margin-bottom">
-                            <div id="adults-numbers-row" class="numbers-row margin-auto">
-                                <input
-                                    type="text"
-                                    value="${bookings[i].quantityOfAdult}"
-                                    id="adults"
-                                    class="qty2 form-control"
-                                    name="quantity"
-                                />
-                            </div>
-                        </div>
+                        <span class="adults-quantity text-align-center">${bookings[i].quantityOfAdult}</span>
                     </td>
                     <td>
-                        <div class="form-group none-margin-bottom">
-                            <div id="children-numbers-row" class="numbers-row margin-auto"> 
-                                <input
-                                type="text"
-                                value="${bookings[i].quantityOfChild}"
-                                id="children"
-                                class="qty2 form-control"
-                                name="quantity"
-                                />
-                            </div>
-                        </div>
+                        <span class="children-quantity text-align-center">${bookings[i].quantityOfChild}</span>
                     </td>
                     <td>
                         <div class="form-group none-margin-bottom" data-presentDepartureId="${departureDayCurrent.id}">
@@ -64,7 +45,10 @@ async function handleRenderValidBookings(fatherBlock) {
                         </div>
                     </td>
                     <td>
-                        <span class="departurePoint text-align-center">${tour.departurePoint}</span>
+                        <div class="departureTime text-align-center"></div>
+                    </td>
+                    <td class="cart-td-departure-point">
+                        <span class="departurePoint">${tour.departurePoint}</span>
                     </td>
                     <td>
                         <div class="text-align-center"><strong>${moneyFormat(bookings[i].totalPrice, true)}</strong></div>
@@ -82,6 +66,8 @@ async function handleRenderValidBookings(fatherBlock) {
 
                 if (departureDaysBlock) {
                     renderDepartureDropList(departureDays.reverse(), departureDaysBlock, icon, false);
+                    // Hiển thị giờ khởi hành ban đầu
+                    await getDepartureTime(`.departureTime`, departureDaysBlock.parentNode.dataset.presentdepartureid, `#booking${bookings[i].id}`);
                 }
 
                 bookings.splice(i, 1);
@@ -90,11 +76,97 @@ async function handleRenderValidBookings(fatherBlock) {
         ddslick(`.ddslick`);
         CancelBooking();
         UpdateBooking();
+        departureTimeByChangeDepartureDay();
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+*/
+
+async function handleRenderValidBookings(fatherBlock) {
+    try {
+        for (let i = bookings.length - 1; i >= 0; i--) {
+            let htmls = ``;
+            let departureDayCurrent = bookings[i].departureDay;
+
+            if (bookings[i].status && compareDateNow(departureDayCurrent.departureDay) == 1) {
+                let tour = departureDayCurrent.tour;
+                let departureDays = await getApi(`/api/tour/${tour.id}/departure-days`);
+
+                // Lọc departureDays dựa trên các điều kiện
+                departureDays = departureDays.filter(departureDay => departureDay.status &&
+                    compareDateNow(departureDay.departureDay) == 1 &&
+                    departureDay.quantity > 0 && departureDay.id != departureDayCurrent.id);
+
+                // Kiểm tra departureDayCurrent.quantity và thêm nó vào mảng nếu cần
+                departureDays.push(departureDayCurrent);
+
+                htmls += `
+                <tr id="booking${bookings[i].id}">
+                    <td class="cart-td-tour-info">
+                        <div class="thumb_cart">
+                            <img src="${tour.thumbnail}" alt="Image" />
+                        </div>
+                        <span class="item_cart">${tour.name}</span>
+                    </td>
+                    <td>
+                        <span class="cart_time text-align-center">${tour.time}</span>
+                    </td>
+                    <td>
+                        <div class="form-group none-margin-bottom" data-presentDepartureId="${departureDayCurrent.id}">
+                            <select 
+                            id="departureDays${bookings[i].id}"
+                            class="ddslick"
+                            name="departureDays"
+                            ></select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="departureTime text-align-center"></div>
+                    </td>
+                    <td class="cart-td-departure-point">
+                        <span class="departurePoint">${tour.departurePoint}</span>
+                    </td>
+                    <td>
+                        <span class="adults-quantity text-align-center">${bookings[i].quantityOfAdult}</span>
+                    </td>
+                    <td>
+                        <span class="children-quantity text-align-center">${bookings[i].quantityOfChild}</span>
+                    </td>
+                    <td>
+                        <div class="text-align-center"><strong>${moneyFormat(bookings[i].totalPrice, true)}</strong></div>
+                    </td>
+                    <td class="options text-align-center" data-booking="${bookings[i].id}" >
+                        <a class="cancel" href="javascript:void(0);"><i class="fa-solid fa-trash-can"></i></a>
+                        <a class="update${bookings[i].id}" href="javascript:void(0);"><i class="icon-ccw-2"></i></a>
+                        <a href="/tours/${tour.id}"><i class="fa-solid fa-eye"></i></a>
+                    </td>
+                </tr>`;
+
+                fatherBlock.innerHTML += htmls;
+
+                let departureDaysBlock = document.querySelector(`#departureDays${bookings[i].id}`);
+                let icon = "all_tours.png";
+
+                if (departureDaysBlock) {
+                    renderDepartureDropList(departureDays.reverse(), departureDaysBlock, icon, false);
+                    // Hiển thị giờ khởi hành ban đầu
+                    await getDepartureTime(`.departureTime`, departureDaysBlock.parentNode.dataset.presentdepartureid, `#booking${bookings[i].id}`);
+                }
+
+                bookings.splice(i, 1);
+            }
+        }
+        ddslick(`.ddslick`);
+        CancelBooking();
+        UpdateBooking();
+        departureTimeByChangeDepartureDay();
     } catch (error) {
         console.log(">>> Error: " + error.message);
     }
 }
 
+/*
 // Booking hết hạn
 async function renderExpiredBookings(fatherBlock) {
     try {
@@ -107,27 +179,26 @@ async function renderExpiredBookings(fatherBlock) {
 
                 htmls += `
                 <tr>
-                    <td>
+                    <td class="cart-td-tour-info">
                         <div class="thumb_cart">
                             <img src="${tour.thumbnail}" alt="Image" />
                         </div>
                         <span class="item_cart">${tour.name}</span>
                     </td>
                     <td>
-                        <div class="form-group none-margin-bottom text-align-center">
-                            ${bookings[i].quantityOfAdult}
-                        </div>
+                        <span class="adults-quantity text-align-center">${bookings[i].quantityOfAdult}</span>
                     </td>
                     <td>
-                        <div class="form-group none-margin-bottom text-align-center">
-                            ${bookings[i].quantityOfChild}
-                        </div>
+                        <span class="children-quantity text-align-center">${bookings[i].quantityOfChild}</span>
                     </td>
                     <td>
                        <div class="text-align-center">${departureDayCurrent.departureDay}</div>
                     </td>
                     <td>
-                        <span class="departurePoint text-align-center">${tour.departurePoint}</span>
+                        <div class="departureTime text-align-center">${bookings[i].departureDay.departureTime}</div>
+                    </td>
+                    <td class="cart-td-departure-point">
+                        <span class="departurePoint">${tour.departurePoint}</span>
                     </td>
                     <td>
                         <div class="text-align-center">
@@ -136,6 +207,65 @@ async function renderExpiredBookings(fatherBlock) {
                     </td>
                     <td class="text-align-center">
                         <a href="/tours/${tour.id}">Xem tour</a>
+                    </td>
+                </tr>`;
+
+                fatherBlock.innerHTML += htmls;
+
+                bookings.splice(i, 1);
+            }
+        }
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+*/
+
+// Booking đã diễn ra
+async function renderExpiredBookings(fatherBlock) {
+    try {
+        for (let i = bookings.length - 1; i >= 0; i--) {
+            let htmls = ``;
+            let departureDayCurrent = bookings[i].departureDay;
+
+            if (bookings[i].status && compareDateNow(departureDayCurrent.departureDay) != 1) {
+                let tour = departureDayCurrent.tour;
+
+                htmls += `
+                <tr>
+                    <td class="cart-td-tour-info">
+                        <div class="thumb_cart">
+                            <img src="${tour.thumbnail}" alt="Image" />
+                        </div>
+                        <span class="item_cart">${tour.name}</span>
+                    </td>
+                    <td>
+                        <span class="cart_time text-align-center">${tour.time}</span>
+                    </td>
+                    <td>
+                       <div class="text-align-center">${departureDayCurrent.departureDay}</div>
+                    </td>
+                    <td>
+                        <div class="departureTime text-align-center">${bookings[i].departureDay.departureTime}</div>
+                    </td>
+                    <td class="cart-td-departure-point">
+                        <span class="departurePoint">${tour.departurePoint}</span>
+                    </td>
+                    <td>
+                        <span class="adults-quantity text-align-center">${bookings[i].quantityOfAdult}</span>
+                    </td>
+                    <td>
+                        <span class="children-quantity text-align-center">${bookings[i].quantityOfChild}</span>
+                    </td>
+                    <td>
+                        <div class="text-align-center">
+                            <strong>${moneyFormat(bookings[i].totalPrice, true)}</strong>
+                        </div>
+                    </td>
+                    <td class="text-align-center">
+                        <a href="/tours/${tour.id}"><i class="fa-solid fa-eye" style="
+                        font-size: 19px;
+                        "></i></a>
                     </td>
                 </tr>`;
 
@@ -161,27 +291,29 @@ async function renderCancelledBookings(fatherBlock) {
 
                 htmls += `
                 <tr>
-                    <td>
+                    <td class="cart-td-tour-info">
                         <div class="thumb_cart">
                             <img src="${tour.thumbnail}" alt="Image" />
                         </div>
                         <span class="item_cart">${tour.name}</span>
                     </td>
                     <td>
-                        <div class="form-group none-margin-bottom text-align-center">
-                            ${booking.quantityOfAdult}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group none-margin-bottom text-align-center">
-                            ${booking.quantityOfChild}
-                        </div>
+                        <span class="cart_time text-align-center">${tour.time}</span>
                     </td>
                     <td>
                        <div class="text-align-center">${departureDayCurrent.departureDay}</div>
                     </td>
                     <td>
-                        <span class="departurePoint text-align-center">${tour.departurePoint}</span>
+                        <div class="departureTime text-align-center">${booking.departureDay.departureTime}</div>
+                    </td>
+                    <td class="cart-td-departure-point">
+                        <span class="departurePoint">${tour.departurePoint}</span>
+                    </td>
+                    <td>
+                        <span class="adults-quantity text-align-center">${booking.quantityOfAdult}</span>
+                    </td>
+                    <td>
+                        <span class="children-quantity text-align-center">${booking.quantityOfChild}</span>
                     </td>
                     <td>
                         <div class="text-align-center">
@@ -189,7 +321,9 @@ async function renderCancelledBookings(fatherBlock) {
                         </div>
                     </td>
                     <td class="text-align-center">
-                        <a href="/tours/${tour.id}">Xem tour</a>
+                        <a href="/tours/${tour.id}"><i class="fa-solid fa-eye" style="
+                        font-size: 19px;
+                        "></i></a>
                     </td>
                 </tr>`;
 
@@ -248,11 +382,13 @@ function CancelBooking() {
                         </div >
                     </div > `;
                     document.body.insertAdjacentHTML("beforeend", htmls);
+                    const dialog = document.querySelector("#customPrompt");
                     document.querySelector(".action-btn.cancel-btn").addEventListener("click", function () {
-                        const dialog = document.querySelector("#customPrompt");
                         dialog.parentNode.removeChild(dialog);
                     });
                     document.querySelector(".action-btn.update-btn").addEventListener("click", function () {
+                        dialog.parentNode.removeChild(dialog);
+                        alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", 'Email xác nhận đã được gửi!');
                         const url = `/api/update-booking-status?id=${cancelBtn.parentNode.dataset.booking}`;
                         fetch(url, {
                             method: "PUT",
@@ -296,9 +432,9 @@ function UpdateBooking() {
                     updateBtn.addEventListener("click", async function () {
                         let presentDepartureId = departureDaysElement.parentNode.dataset.presentdepartureid;
                         let selectDepartureId = departureDaysElement.querySelector('.dd-selected-value').value;
-                        const adult = document.getElementById("adults");
-                        const children = document.getElementById("children");
-                        let totalQuantity = parseInt(adult.value) + parseInt(children.value);
+                        const adult = updateBtn.parentNode.parentNode.querySelector(".adults-quantity");
+                        const children = updateBtn.parentNode.parentNode.querySelector(".children-quantity");
+                        let totalQuantity = parseInt(adult.textContent) + parseInt(children.textContent);
 
                         if (selectDepartureId != presentDepartureId) {
                             if (parseInt((await getApi(`/api/departure-day?id=${selectDepartureId}`, "NotCallBack")).quantity) < totalQuantity) {
@@ -309,8 +445,8 @@ function UpdateBooking() {
 
                                 let raw = JSON.stringify({
                                     "userId": document.head.dataset.userid,
-                                    "quantityOfAdult": adult.value,
-                                    "quantityOfChild": children.value,
+                                    "quantityOfAdult": adult.textContent,
+                                    "quantityOfChild": children.textContent,
                                     "departureDayId": selectDepartureId,
                                 });
 
@@ -347,7 +483,22 @@ function UpdateBooking() {
 
 ////////////////////////////////////////
 
-import { compareDateNow, dateFormatConvert, ddslick, getApi, moneyFormat, renderDepartureDropList, alertFunc } from './global_function.js';
+/*DEPARTURE TIME*/
+function departureTimeByChangeDepartureDay() {
+    const optionsDepartureDay = document.querySelectorAll(".dd-option");
+    if (optionsDepartureDay.length > 0) {
+        for (const optionDepartureDay of optionsDepartureDay) {
+            optionDepartureDay.addEventListener("click", async function () {
+                await getDepartureTime(`.departureTime`, optionDepartureDay.querySelector(".dd-option-value").value, `#${optionDepartureDay.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id}`);
+            });
+        }
+    }
+}
+/*END DEPARTURE TIME*/
+
+////////////////////////////////////////
+
+import { compareDateNow, dateFormatConvert, ddslick, getApi, moneyFormat, renderDepartureDropList, alertFunc, getDepartureTime } from './global_function.js';
 
 async function start() {
     bookings = await getApi(`/api/user/${document.head.dataset.userid}/bookings`);
