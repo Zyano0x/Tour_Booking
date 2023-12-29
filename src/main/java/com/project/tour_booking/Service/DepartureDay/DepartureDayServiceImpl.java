@@ -73,7 +73,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
     if (departureDayOptional.isPresent()) {
       DepartureDay updateDepartureDay = departureDayOptional.get();
 
-      // Kiểm tra ngày khởi hành có hết hạn chưa
+      // Kiểm tra ngày khởi hành có diễn ra chưa
       if (updateDepartureDay.getDepartureDay().isAfter(LocalDate.now())) {
         updateDepartureDay.setQuantity(departureDayDTO.getQuantity());
         updateDepartureDay.setDepartureDay(departureDayDTO.getDepartureDay());
@@ -150,7 +150,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
           departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
         }
       } else if (departureDay.getTour().getStatus()) {
-        // Chỉ kích hoạt các ngày khởi hành còn hạn
+        // Chỉ kích hoạt các ngày khởi hành chưa diễn ra
         if (departureDay.getDepartureDay().isAfter(LocalDate.now())) {
           departureDay.setStatus(true);
         } else

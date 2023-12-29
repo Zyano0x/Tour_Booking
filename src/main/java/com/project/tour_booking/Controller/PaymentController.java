@@ -28,16 +28,16 @@ public class PaymentController {
 
     @GetMapping("/payment_info")
     public void paymentInfo(@RequestParam("vnp_ResponseCode") String response,
-                                         @RequestParam("vnp_TxnRef") Long transactionCode,
-                                         HttpSession session,
-                                         HttpServletResponse res) throws IOException {
+            @RequestParam("vnp_TxnRef") Long transactionCode,
+            HttpSession session,
+            HttpServletResponse res) throws IOException {
         BookingDTO bookingDTO = (BookingDTO) session.getAttribute("BookingInfo");
         bookingDTO.setTransactionCode(transactionCode);
         if (response.equals("00")) {
             bookingService.saveBooking(bookingDTO);
-            res.sendRedirect("/"); // Success
+            res.sendRedirect("/booking-success"); // Success
         } else {
-            res.sendRedirect("/"); // Fail
+            res.sendRedirect("/booking-fail"); // Fail
         }
     }
 }

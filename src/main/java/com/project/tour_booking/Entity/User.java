@@ -1,5 +1,6 @@
 package com.project.tour_booking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -49,6 +50,7 @@ public class User implements UserDetails {
     @Column(name = "birthday", nullable = false)
     @Temporal(TemporalType.DATE)
     @NotNull(message = "Ngày sinh không được để trống!")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
 
     @Column(name = "gender", length = 10, nullable = false)
@@ -119,12 +121,12 @@ public class User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-       return true;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-       return enabled;
+        return enabled;
     }
 
     public String getEmail() {

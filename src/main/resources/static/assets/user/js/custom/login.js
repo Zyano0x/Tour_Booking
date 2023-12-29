@@ -29,7 +29,7 @@ function login(email, password) {
             else throw new Error("Error: " + response.statusText);
         })
         .then((result) => {
-            window.location.href = window.location.href;
+            window.location.href = "/";
         })
         .catch((error) => console.error("Login Error:", error.message));
 }

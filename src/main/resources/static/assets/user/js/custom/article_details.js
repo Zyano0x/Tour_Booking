@@ -18,7 +18,7 @@ async function renderArticleHeader() {
     name ? name.textContent = article.title : '';
     author ? author.textContent = article.user.name : '';
     dateOfPosting ? dateOfPosting.textContent = dateFormatConvert1(article.dateOfPosting) : '';
-    navigationName ? navigationName.textContent = articleId : '';
+    navigationName ? navigationName.textContent = article.title : '';
 
     const rating = await renderRating(`/api/article/${articleId}/article-reviews`);
     document.querySelectorAll(".genarateRating").forEach(element => {
