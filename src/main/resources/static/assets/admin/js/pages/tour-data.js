@@ -197,7 +197,7 @@ document.getElementById('update-tour').addEventListener('click', function(event)
 
     const name = document.getElementById('name').value;
     const description = document.getElementById('content').value;
-    const service = document.getElementById('service').value;
+    const service = ckEditorInstances.get(document.getElementById('service')).getData();
     const time = document.getElementById('time').value;
     const schedule = ckEditorInstances.get(document.getElementById('schedule')).getData();
     const priceForAdult = document.getElementById('priceForAdult').value;
