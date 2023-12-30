@@ -282,11 +282,11 @@ async function renderExpiredBookings(fatherBlock) {
 // Booking đã hủy
 async function renderCancelledBookings(fatherBlock) {
     try {
-        for (const booking of bookings) {
+        for (let i = bookings.length - 1; i >= 0; i--) {
             let htmls = ``;
-            let departureDayCurrent = booking.departureDay;
+            let departureDayCurrent = bookings[i].departureDay;
 
-            if (!booking.status) {
+            if (!bookings[i].status) {
                 let tour = departureDayCurrent.tour;
 
                 htmls += `
@@ -304,20 +304,20 @@ async function renderCancelledBookings(fatherBlock) {
                        <div class="text-align-center">${departureDayCurrent.departureDay}</div>
                     </td>
                     <td>
-                        <div class="departureTime text-align-center">${booking.departureDay.departureTime}</div>
+                        <div class="departureTime text-align-center">${bookings[i].departureDay.departureTime}</div>
                     </td>
                     <td class="cart-td-departure-point">
                         <span class="departurePoint">${tour.departurePoint}</span>
                     </td>
                     <td>
-                        <span class="adults-quantity text-align-center">${booking.quantityOfAdult}</span>
+                        <span class="adults-quantity text-align-center">${bookings[i].quantityOfAdult}</span>
                     </td>
                     <td>
-                        <span class="children-quantity text-align-center">${booking.quantityOfChild}</span>
+                        <span class="children-quantity text-align-center">${bookings[i].quantityOfChild}</span>
                     </td>
                     <td>
                         <div class="text-align-center">
-                            <strong>${moneyFormat(booking.totalPrice, true)}</strong>
+                            <strong>${moneyFormat(bookings[i].totalPrice, true)}</strong>
                         </div>
                     </td>
                     <td class="text-align-center">
