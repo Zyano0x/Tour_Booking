@@ -7,7 +7,7 @@ document.getElementById('exit_link').addEventListener('click', function (event) 
             else throw new Error("Error: " + response.statusText);
         })
         .then((result) => {
-            window.location.href = window.location.href;
+            window.location.href = "/";
         })
         .catch((error) => console.log(error));
 })

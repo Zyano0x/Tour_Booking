@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -95,6 +98,33 @@ public class BookingServiceImpl implements BookingService {
                                     // Lưu vào csdl
                                     departureDayRepository.save(departureDay);
                                     bookingRepository.save(booking);
+
+                                    // Gửi mail
+                                    User user = booking.getUser();
+
+                                    // Định dạng ngày theo định dạng "dd-MM-yyyy"
+                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                                    // Định dạng "HH:mm"
+                                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+                                    SimpleMailMessage mailMessage = new SimpleMailMessage();
+                                    mailMessage.setFrom("no-reply@tourbooking.com");
+                                    mailMessage.setTo(user.getUsername());
+                                    mailMessage.setSubject("Thông Báo Đặt Tour Thành Công");
+                                    mailMessage.setText("Ngày đặt: " + booking.getBookingDate().format(dateFormatter)
+                                            + "\nTour: "
+                                            + booking.getDepartureDay().getTour().getName() + "\nThời gian: "
+                                            + booking.getDepartureDay().getTour().getTime() + "\nKhởi hành vào ngày ["
+                                            + booking.getDepartureDay().getDepartureDay().format(dateFormatter)
+                                            + "] lúc ["
+                                            + booking.getDepartureDay().getDepartureTime().format(timeFormatter)
+                                            + "] tại [" + booking.getDepartureDay().getTour().getDeparturePoint()
+                                            + "]\nSố lượng người lớn: "
+                                            + booking.getQuantityOfAdult() + "\nSố lượng trẻ em: "
+                                            + booking.getQuantityOfChild() + "\nTổng tiền: "
+                                            + booking.getTotalPrice() + " VND");
+
+                                    emailService.sendEmail(mailMessage);
                                 } else
                                     throw new TourNotFoundException(departureDay.getTour().getId());
                             } else
@@ -193,6 +223,32 @@ public class BookingServiceImpl implements BookingService {
                                                 .add(new BigDecimal(presentBooking.getQuantityOfChild()).multiply(
                                                         tourRepository.findById(newDepartureDay.getTour().getId()).get()
                                                                 .getPriceForChildren())));
+
+                                User user = presentBooking.getUser();
+
+                                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                                // Định dạng "HH:mm"
+                                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                                mailMessage.setFrom("no-reply@tourbooking.com");
+                                mailMessage.setTo(user.getUsername());
+                                mailMessage.setSubject("Cập Nhật Đơn Hàng");
+                                mailMessage.setText("Ngày đặt: " + presentBooking.getBookingDate().format(dateFormatter)
+                                        + "\nTour: "
+                                        + presentBooking.getDepartureDay().getTour().getName() + "\nThời gian: "
+                                        + presentBooking.getDepartureDay().getTour().getTime()
+                                        + "\nKhởi hành vào ngày ["
+                                        + presentBooking.getDepartureDay().getDepartureDay().format(dateFormatter)
+                                        + "] lúc ["
+                                        + presentBooking.getDepartureDay().getDepartureTime().format(timeFormatter)
+                                        + "] tại [" + presentBooking.getDepartureDay().getTour().getDeparturePoint()
+                                        + "]\nSố lượng người lớn: "
+                                        + presentBooking.getQuantityOfAdult() + "\nSố lượng trẻ em: "
+                                        + presentBooking.getQuantityOfChild() + "\nTổng tiền: "
+                                        + presentBooking.getTotalPrice() + " VND");
+
+                                emailService.sendEmail(mailMessage);
+
                             } else
                                 throw new DepartureDayNotEnableStatusException(newDepartureDay.getDepartureDay());
                         } else
@@ -250,13 +306,28 @@ public class BookingServiceImpl implements BookingService {
         SecureToken token = new SecureToken(user);
         secureTokenRepository.save(token);
 
+        BigDecimal refund = refundMoney(booking.getTotalPrice(), booking.getDepartureDay().getDepartureDay());
+
+        // Định dạng ngày theo định dạng "dd-MM-yyyy"
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        // Định dạng "HH:mm"
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@tourbooking.com");
         mailMessage.setTo(user.getUsername());
         mailMessage.setSubject("Xác Nhận Hủy Đơn Hàng");
-        mailMessage.setText(
-                "Để xác nhận hủy đơn, vui lòng nhấn vào link: " + "http://localhost:1337/api/confirm-cancel?token="
-                        + token.getToken() + "&transaction=" + transactionCode);
+        mailMessage.setText("Ngày đặt: " + booking.getBookingDate().format(dateFormatter) + "\nTour: "
+                + booking.getDepartureDay().getTour().getName() + "\nThời gian: "
+                + booking.getDepartureDay().getTour().getTime() + "\nKhởi hành vào ngày ["
+                + booking.getDepartureDay().getDepartureDay().format(dateFormatter) + "] lúc ["
+                + booking.getDepartureDay().getDepartureTime().format(timeFormatter)
+                + "] tại [" + booking.getDepartureDay().getTour().getDeparturePoint() + "]\nSố lượng người lớn: "
+                + booking.getQuantityOfAdult() + "\nSố lượng trẻ em: " + booking.getQuantityOfChild() + "\nTổng tiền: "
+                + booking.getTotalPrice() + " VND\nHoàn trả: " + refund
+                + ".00 VND\nĐể xác nhận hủy đơn, vui lòng nhấn vào link: "
+                + "http://localhost:1337/api/confirm-cancel?token="
+                + token.getToken() + "&transaction=" + transactionCode);
 
         emailService.sendEmail(mailMessage);
 
@@ -302,7 +373,8 @@ public class BookingServiceImpl implements BookingService {
                 return new ResponseEntity<>("Verification token already expired.", HttpStatus.BAD_REQUEST);
             } else if (validateToken(confirmationToken) == UserServiceImpl.VerificationResult.VALID) {
                 SecureToken token = secureTokenRepository.findByToken(confirmationToken);
-                BigDecimal refund = updateStatusBooking.getTotalPrice();
+                BigDecimal refund = refundMoney(updateStatusBooking.getTotalPrice(),
+                        updateStatusBooking.getDepartureDay().getDepartureDay());
 
                 // Lưu vào csdl
                 departureDayRepository.save(updateQuantityDepartureDay);
@@ -314,7 +386,7 @@ public class BookingServiceImpl implements BookingService {
                 mailMessage.setTo("duypham22102@gmail.com");
                 mailMessage.setSubject("Xác Nhận Hủy Đơn Hàng");
                 mailMessage.setText("Số hóa đơn xác nhận hủy: " + transactionCode
-                        + "\nSố tiền cần hoàn lại: " + refund + "VND");
+                        + "\nSố tiền cần hoàn lại: " + refund + ".00 VND");
 
                 emailService.sendEmail(mailMessage);
 
@@ -324,5 +396,17 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingNotFoundException(transactionCode);
 
         return new ResponseEntity<>("Hủy thất bại", HttpStatus.BAD_REQUEST);
+    }
+
+    public BigDecimal refundMoney(BigDecimal refund, LocalDate departureDay) {
+        long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(), departureDay);
+
+        Float refundPercent;
+        if (daysDifference >= 7) {
+            refundPercent = 0.8f;
+        } else {
+            refundPercent = 0.7f;
+        }
+        return refund.multiply(new BigDecimal(refundPercent)).setScale(0, RoundingMode.HALF_UP);
     }
 }

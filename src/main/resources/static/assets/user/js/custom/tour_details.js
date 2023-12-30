@@ -255,6 +255,7 @@ async function renderUsersReviews(userReviews) {
 async function handleRenderUserReviews() {
     try {
         userReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
+        userReviews.reverse();
         renderReviewOption();
 
         // render page number
@@ -382,7 +383,7 @@ function updateBookingQuantity() {
 async function bookingOverLay() {
     try {
         var departureDays = await getApi(`/api/tour/${tourId}/departure-days`, "NotCallBack");
-        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDateNow(departureDay.departureDay) && departureDay.quantity > 0);
+        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDateNow(departureDay.departureDay) == 1 && departureDay.quantity > 0);
 
         if (validDepartureDays.length <= 0) {
             document.querySelector("#booking_box").style.pointerEvents = "none";

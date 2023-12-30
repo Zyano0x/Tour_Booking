@@ -61,7 +61,7 @@ const sortRatingBlock = document.getElementById("sort_rating");
 const filterBtn = document.querySelector(".filter-btn");
 const filterDatePick = document.querySelector(".date-pick");
 let fatherBlock;
-const descriptionFilter = localStorage.getItem("descriptionFilter");
+const destinationFilter = localStorage.getItem("destinationFilter");
 
 async function renderTours(perTours, fatherBlock) {
   try {
@@ -216,8 +216,8 @@ function handleRenderTours(data, fatherBlock) {
     tours = data.slice(); // Có thể thay đổi
 
     // Lọc tours theo destination từ trang chủ
-    if (descriptionFilter && descriptionFilter != '') {
-      tours = tours.filter(tour => tour.destination.id == descriptionFilter);
+    if (destinationFilter && destinationFilter != '') {
+      tours = tours.filter(tour => tour.destination.id == destinationFilter);
       presentOriginTours = tours.slice();
     }
 
@@ -376,7 +376,7 @@ async function funcToursFilter() {
         return tour.typeOfTour.id == filterTOT.value;
       });
     }
-    if (filterDatePick && filterDatePick.value != '' && compareDateNow(filterDatePick.value)) {
+    if (filterDatePick && filterDatePick.value != '') {
       let temp = [];
 
       for (const tour of tours) {
@@ -420,21 +420,21 @@ function handleToursFilter(selector) {
     }
 
     // Setup filter theo destination từ trang chủ
-    if (descriptionFilter && descriptionFilter != '') {
+    if (destinationFilter && destinationFilter != '') {
       let options = document.querySelectorAll("#destinationsDropList .dd-option-value");
       for (const option of options) {
         if (option.value == '0')
           option.parentNode.classList.remove("dd-option-selected")
-        if (option.value == descriptionFilter) {
+        if (option.value == destinationFilter) {
           option.parentNode.classList.add("dd-option-selected");
-          document.querySelector(".dd-selected-value").value = descriptionFilter;
+          document.querySelector(".dd-selected-value").value = destinationFilter;
           document.querySelector(".dd-selected-text").textContent = option.parentNode.querySelector(".dd-option-text").textContent;
           break;
         }
       }
 
       // Xóa trạng thái từ local storage để tránh thực hiện nhiều lần
-      localStorage.removeItem("descriptionFilter");
+      localStorage.removeItem("destinationFilter");
     }
 
   } catch (error) {
