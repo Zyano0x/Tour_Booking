@@ -157,7 +157,7 @@ async function renderNewArticles(articles, fatherBlock) {
 
 ////////////////////////////////////////
 
-import { getApi, handleGetData, renderRating, moneyFormat } from './global_function.js';
+import {getApi, handleGetData, moneyFormat, renderRating} from './global_function.js';
 
 function start() {
   getApi("/api/sliders", renderSlider);
