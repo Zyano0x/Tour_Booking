@@ -53,7 +53,7 @@ async function renderToursHaveValidDepartureDays(tours, fatherBlock) {
 
 let tours = [];
 let currentPage = 1;
-let perPage = 2;
+let perPage = 5;
 let originTours = [];
 let presentOriginTours = [];
 const sortPriceBlock = document.getElementById("sort_price");
@@ -445,7 +445,16 @@ function handleToursFilter(selector) {
 
 ////////////////////////////////////////
 
-import { getDropList, renderSearchDropList, handleGetData, renderRating, getApi, compareDates, compareDateNow, moneyFormat, getReviewScore } from './global_function.js';
+import {
+    compareDates,
+    getApi,
+    getDropList,
+    getReviewScore,
+    handleGetData,
+    moneyFormat,
+    renderRating,
+    renderSearchDropList
+} from './global_function.js';
 
 async function start() {
   handleGetData("/api/tours", handleRenderTours, "#tours_list");

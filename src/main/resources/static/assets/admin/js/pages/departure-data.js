@@ -97,12 +97,13 @@ document.getElementById('update-day').addEventListener('click', function (event)
     myHeaders.append("Content-Type", "application/json");
 
     const day = document.getElementById('departure').value;
+    const time = document.getElementById('departureTime').value;
     const slots = document.getElementById('slots').value;
     const status = document.getElementById('status').value;
     const tourId = document.getElementById('tours').value;
 
     let raw = JSON.stringify({
-        "departureDay": day, "quantity": slots, "status": status, "tourId": tourId
+        "departureDay": day, "departureTime": time, "quantity": slots, "status": status, "tourId": tourId
     });
 
     console.log('Parsed Luxon Date:', day);
@@ -129,12 +130,13 @@ document.getElementById('add-day').addEventListener('click', function (event) {
     myHeaders.append("Content-Type", "application/json");
 
     const day = document.getElementById('_departure').value;
+    const time = document.getElementById('_departureTime').value;
     const slots = document.getElementById('_slots').value;
     const status = document.getElementById('_status').value;
     const tourId = document.getElementById('_tours').value;
 
     let raw = JSON.stringify({
-        "departureDay": day, "quantity": slots, "status": status, "tourId": tourId
+        "departureDay": day, "departureTime": time, "quantity": slots, "status": status, "tourId": tourId
     });
 
     let requestOptions = {
@@ -165,6 +167,7 @@ function fetchDepartureDetailsModal(data) {
 
     setElementValue('id', data.id);
     setElementValue('departure', formattedDate);
+    setElementValue('departureTime', data.departureTime);
     setElementValue('slots', data.quantity);
     setElementValue('status', data.status);
     setElementValue('tours', data.tour.id);

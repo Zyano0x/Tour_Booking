@@ -3,12 +3,14 @@ package com.project.tour_booking.Controller;
 import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Service.Booking.BookingService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -59,8 +61,9 @@ public class BookingController {
     }
 
     @GetMapping("/confirm-cancel")
-    public ResponseEntity<?> confirmCancel(@RequestParam("token") String confirmationToken, @RequestParam("transaction") Long transactionCode) {
-        return ResponseEntity.ok(bookingService.confirmCancel(transactionCode, confirmationToken));
+    public void confirmCancel(@RequestParam("token") String confirmationToken, @RequestParam("transaction") Long transactionCode, HttpServletResponse res) throws IOException {
+        if (ResponseEntity.ok(bookingService.confirmCancel(transactionCode, confirmationToken)).hasBody())
+            res.sendRedirect("/cart");
     }
 
     @PutMapping("/update-booking/{bookingId}")

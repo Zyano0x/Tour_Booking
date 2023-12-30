@@ -1,7 +1,7 @@
 /* ARTICLES AND PAGINATION */
 let articles = [];
 let currentPage = 1;
-let perPage = 2;
+let perPage = 5;
 let originArticles = [];
 let presentOriginArticles = [];
 const sortTimeBlock = document.getElementById("sort_time");
@@ -360,7 +360,7 @@ function handleArticlesFilter(selector) {
 
 ////////////////////////////////////////
 
-import { dateFormatConvert1, getApi, compareDates, renderRating, getReviewScore } from './global_function.js';
+import {compareDates, dateFormatConvert1, getApi, getReviewScore, renderRating} from './global_function.js';
 
 function start() {
     handleGetArticles(handleRenderArticles, "#articles_list");

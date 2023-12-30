@@ -148,7 +148,7 @@ async function renderNewArticles(articles, fatherBlock) {
         </div >`;
       if (html != '')
         fatherBlock.insertAdjacentHTML("beforeend", html);
-      if (count++ == 6)
+      if (++count == 6)
         break;
     }
   }
@@ -157,7 +157,7 @@ async function renderNewArticles(articles, fatherBlock) {
 
 ////////////////////////////////////////
 
-import { getApi, handleGetData, renderRating, moneyFormat } from './global_function.js';
+import {getApi, handleGetData, moneyFormat, renderRating} from './global_function.js';
 
 function start() {
   getApi("/api/sliders", renderSlider);

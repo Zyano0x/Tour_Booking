@@ -762,3 +762,18 @@ button.action-btn:hover {
 th {
     font-size: 12px;
 }
+
+#article-content {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+#article-content img {
+    margin: auto;
+    display: block;
+}
+
+#article-content i {
+    display: block;
+    text-align: center;
+}

@@ -383,7 +383,7 @@ public class BookingServiceImpl implements BookingService {
 
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setFrom("no-reply@tourbooking.com");
-                mailMessage.setTo("duypham22102@gmail.com");
+                mailMessage.setTo("ghuy042@gmail.com");
                 mailMessage.setSubject("Xác Nhận Hủy Đơn Hàng");
                 mailMessage.setText("Số hóa đơn xác nhận hủy: " + transactionCode
                         + "\nSố tiền cần hoàn lại: " + refund + ".00 VND");
