@@ -51,7 +51,8 @@ public class BookingController {
     }
 
     @GetMapping("/admin/user/{userId}/tour/{tourId}/bookings")
-    public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId, @PathVariable Long tourId) {
+    public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId,
+            @PathVariable Long tourId) {
         return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId), HttpStatus.OK);
     }
 
@@ -67,7 +68,8 @@ public class BookingController {
     }
 
     @PutMapping("/update-booking/{bookingId}")
-    public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingDTO bookingDTO, @PathVariable Long bookingId) {
+    public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingDTO bookingDTO,
+            @PathVariable Long bookingId) {
         bookingService.updateBooking(bookingDTO, bookingId);
         return new ResponseEntity<>("CẬP NHẬT ĐƠN ĐẶT TOUR THÀNH CÔNG!", HttpStatus.OK);
     }

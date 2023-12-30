@@ -149,15 +149,28 @@ async function renderUsersReviews(userReviews) {
                         <p>
                             ${articleReview.content}
                         </p>
-                        <div class="rating userRating">
-                            ${renderUserRating(parseInt(articleReview.vote))}
-                        </div>
+                            <div class="review-footer" data-reviewId="${articleReview.id}">
+                                <div class="rating userRating">
+                                    ${renderUserRating(parseInt(articleReview.vote))}
+                                </div>
+                                ${(await getApi(`/api/user-by-id?id=${userId}`)).role == "ADMIN" ? `<span>Xóa</span>` : ''}
+                            </div>
                         </div>
                         <!-- End review strip -->
                         `;
             }
-            if (htmls != '')
-                boxReview.innerHTML = htmls;
+
+            boxReview.innerHTML = htmls;
+
+            // DELETE BY ADMIN
+            const deleteReviewsByAdminBtn = document.querySelectorAll(".review-footer span");
+            if (deleteReviewsByAdminBtn.length > 0) {
+                for (const item of deleteReviewsByAdminBtn) {
+                    item.addEventListener("click", function (e) {
+                        deleteReview(item.parentNode.dataset.reviewid);
+                    });
+                }
+            }
         } else {
             throw new Error(`>>> Element with selector '#boxReview' not found in the DOM`);
         }
@@ -396,9 +409,9 @@ function updateReview(rating, review) {
     }
 }
 
-async function deleteReview() {
+async function deleteReview(id) {
     try {
-        const response = await fetch(`/api/delete-article-review/${articleReview.id}`, {
+        const response = await fetch(`/api/delete-article-review/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json', // Nếu API yêu cầu header có kiểu dữ liệu
@@ -431,7 +444,7 @@ function handleCRUDReview() {
             if (submitReviewBtn) {
                 submitReviewBtn.addEventListener("click", function () {
                     ratingOption && ratingOption.value != '' ? reviewContent && reviewContent.value != '' ? containsUnwantedWords(reviewContent.value) ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Bình luận chứa ngôn từ không phù hợp!") :
-                        addNewReview(ratingOption.value, reviewContent.value, modal) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
+                        addNewReview(ratingOption.value, reviewContent.value) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
                         : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra điểm đánh giá!");
                 });
             }
@@ -441,7 +454,7 @@ function handleCRUDReview() {
             if (submitUpdateReviewBtn) {
                 submitUpdateReviewBtn.addEventListener("click", function () {
                     ratingOption && ratingOption.value != '' ? reviewContent && reviewContent.value != '' ?
-                        ratingOption.value == articleReview.vote && reviewContent.value == articleReview.content ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Nội dung đánh giá không có thay đổi!") : containsUnwantedWords(reviewContent.value) ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Bình luận có từ ngữ không phù hợp!") : updateReview(ratingOption.value, reviewContent.value, modal) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
+                        ratingOption.value == articleReview.vote && reviewContent.value == articleReview.content ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Nội dung đánh giá không có thay đổi!") : containsUnwantedWords(reviewContent.value) ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Bình luận có từ ngữ không phù hợp!") : updateReview(ratingOption.value, reviewContent.value) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
                         : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra điểm đánh giá!");
                 });
             }
@@ -450,7 +463,7 @@ function handleCRUDReview() {
             const submitDeleteReviewBtn = document.querySelector("#submit_delete_review");
             if (submitDeleteReviewBtn) {
                 submitDeleteReviewBtn.addEventListener("click", function () {
-                    deleteReview(modal);
+                    deleteReview(articleReview.id);
                 });
             }
         }
