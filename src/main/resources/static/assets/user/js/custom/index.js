@@ -148,7 +148,7 @@ async function renderNewArticles(articles, fatherBlock) {
         </div >`;
       if (html != '')
         fatherBlock.insertAdjacentHTML("beforeend", html);
-      if (count++ == 6)
+      if (++count == 6)
         break;
     }
   }
