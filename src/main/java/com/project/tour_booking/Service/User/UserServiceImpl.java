@@ -116,10 +116,10 @@ public class UserServiceImpl implements UserService {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("no-reply@tourbooking.com");
-        mailMessage.setTo(user.getEmail());
+        mailMessage.setTo(user.getUsername());
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setText("To confirm your account, please click here: "
-                + "http://localhost:1337/api/confirm-account?token=" + token.getToken());
+                + "http://localhost:1337/api/auth/confirm-account?token=" + token.getToken());
 
         emailService.sendEmail(mailMessage);
 

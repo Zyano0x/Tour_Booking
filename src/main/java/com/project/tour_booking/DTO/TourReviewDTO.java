@@ -19,5 +19,4 @@ public class TourReviewDTO {
   @NotNull(message = "Mã tour không được để trống!")
   @Min(value = 1, message = "Mã tour có giá trị bắt đầu từ '1'!")
   private Long tourId;
-
 }

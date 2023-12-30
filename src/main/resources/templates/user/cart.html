@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+  <th:block th:replace="~{user/fragments/fragment::head}"></th:block>
+
+  <body>
+    <th:block th:replace="~{user/fragments/fragment::preloader}"></th:block>
+    <!-- End Preload -->
+
+    <div class="layer"></div>
+    <!-- Mobile menu overlay mask -->
+
+    <!-- Header================================================== -->
+    <th:block th:replace="~{user/fragments/fragment::header}"></th:block>
+    <!-- End Header -->
+
+    <section
+      class="parallax-window"
+      data-parallax="scroll"
+      data-image-src=""
+      data-natural-width="1400"
+      data-natural-height="500"
+    >
+      <div class="parallax-content-1">
+        <div class="animated fadeInDown">
+          <h1>Giỏ Hàng Của Bạn</h1>
+        </div>
+      </div>
+    </section>
+    <!-- End Section hero_2 -->
+
+    <main>
+      <div id="position">
+        <div class="container">
+          /
+          <ul>
+            <li><a href="/">Trang chủ</a></li>
+            <li>Giỏ hàng</li>
+          </ul>
+        </div>
+      </div>
+      <!-- End position -->
+
+      <div class="container margin_60">
+        <div class="row">
+          <div class="tabs col-lg-12">
+            <div
+              class="tab active"
+              data-toggle="tab1"
+              onclick="showTab('tab1')"
+            >
+              Booking
+            </div>
+            <div class="tab" data-toggle="tab2" onclick="showTab('tab2')">
+              Booking Đã Diễn Ra
+            </div>
+            <div class="tab" data-toggle="tab3" onclick="showTab('tab3')">
+              Booking Đã Hủy
+            </div>
+          </div>
+        </div>
+
+        <div class="row tab-booking-content active" id="tab1">
+          <div class="col-lg-12 none-padding">
+            <table class="table table-striped cart-list none-margin-bottom">
+              <thead>
+                <tr>
+                  <th class="text-align-center">Tour</th>
+                  <th class="text-align-center">Thời gian</th>
+                  <th class="text-align-center">Ngày khởi hành</th>
+                  <th class="text-align-center">Giờ.KH</th>
+                  <th class="text-align-center">Điểm.KH</th>
+                  <th class="text-align-center">N.Lớn</th>
+                  <th class="text-align-center">T.Em</th>
+                  <th class="text-align-center">Tổng tiền</th>
+                  <th class="text-align-center"></th>
+                </tr>
+              </thead>
+              <tbody class="valid-bookings"></tbody>
+            </table>
+          </div>
+        </div>
+        <!--End row -->
+
+        <div class="row tab-booking-content" id="tab2">
+          <div class="col-lg-12 none-padding">
+            <table class="table table-striped cart-list none-margin-bottom">
+              <thead>
+                <tr>
+                  <th class="text-align-center">Tour</th>
+                  <th class="text-align-center">Thời gian</th>
+                  <th class="text-align-center">Ngày khởi hành</th>
+                  <th class="text-align-center">Giờ.KH</th>
+                  <th class="text-align-center">Điểm.KH</th>
+                  <th class="text-align-center">N.Lớn</th>
+                  <th class="text-align-center">T.Em</th>
+                  <th class="text-align-center">Tổng tiền</th>
+                  <th class="text-align-center"></th>
+                </tr>
+              </thead>
+              <tbody class="expired-bookings"></tbody>
+            </table>
+          </div>
+        </div>
+        <!--End row -->
+
+        <div class="row tab-booking-content" id="tab3">
+          <div class="col-lg-12 none-padding">
+            <table class="table table-striped cart-list none-margin-bottom">
+              <thead>
+                <tr>
+                  <th class="text-align-center">Tour</th>
+                  <th class="text-align-center">Thời gian</th>
+                  <th class="text-align-center">Ngày khởi hành</th>
+                  <th class="text-align-center">Giờ.KH</th>
+                  <th class="text-align-center">Điểm.KH</th>
+                  <th class="text-align-center">N.Lớn</th>
+                  <th class="text-align-center">T.Em</th>
+                  <th class="text-align-center">Tổng tiền</th>
+                  <th class="text-align-center"></th>
+                </tr>
+              </thead>
+              <tbody class="cancelled-bookings"></tbody>
+            </table>
+          </div>
+        </div>
+        <!--End row -->
+      </div>
+      <!--End container -->
+    </main>
+    <!-- End main -->
+
+    <th:block th:replace="~{user/fragments/fragment::footer}"></th:block>
+    <!-- End footer -->
+
+    <div id="toTop"></div>
+    <!-- Back to top button -->
+    <div div id="animatedAlert" class="animated-alert"></div>
+
+    <!-- Search Menu -->
+    <div class="search-overlay-menu">
+      <span class="search-overlay-close"
+        ><i class="icon_set_1_icon-77"></i
+      ></span>
+      <form role="search" id="searchform" method="get">
+        <input value="" name="q" type="search" placeholder="Search..." />
+        <button type="submit"><i class="icon_set_1_icon-78"></i></button>
+      </form>
+    </div>
+    <!-- End Search Menu -->
+
+    <!-- Sign In Popup -->
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
+    <!-- /Sign In Popup -->
+
+    <!-- Common scripts -->
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
+
+    <!--Review modal validation -->
+    <script th:src="@{/assets/user/assets/validate.js}"></script>
+
+    <!-- Custom -->
+    <script>
+      function showTab(tabId) {
+        // Hide all tab content
+        document
+          .querySelectorAll(".tab-booking-content")
+          .forEach(function (tabContent) {
+            tabContent.classList.remove("active");
+          });
+
+        // Remove 'active' class from all tabs
+        document.querySelectorAll(".tab").forEach(function (tab) {
+          tab.classList.remove("active");
+        });
+
+        // Show the selected tab content
+        if (document.getElementById(tabId))
+          document.getElementById(tabId).classList.add("active");
+
+        // Add 'active' class to the clicked tab
+        document
+          .querySelector('.tab[data-toggle="' + tabId + '"]')
+          .classList.add("active");
+      }
+
+      // Show the default tab on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        showTab("tab1");
+
+        // Add 'active' class to the first tab on page load
+        document
+          .querySelector('.tab[data-toggle="tab1"]')
+          .classList.add("active");
+      });
+    </script>
+    <script type="module" th:src="@{/assets/user/js/custom/cart.js}"></script>
+    <script th:src="@{/assets/user/js/jquery.ddslick.js}"></script>
+  </body>
+</html>

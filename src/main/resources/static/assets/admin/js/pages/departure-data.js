@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                console.log('Received data:', data);
                 fetchDepartureDetailsModal(data);
                 $('#departureDetailsModalScrollable').modal('show'); // Show the modal
             })
@@ -65,8 +64,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.lock-icon').forEach(item => {
             item.addEventListener('click', event => {
                 event.preventDefault();
-                let id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                updateStatus(id);
+                const id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
+                const url = `/api/admin/update-departure-day-status?id=${encodeURIComponent(id)}`;
+
+                let myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                let requestOptions = {
+                    method: 'PUT', headers: myHeaders, redirect: 'follow'
+                };
+
+                fetch(url, requestOptions)
+                    .then(response => {
+                        if (response.ok) return response.json(); else throw new Error("Error Status: " + response.status);
+                    })
+                    .then(result => console.log(result))
+                    .catch(error => console.log('Error updating status:', error));
             });
         });
     }
@@ -75,160 +87,138 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-function updateStatus(id) {
-    const url = `/api/admin/update-departure-day-status?id=${encodeURIComponent(id)}`;
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        redirect: 'follow'
-    };
-
-    fetch(url, requestOptions)
-        .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(error => console.log('Error updating status:', error));
-}
-
-async function updateDeparture(id) {
+document.getElementById('update-day').addEventListener('click', function (event) {
     event.preventDefault();
 
+    const id = document.getElementById('id').value;
     const url = `/api/admin/update-departure-day?id=${encodeURIComponent(id)}`;
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const day = document.getElementById('departure').value; //TODO: Fix departure day
+    const day = document.getElementById('departure').value;
+    const time = document.getElementById('departureTime').value;
     const slots = document.getElementById('slots').value;
     const status = document.getElementById('status').value;
-    const tourId = await getTourIdByName(document.getElementById('tourDropdownUpdate').value);
+    const tourId = document.getElementById('tours').value;
 
     let raw = JSON.stringify({
-        "departureDay": day,
-        "quantity": slots,
-        "status": status,
-        "tourId": tourId
+        "departureDay": day, "departureTime": time, "quantity": slots, "status": status, "tourId": tourId
     });
 
+    console.log('Parsed Luxon Date:', day);
+
     let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+        method: 'PUT', headers: myHeaders, body: raw, redirect: 'follow'
     };
 
-    // Make the API request
     fetch(url, requestOptions)
         .then(response => {
-            if (response.ok) return response.json();
+            if (response.ok) return response.json(); else throw new Error('Failed to update departure day. Status: ' + response.status);
         })
         .then(result => {
-            console.log('Departure day updated successfully:', result);
-            showToast('Departure day updated successfully');
+            showToast('Succeed Update Departure Day', 'Success', 'green');
             $('#departureDetailsModalScrollable').modal('hide');
         })
-        .catch(error => console.log('Error updating destination:', error));
-}
+        .catch(error => showToast('Failed Update Departure Day', 'Error', 'red'));
+})
 
-async function addDeparture() {
+document.getElementById('add-day').addEventListener('click', function (event) {
     event.preventDefault();
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const day = document.getElementById('_departure').value; //TODO: Fix departure day
+    const day = document.getElementById('_departure').value;
+    const time = document.getElementById('_departureTime').value;
     const slots = document.getElementById('_slots').value;
     const status = document.getElementById('_status').value;
-    const tourId = await getTourIdByName(document.getElementById('tourDropdownNew').value);
+    const tourId = document.getElementById('_tours').value;
 
     let raw = JSON.stringify({
-        "departureDay": day,
-        "quantity": slots,
-        "status": status,
-        "tourId": tourId
+        "departureDay": day, "departureTime": time, "quantity": slots, "status": status, "tourId": tourId
     });
 
     let requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+        method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
     };
 
-    // Make the API request
     fetch("/api/admin/departure-day", requestOptions)
         .then(response => {
-            if (response.ok) return response.json();
+            if (response.ok) return response.text(); else throw new Error('Failed to update type tour. Status: ' + response.status);
         })
         .then(result => {
-            console.log('Departure day added successfully:', result);
-            showToast('Departure day added successfully');
+            showToast('Succeed Add Departure Day', 'Success', 'green');
             $('#newDepartureModalScrollable').modal('hide');
         })
-        .catch(error => console.log('Error adding departure day:', error));
-}
-
-function dropdownWithTour(currentTour) {
-    const dropdownUpdate = document.getElementById('tourDropdownUpdate');
-
-    fetch('/api/tours')
-        .then(response => {
-            if (response.ok) return response.json();
-        })
-        .then(tours => {
-            dropdownUpdate.innerHTML = "";
-
-            tours.forEach(tour => {
-                const option = document.createElement("option");
-                option.value = tour.name;
-                option.text = tour.name;
-
-                if (currentTour && tour.id === currentTour.id)
-                    option.selected = true;
-
-                dropdownUpdate.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching tours:', error);
-        });
-}
+        .catch(error => showToast('Failed Add Departure Day', 'Error', 'red'));
+})
 
 function fetchDepartureDetailsModal(data) {
-    document.getElementById('id').value = data.id;
-    document.getElementById('departure').value = data.departureDay;
-    document.getElementById('slots').value = data.quantity;
-    document.getElementById('status').value = data.status;
-    dropdownWithTour(data.tour);
+    const setElementValue = (elementId, value) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.value = value;
+        }
+    };
+
+    console.log(data.departureDay);
+    const formattedDate = formatDate(data.departureDay, 'dd-mm-yyyy');
+
+    setElementValue('id', data.id);
+    setElementValue('departure', formattedDate);
+    setElementValue('departureTime', data.departureTime);
+    setElementValue('slots', data.quantity);
+    setElementValue('status', data.status);
+    setElementValue('tours', data.tour.id);
 }
 
-async function getTourOptions() {
-    try {
-        const response = await fetch('/api/tours');
-        if (response.ok) return await response.json();
-    } catch (error) {
-        console.error('Error fetching tour options:', error);
-        return [];
+function formatDate(isoDate, inputFormat) {
+    const parseDateFromString = (dateString) => {
+        const parts = dateString.split('-');
+        if (parts.length === 3) {
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const year = parseInt(parts[2], 10);
+
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                return new Date(year, month, day);
+            }
+        }
+        return null;
+    };
+
+    const date = inputFormat === 'dd-mm-yyyy' ? parseDateFromString(isoDate) : new Date(isoDate);
+
+    if (date instanceof Date && !isNaN(date.getTime())) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    } else {
+        return 'Invalid date format';
     }
 }
 
-async function getTourIdByName(name) {
-    const tourOptions = await getTourOptions(); // Wait for the promise to resolve
-    const tour = tourOptions.find(option => option.name === name);
-    return tour ? tour.id : null;
-}
+import {fetchData} from './utils.js';
 
-async function fetchTours() {
-    try {
-        const tours = await fetch('/api/tours').then(response => response.json());
+fetchData('/api/tours', function (data, dropdownId) {
+    const typeOfTourDropdown = document.getElementById(dropdownId);
+    data.forEach(function (typeOfTour) {
+        const option = document.createElement('option');
+        option.value = typeOfTour.id;
+        option.text = typeOfTour.name;
+        typeOfTourDropdown.appendChild(option);
+    });
+}, 'tours');
 
-        populateDropdown('tourDropdownNew', tours);
-    } catch (error) {
-        console.error('Error fetching data options:', error);
-    }
-}
-fetchTours().then(r => {
-    console.log('Data fetched successfully!');
-});
+fetchData('/api/tours', function (data, dropdownId) {
+    const typeOfTourDropdown = document.getElementById(dropdownId);
+    data.forEach(function (typeOfTour) {
+        const option = document.createElement('option');
+        option.value = typeOfTour.id;
+        option.text = typeOfTour.name;
+        typeOfTourDropdown.appendChild(option);
+    });
+}, '_tours');

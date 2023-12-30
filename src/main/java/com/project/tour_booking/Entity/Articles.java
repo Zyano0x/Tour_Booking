@@ -27,8 +27,18 @@ public class Articles {
     private String title;
 
     @NonNull
+    @NotBlank(message = "Mô tả không được để trống!")
+    @Column(name = "description", columnDefinition = "LONGTEXT")
+    private String description;
+
+    @NonNull
+    @NotBlank(message = "Thumbnail không được để trống!")
+    @Column(name = "thumbnail")
+    private String thumbnail;
+
+    @NonNull
     @NotBlank(message = "Nội dung không được để trống!")
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "LONGTEXT")
     private String content;
 
     @NonNull

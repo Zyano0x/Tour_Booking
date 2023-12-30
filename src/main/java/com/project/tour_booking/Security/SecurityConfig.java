@@ -18,7 +18,8 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITE_LIST = {"/assets/**", "/api/**", "/panel/login", "/tours/*", "/",};
+
+    private static final String[] WHITE_LIST = {"/assets/**", "/api/**", "/panel/*", "/tours/*", "/articles/*", "/*",};
 
     private static final String[] BLACK_LIST = {"/api/admin/**", "/panel/**",};
 
@@ -39,13 +40,9 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .formLogin(login -> login
-                        .loginPage("/panel/login")
-                        .defaultSuccessUrl("/panel").permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout")
+                .logout(logout -> logout.logoutUrl("/api/auth/logout")
                         .addLogoutHandler(logoutHandler)
-                        .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext())).permitAll());
+                        .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext())));
         return http.build();
     }
 }

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+  <th:block th:replace="~{user/fragments/fragment::head}"></th:block>
+
+  <body class="none-padding-right">
+    <th:block th:replace="~{user/fragments/fragment::preloader}"></th:block>
+    <!-- End Preload -->
+
+    <div class="layer"></div>
+    <!-- Mobile menu overlay mask -->
+
+    <!-- Header================================================== -->
+    <th:block th:replace="~{user/fragments/fragment::header}"></th:block>
+    <!-- End Header -->
+
+    <section
+      class="parallax-window"
+      data-parallax="scroll"
+      data-image-src="/assets/user/images/single_tour_bg_1.jpg"
+      data-natural-width="1400"
+      data-natural-height="500"
+    >
+      <div class="grey-layout">
+        <div class="parallax-content-2">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-8">
+                <h1 id="name">Name</h1>
+                <div class="caption">
+                  <span class="destination">...</span>
+                  -
+                  <span class="type-of-tour">...</span>
+                </div>
+                <span class="rating genarateRating">
+                  <div class="rating">
+                    <i class="icon-smile"></i><i class="icon-smile"></i
+                    ><i class="icon-smile"></i><i class="icon-smile"></i
+                    ><i class="icon-smile"></i><small>(0)</small>
+                  </div>
+                </span>
+              </div>
+              <div class="col-md-4 line-height-1_5">
+                <div id="author">
+                  <p>
+                    <i class="fa-solid fa-user-pen"></i>
+                    <span></span>
+                  </p>
+                </div>
+                <div id="date-of-posting">
+                  <p>
+                    <i
+                      class="fa-solid fa-paper-plane"
+                      style="margin-right: 9px"
+                    ></i>
+                    <span></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End section -->
+
+    <main>
+      <div id="position">
+        <div class="container">
+          <ul>
+            <li><a href="/">Trang chủ</a></li>
+            <li><a href="/articles">Bài viết</a></li>
+            <li class="navigation-name">...</li>
+          </ul>
+        </div>
+      </div>
+      <!-- End Position -->
+
+      <div class="collapse" id="collapseMap">
+        <div
+          id="gg-map"
+          class="gg-map"
+          style="position: relative; overflow: hidden"
+        >
+          <iframe
+            src=""
+            width="600"
+            height="450"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+      <!-- End Map -->
+
+      <div class="container margin_60" style="transform: none">
+        <div class="col-lg-12" id="single_tour_desc">
+          <div id="article-content"></div>
+          <hr />
+          <div class="row">
+            <div class="col-lg-2">
+              <h3>ĐÁNH GIÁ</h3>
+              <a sec:authorize="isAnonymous()" href="#sign-in-dialog" class="btn_1 access_link"></i> Đăng Nhập</a>
+              <div sec:authorize="isAuthenticated()" id="review_option"></div>
+            </div>
+            <div class="col-lg-10">
+              <div id="general_rating">
+                <div class="rating genarateRating footerGenarateRating"></div>
+              </div>
+              <!-- End general_rating -->
+              <div id="boxReview"></div>
+            </div>
+          </div>
+
+          <nav aria-label="Page navigation" class="pagination">
+            <ul class="pagination justify-content-center col-lg-9"></ul>
+          </nav>
+          <!-- end pagination-->
+        </div>
+        <!--End  single_tour_desc-->
+      </div>
+      <!--End container -->
+
+      <div id="overlay"></div>
+      <!-- Mask on input focus -->
+    </main>
+    <!-- End main -->
+
+    <th:block th:replace="~{user/fragments/fragment::footer}"></th:block>
+    <!-- End footer -->
+
+    <div id="toTop"></div>
+    <!-- Back to top button -->
+
+    <!-- Search Menu -->
+    <div class="search-overlay-menu">
+      <span class="search-overlay-close"
+        ><i class="icon_set_1_icon-77"></i
+      ></span>
+      <form role="search" id="searchform" method="get">
+        <input value="" name="q" type="search" placeholder="Search..." />
+        <button type="submit"><i class="icon_set_1_icon-78"></i></button>
+      </form>
+    </div>
+    <!-- End Search Menu -->
+
+    <!-- Sign In Popup -->
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
+    <!-- /Sign In Popup -->
+
+    <!-- Modal Review -->
+    <div
+      class="modal fade"
+      id="myReview"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myReviewLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myReviewLabel">
+              Chia sẽ trải nghiệm của bạn
+            </h4>
+            <button
+              type="button"
+              id="close-modal-review"
+              class="close outline-none"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="message-review"></div>
+            <div name="review_tour" id="review_tour">
+              <input
+                name="tour_name"
+                id="tour_name"
+                type="hidden"
+                value="Paris Arch de Triomphe Tour"
+              />
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <select
+                      class="form-control"
+                      name="quality_review"
+                      id="quality_review"
+                    >
+                      <option value="">Mời đánh giá</option>
+                      <option value="1">Tồi tệ</option>
+                      <option value="2">Tạm được</option>
+                      <option value="3">Tốt</option>
+                      <option value="4">Khá tốt</option>
+                      <option value="5">Tuyệt vời</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!-- End row -->
+              <div class="form-group">
+                <textarea
+                  name="review_text"
+                  id="review_text"
+                  class="form-control"
+                  style="height: 100px"
+                  placeholder="Viết đánh giá của bạn"
+                ></textarea>
+              </div>
+              <div id="submit_option"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div div id="animatedAlert" class="animated-alert"></div>
+    <!-- End modal review -->
+
+    <!-- Common scripts -->
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
+
+    <!--Review modal validation -->
+    <script th:src="@{/assets/user/assets/validate.js}"></script>
+
+    <!-- Custom -->
+    <script
+      type="module"
+      th:src="@{/assets/user/js/custom/article_details.js}"
+      defer
+    ></script>
+  </body>
+</html>

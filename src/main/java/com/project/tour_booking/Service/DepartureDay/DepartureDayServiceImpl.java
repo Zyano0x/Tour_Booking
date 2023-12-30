@@ -32,6 +32,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
   public void saveDepartureDay(DepartureDayDTO departureDayDTO) {
     System.out.println(departureDayDTO.getDepartureDay());
     DepartureDay newDepartureDay = new DepartureDay(departureDayDTO.getQuantity(), departureDayDTO.getDepartureDay(),
+        departureDayDTO.getDepartureTime(),
         departureDayDTO.getStatus());
 
     Optional<Tour> tourOptional = tourRepository.findById(departureDayDTO.getTourId());
@@ -72,10 +73,11 @@ public class DepartureDayServiceImpl implements DepartureDayService {
     if (departureDayOptional.isPresent()) {
       DepartureDay updateDepartureDay = departureDayOptional.get();
 
-      // Kiểm tra ngày khởi hành có hết hạn chưa
+      // Kiểm tra ngày khởi hành có diễn ra chưa
       if (updateDepartureDay.getDepartureDay().isAfter(LocalDate.now())) {
         updateDepartureDay.setQuantity(departureDayDTO.getQuantity());
         updateDepartureDay.setDepartureDay(departureDayDTO.getDepartureDay());
+        updateDepartureDay.setDepartureTime(departureDayDTO.getDepartureTime());
 
         // Kiểm tra có thay đổi status không
         if (departureDayDTO.getStatus() != updateDepartureDay.getStatus()) {
@@ -148,7 +150,7 @@ public class DepartureDayServiceImpl implements DepartureDayService {
           departureDay.setQuantity(departureDay.getQuantity() + totalQuantity);
         }
       } else if (departureDay.getTour().getStatus()) {
-        // Chỉ kích hoạt các ngày khởi hành còn hạn
+        // Chỉ kích hoạt các ngày khởi hành chưa diễn ra
         if (departureDay.getDepartureDay().isAfter(LocalDate.now())) {
           departureDay.setStatus(true);
         } else

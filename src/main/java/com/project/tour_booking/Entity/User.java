@@ -1,5 +1,6 @@
 package com.project.tour_booking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -7,8 +8,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,7 +22,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "user")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
@@ -47,6 +50,7 @@ public class User implements UserDetails {
     @Column(name = "birthday", nullable = false)
     @Temporal(TemporalType.DATE)
     @NotNull(message = "Ngày sinh không được để trống!")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
 
     @Column(name = "gender", length = 10, nullable = false)
@@ -117,12 +121,12 @@ public class User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-       return true;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-       return enabled;
+        return enabled;
     }
 
     public String getEmail() {

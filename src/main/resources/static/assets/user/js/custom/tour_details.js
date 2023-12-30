@@ -1,19 +1,30 @@
-async function renderTourHeader(tour) {
-    const name = document.getElementById("tourName");
+let tourId = getParamId();
+let tour;
+let tourReview;
+const userId = document.head.dataset.userid;
+const ratingOption = document.querySelector("#quality_review");
+const reviewContent = document.querySelector("#review_text");
+
+async function renderTourHeader() {
+    const parallaxWindow = document.querySelector(".parallax-window");
+    const greyLayout = document.querySelector(".grey-layout");
+    const name = document.getElementById("name");
     const destination = document.querySelector(".destination");
     const typeOfTour = document.querySelector(".type-of-tour");
     const priceForAdult = document.querySelector("#price_single_main span");
     const priceForChildren = document.querySelector("#price_single_main_for_children span");
-    const navigationTourName = document.querySelector(".navigation-tour-name");
+    const navigationName = document.querySelector(".navigation-name");
 
-    if (name) name.textContent = tour.name;
-    if (destination) destination.textContent = tour.destination.name;
-    if (typeOfTour) typeOfTour.textContent = tour.typeOfTour.name;
-    if (priceForAdult) priceForAdult.textContent = tour.priceForAdult;
-    if (priceForChildren) priceForChildren.textContent = tour.priceForChildren;
-    if (navigationTourName) navigationTourName.textContent = tour.name;
+    parallaxWindow ? parallaxWindow.style.background = `url(${tour.thumbnail}) no-repeat center/cover` : '';
+    greyLayout ? greyLayout.style.height = "500px" : '';
+    name ? name.textContent = tour.name : '';
+    destination ? destination.textContent = tour.destination.name : '';
+    typeOfTour ? typeOfTour.textContent = tour.typeOfTour.name : '';
+    priceForAdult ? priceForAdult.textContent = moneyFormat(tour.priceForAdult, true) : '';
+    priceForChildren ? priceForChildren.textContent = moneyFormat(tour.priceForChildren, true) : '';
+    navigationName ? navigationName.textContent = tour.name : '';
 
-    const rating = await renderToursRating(`${tour.id}`);
+    const rating = await renderRating(`/api/tour/${tourId}/tour-reviews`);
     document.querySelectorAll(".genarateRating").forEach(element => {
         element.innerHTML = rating;
     });
@@ -75,7 +86,7 @@ function loadScript(src) {
     });
 }
 
-async function handleGetTourImages(tourId) {
+async function handleGetTourImages() {
     await getApi(`/api/tour/${tourId}/tour-images`, renderTourImages);
 
     // Create layout & animation slider
@@ -103,6 +114,8 @@ async function handleGetTourImages(tourId) {
 }
 /*END TOUR IMAGES*/
 
+////////////////////////////////////////
+
 /*TOUR INFO {description, schedule, service}*/
 function renderInfo(tourInfo, fatherBlockSelector) {
     try {
@@ -118,11 +131,70 @@ function renderInfo(tourInfo, fatherBlockSelector) {
 }
 /*END TOUR INFO {description, schedule, service}*/
 
+////////////////////////////////////////
+
 /*PAGINATION USER REVIEWS*/
-let tourReviews = [];
+let userReviews = [];
 let currentPage = 1;
 let perPage = 1;
 let totalPage = 0;
+
+function renderReviewOption() {
+    try {
+        const reviewOptionBlock = document.querySelector("#review_option");
+        const submitOptionBlock = document.querySelector("#submit_option");
+        if (reviewOptionBlock && submitOptionBlock) {
+            let reviewOption;
+            let submitOption;
+            tourReview = userReviews.find(function (obj) {
+                return obj.user.id == userId; // Thay id bằng thuộc tính cụ thể bạn muốn so sánh
+            });
+            if (tourReview !== undefined) {
+                reviewOption = `<a
+                href="javascript:void(0);"
+                class="btn_1 add_bottom_30 .none-padding-right"
+                data-toggle="modal"
+                data-target="#myReview"
+                >Chỉnh sửa</a>`;
+
+                submitOption = `<button
+                    type="submit"
+                    class="btn_1 outline-none"
+                    id="submit_update_review" 
+                >Cập nhật</button>
+                <button
+                    type="submit"
+                    class="btn_1 outline-none"
+                    id="submit_delete_review"
+                >Xóa</button>`;
+
+                ratingOption ? ratingOption.value = tourReview.vote : '';
+                reviewContent ? reviewContent.value = tourReview.content : '';
+            } else {
+                reviewOption = `<a
+                href="javascript:void(0);"
+                class="btn_1 add_bottom_30 .none-padding-right"
+                data-toggle="modal"
+                data-target="#myReview"
+                >Thêm đánh giá</a>`;
+
+                submitOption = `<button
+                    type="submit"
+                    class="btn_1 outline-none"
+                    id="submit_review"
+                >Gửi đánh giá</button>`;
+
+                ratingOption ? ratingOption.value = '' : '';
+                reviewContent ? reviewContent.value = '' : '';
+            }
+            reviewOptionBlock.innerHTML = reviewOption;
+            submitOptionBlock.innerHTML = submitOption;
+            handleCRUDReview();
+        }
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
 
 function renderUserRating(score) {
     try {
@@ -145,33 +217,46 @@ function renderUserRating(score) {
     }
 }
 
-async function renderUsersReviews(tourReviews) {
+async function renderUsersReviews(userReviews) {
     try {
         const boxReview = document.querySelector("#boxReview");
         if (boxReview) {
             var htmls = '';
-            for (const tourReview of tourReviews) {
+            for (const tourReview of userReviews) {
                 htmls += `<hr />
                         <div class="review_strip_single">
-                        <img
-                            src="/assets/user/images/avatar3.jpg"
-                            alt="Image"
-                            class="rounded-circle"
-                        />
-                        <small> - ${tourReview.editDate ? "Chỉnh sửa - " + tourReview.editDate : tourReview.dateOfPosting} -</small>
-                        <h4>${tourReview.user ? tourReview.user.name : ''}</h4>
-                        <p>
-                            ${tourReview.content}
-                        </p>
-                        <div class="rating userRating">
-                            ${renderUserRating(parseInt(tourReview.vote))}
-                        </div>
+                            <img
+                                src="/assets/user/images/avatar3.jpg"
+                                alt="Image"
+                                class="rounded-circle"
+                            />
+                            <small> - ${tourReview.editDate ? "Chỉnh sửa - " + dateFormatConvert1(tourReview.editDate) : dateFormatConvert1(tourReview.dateOfPosting)} -</small>
+                            <h4>${tourReview.user ? tourReview.user.name : ''}</h4>
+                            <p>
+                                ${tourReview.content}
+                            </p>
+                            <div class="review-footer" data-reviewId="${tourReview.id}">
+                                <div class="rating userRating">
+                                    ${renderUserRating(parseInt(tourReview.vote))}
+                                </div>
+                                ${(await getApi(`/api/user-by-id?id=${userId}`)).role == "ADMIN" ? `<span>Xóa</span>` : ''}
+                            </div> 
                         </div>
                         <!-- End review strip -->
                         `;
             }
-            if (htmls != '')
-                boxReview.innerHTML = htmls;
+
+            boxReview.innerHTML = htmls;
+
+            // DELETE BY ADMIN
+            const deleteReviewsByAdminBtn = document.querySelectorAll(".review-footer span");
+            if (deleteReviewsByAdminBtn.length > 0) {
+                for (const item of deleteReviewsByAdminBtn) {
+                    item.addEventListener("click", function (e) {
+                        deleteReview(item.parentNode.dataset.reviewid);
+                    });
+                }
+            }
         } else {
             throw new Error(`>>> Element with selector '#boxReview' not found in the DOM`);
         }
@@ -180,24 +265,20 @@ async function renderUsersReviews(tourReviews) {
     }
 }
 
-function handleUserReviewsPagesNumber() {
-    renderUsersReviews(tourReviews.slice(
-        (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
-    ));
-}
-
-async function handleRenderUserReviews(tourId) {
+async function handleRenderUserReviews() {
     try {
-        tourReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
-        tourReviews.reverse();
+        userReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
+        userReviews.reverse();
+        renderReviewOption();
 
         // render page number
-        totalPage = Math.ceil(tourReviews.length / perPage);
+        totalPage = Math.ceil(userReviews.length / perPage);
 
+        const pagination = document.querySelector("ul.pagination");
         if (totalPage > 1) {
-            const pagination = document.querySelector("ul.pagination");
+            let htmls = ``;
             if (pagination) {
-                pagination.innerHTML += `
+                htmls += `
                 <li class="page-item page-item-previous" style="pointer-events: none;">
                     <span class="page-link" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
@@ -206,11 +287,11 @@ async function handleRenderUserReviews(tourId) {
                 </li>
                 `;
                 for (var i = 1; i <= totalPage; i++) {
-                    pagination.innerHTML += `
+                    htmls += `
                     <li class="page-item page-item-number page-item-number-${i} ${i === 1 ? "active" : ''}" data-number="${i}"><span class="page-link">${i}</span></li>
                     `;
                 }
-                pagination.innerHTML += `
+                htmls += `
                 <li class="page-item page-item-next">
                     <span class="page-link" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
@@ -218,6 +299,7 @@ async function handleRenderUserReviews(tourId) {
                     </span>
                 </li>
                 `;
+                pagination.innerHTML = htmls;
             } else
                 throw new Error(`>>> Element with selector 'ul.pagination' not found in the DOM`);
 
@@ -244,7 +326,9 @@ async function handleRenderUserReviews(tourId) {
                         pageItemNext.style.pointerEvents = "none";
                     }
                     element.classList.add("active");
-                    handleUserReviewsPagesNumber();
+                    renderUsersReviews(userReviews.slice(
+                        (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
+                    ));
                 })
             });
 
@@ -258,7 +342,9 @@ async function handleRenderUserReviews(tourId) {
                     this.setAttribute("style", "pointer-events: none;");
                 }
                 document.querySelector(`.page-item-number-${currentPage}`).classList.add("active");
-                handleUserReviewsPagesNumber();
+                renderUsersReviews(userReviews.slice(
+                    (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
+                ));
             });
 
             pageItemNext.addEventListener("click", function () {
@@ -271,10 +357,14 @@ async function handleRenderUserReviews(tourId) {
                     this.setAttribute("style", "pointer-events: none;");
                 }
                 document.querySelector(`.page-item-number-${currentPage}`).classList.add("active");
-                handleUserReviewsPagesNumber();
+                renderUsersReviews(userReviews.slice(
+                    (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
+                ));
             });
+        } else {
+            pagination.innerHTML = '';
         }
-        renderUsersReviews(tourReviews.slice(
+        renderUsersReviews(userReviews.slice(
             (currentPage - 1) * perPage, (currentPage - 1) * perPage + perPage
         ));
     } catch (error) {
@@ -283,101 +373,10 @@ async function handleRenderUserReviews(tourId) {
 }
 /*END PAGINATION USER REVIEWS*/
 
+////////////////////////////////////////
+
 /*BOOKING*/
 let deparuteDayIdForUpdate;
-
-/*
-function changeQuantity(priceForAdult, priceForChildren) {
-    try {
-        const totalBlock = document.querySelector("#total");
-        totalBlock.innerText = priceForAdult;
-
-        if (totalBlock) {
-            const adult = document.querySelector("#adults");
-            const adultInc = document.querySelector("#adults-numbers-row .inc");
-            const adultDec = document.querySelector("#adults-numbers-row .dec");
-            const children = document.querySelector("#children");
-            const childrenInc = document.querySelector("#children-numbers-row .inc");
-            const childrenDec = document.querySelector("#children-numbers-row .dec");
-
-            if (adult && adultInc && adultDec && children && childrenInc && childrenDec) {
-                adultInc.addEventListener("click", function () {
-                    totalBlock.innerText = parseInt(totalBlock.innerText) + priceForAdult;
-                });
-                adultDec.addEventListener("click", function () {
-                    totalBlock.innerText = parseInt(totalBlock.innerText) - priceForAdult;
-                });
-                childrenInc.addEventListener("click", function () {
-                    totalBlock.innerText = parseInt(totalBlock.innerText) + priceForChildren;
-                });
-                childrenDec.addEventListener("click", function () {
-                    totalBlock.innerText = parseInt(totalBlock.innerText) - priceForChildren;
-                });
-            } else {
-                throw new Error(`>>> Element with selector '#adults-numbers-row .inc or #adults-numbers-row .dec or #children-numbers-row .inc or #children-numbers-row .dec or #adults or #children' not found in the DOM`);
-            }
-        } else {
-            throw new Error(`>>> Element with selector '#total' not found in the DOM`);
-        }
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
-*/
-
-function changeQuantity(priceForAdult, priceForChildren) {
-    try {
-        const totalBlock = document.getElementById("total");
-
-        if (!totalBlock) {
-            throw new Error(">>> Element with selector '#total' not found in the DOM");
-        }
-        totalBlock.innerText = priceForAdult;
-
-        const adult = document.getElementById("adults");
-        const adultInc = document.querySelector("#adults-numbers-row .inc");
-        const adultDec = document.querySelector("#adults-numbers-row .dec");
-        const children = document.getElementById("children");
-        const childrenInc = document.querySelector("#children-numbers-row .inc");
-        const childrenDec = document.querySelector("#children-numbers-row .dec");
-
-        if (!adult || !adultInc || !adultDec || !children || !childrenInc || !childrenDec) {
-            throw new Error(`>>> Element with selector '#adults-numbers-row .inc or #adults-numbers-row .dec or #children-numbers-row .inc or #children-numbers-row .dec or #adults or #children' not found in the DOM`);
-        }
-
-        const btnStatus = (element, option) => {
-            if (option) {
-                adultDec.style.pointerEvents = element.value === '0' ? "none" : "";
-            } else {
-                childrenDec.style.pointerEvents = element.value === '0' ? "none" : "";
-            }
-        };
-
-        const updateTotal = (quantity, price) => {
-            totalBlock.innerText = parseInt(totalBlock.innerText, 10) + quantity * price;
-        };
-
-        btnStatus(children, 0);
-        adultInc.addEventListener("click", () => {
-            updateTotal(1, priceForAdult)
-            btnStatus(adult, 1);
-        });
-        adultDec.addEventListener("click", () => {
-            updateTotal(-1, priceForAdult);
-            btnStatus(adult, 1);
-        });
-        childrenInc.addEventListener("click", () => {
-            updateTotal(1, priceForChildren)
-            btnStatus(children, 0);
-        });
-        childrenDec.addEventListener("click", () => {
-            updateTotal(-1, priceForChildren);
-            btnStatus(children, 0);
-        });
-    } catch (error) {
-        console.log(">>> Error: " + error.message);
-    }
-}
 
 function updateBookingQuantity() {
     try {
@@ -385,7 +384,7 @@ function updateBookingQuantity() {
         if (remainingQuanityBlock) {
             setInterval(async function () {
                 remainingQuanityBlock.innerText = (await getApi(`/api/departure-day?id=${deparuteDayIdForUpdate}`, "NotCallBack")).quantity;
-            }, 1000);
+            }, 100);
         } else {
             throw new Error(`>>> Element with selector '#remainingQuanity' not found in the DOM`);
         }
@@ -394,10 +393,10 @@ function updateBookingQuantity() {
     }
 }
 
-async function bookingOverLay(tourId) {
+async function bookingOverLay() {
     try {
         var departureDays = await getApi(`/api/tour/${tourId}/departure-days`, "NotCallBack");
-        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDate(departureDay.departureDay) && departureDay.quantity > 0);
+        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDateNow(departureDay.departureDay) == 1 && departureDay.quantity > 0);
 
         if (validDepartureDays.length <= 0) {
             document.querySelector("#booking_box").style.pointerEvents = "none";
@@ -415,9 +414,14 @@ function changeDepartureDay() {
         var selectedValueInputs = document.querySelectorAll(".dd-option");
 
         if (selectedValueInputs.length > 0) {
+            const departureTimeBlock = document.querySelector("#departureTime");
             selectedValueInputs.forEach(function (option) {
-                option.addEventListener('click', function () {
+                option.addEventListener('click', async function () {
                     const optionValue = document.querySelector(".dd-option-selected .dd-option-value");
+
+
+                    // Cập nhật thời gian khởi hành tương ứng cho từng ngày khởi hành
+                    departureTimeBlock ? departureTimeBlock.textContent = (await getApi(`/api/departure-day?id=${optionValue.value}`)).departureTime : '';
                     if (optionValue) {
                         deparuteDayIdForUpdate = parseInt(optionValue.value);
                     } else {
@@ -441,16 +445,16 @@ function booking() {
             const adult = document.getElementById("adults");
             const children = document.getElementById("children");
             const departureDay = document.querySelector(".dd-option-selected .dd-option-value");
-            const userId = document.head.dataset.userid;
             const remainingQuanityBlock = document.querySelector("#remainingQuanity");
 
             bookingBtn.addEventListener("click", function () {
-                if (totalBlock.innerText !== '0') {
+                let totalPrice = moneyFormat(totalBlock.innerText);
+                if (adult.value != '0' || children.value != '0') {
                     let totalQuantity = parseInt(adult.value) + parseInt(children.value);
                     if (parseInt(remainingQuanityBlock.innerText) >= totalQuantity) {
                         const payment = {
                             "userId": userId,
-                            "total": totalBlock.innerText,
+                            "total": totalPrice,
                             "quantityOfAdult": adult.value,
                             "quantityOfChild": children.value,
                             "departureDayId": departureDay.value
@@ -472,12 +476,12 @@ function booking() {
                                 console.error("Error creating payment:", error);
                             });
                     } else if (parseInt(remainingQuanityBlock.innerText) === 0) {
-                        alert("Thông báo: Ngày khởi hành bạn chọn đã hết vé!");
+                        alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Ngày khởi hành bạn chọn đã hết vé!");
                     } else {
-                        alert("Thông báo: Số lượng vé đã vượt quá số lượng vé còn lại!");
+                        alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé còn lại không đủ!");
                     }
                 } else {
-                    alert("Thông báo: Số lượng vé phải lớn hơn > 0!");
+                    alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé phải lớn hơn 0!");
                 }
             })
         } else {
@@ -488,32 +492,219 @@ function booking() {
     }
 }
 
-async function handleBooking(tour) {
-    if (!(await bookingOverLay(tour.id))) {
-        await getDropList(`/api/tour/${tour.id}/departure-days`, renderDepartureDropList, "#departureDays", "all_tours.png");
+async function handleBooking() {
+    try {
+        if (!(await bookingOverLay(tourId))) {
+            await getDropList(`/api/tour/${tourId}/departure-days`, renderDepartureDropList, "#departureDays", "all_tours.png");
 
-        // Set departureDayId ban đầu
-        deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
-        // Chạy cập nhật
-        updateBookingQuantity();
+            // Set departureDayId ban đầu
+            deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
 
-        changeDepartureDay();
+            // Hiển thị thời gian
+            const timeBlock = document.querySelector("#time");
+            timeBlock ? timeBlock.textContent = tour.time : '';
 
-        changeQuantity(tour.priceForAdult, tour.priceForChildren);
+            // Hiển thị giờ khởi hành
+            getDepartureTime("#departureTime", deparuteDayIdForUpdate);
 
-        booking();
-    } else {
-        document.querySelector("#departureDays").innerHTML += `<option
-            value=""
-            data-imagesrc="/assets/user/images/icons_search/all_tours.png">
-            ...
-        </option>`;
-        ddslick("#departureDays");
+            // Chạy cập nhật
+            updateBookingQuantity();
+
+            changeDepartureDay();
+
+            changeQuantity(tour.priceForAdult, tour.priceForChildren);
+
+            booking();
+        } else {
+            document.querySelector("#departureDays").innerHTML += `<option
+                value=""
+                data-imagesrc="/assets/user/images/icons_search/all_tours.png">
+                ...
+            </option>`;
+            ddslick("#departureDays");
+        }
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
     }
 }
 /*END BOOKING*/
 
-async function getParamId() {
+////////////////////////////////////////
+
+/*CRUD TOUR REVIEW */
+const closeModalReview = document.getElementById("close-modal-review");
+
+function containsUnwantedWords(comment) {
+    comment = comment.toLowerCase();
+    for (const unwantedKeyword of unwantedKeywords) {
+        if (comment.includes(unwantedKeyword)) {
+            return true; // Nếu tìm thấy từ khóa không mong muốn, trả về true
+        }
+    }
+    return false; // Nếu không tìm thấy từ khóa không mong muốn, trả về false
+}
+
+function addNewReview(rating, review) {
+    try {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        let raw = JSON.stringify({
+            "content": review,
+            "vote": rating,
+            "userId": userId,
+            "tourId": tourId,
+        });
+
+        let requestOptions = {
+            method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
+        };
+
+        // Make the API request
+        fetch("/api/tour-review", requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Failed to add tour review. Status: ' + response.status);
+                }
+            })
+            .then(result => {
+                alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Thêm đánh giá thành công!");
+                renderTourHeader();
+                handleRenderUserReviews();
+                closeModalReview.click();
+            })
+            .catch(error => {
+                console.log(">>> Error: " + error.message);
+            });
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+
+function updateReview(rating, review) {
+    try {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        let raw = JSON.stringify({
+            "content": review,
+            "vote": rating,
+            "userId": userId,
+            "tourId": tourId,
+        });
+
+        let requestOptions = {
+            method: 'PUT', headers: myHeaders, body: raw, redirect: 'follow'
+        };
+
+        // Make the API request
+        fetch(`/api/update-tour-review/${tourReview.id}`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Failed to update tour review. Status: ' + response.status);
+                }
+            })
+            .then(result => {
+                renderReviewOption();
+
+                alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Cập nhật đánh giá thành công!");
+                renderTourHeader();
+                currentPage = 1;
+                handleRenderUserReviews();
+                closeModalReview.click();
+            })
+            .catch(error => {
+                console.log(">>> Error: " + error.message);
+            });
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+
+async function deleteReview(id) {
+    try {
+        const response = await fetch(`/api/delete-tour-review/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json', // Nếu API yêu cầu header có kiểu dữ liệu
+                // 'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // Nếu có yêu cầu xác thực
+            },
+            // body: JSON.stringify({}) // Nếu có dữ liệu gửi kèm (thường không cần cho DELETE)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        renderReviewOption();
+
+        alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Xóa đánh giá thành công!");
+        renderTourHeader();
+        currentPage = 1;
+        handleRenderUserReviews();
+        closeModalReview.click();
+    } catch (error) {
+        console.error('>>> Error deleting review:', error.message);
+    }
+}
+
+function handleCRUDReview() {
+    try {
+        const modal = document.querySelector("#myReview");
+        if (modal) {
+            // ADD NEW
+            const submitReviewBtn = document.querySelector("#submit_review");
+            if (submitReviewBtn) {
+                submitReviewBtn.addEventListener("click", function () {
+                    ratingOption && ratingOption.value != '' ? reviewContent && reviewContent.value != '' ? containsUnwantedWords(reviewContent.value) ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Bình luận chứa ngôn từ không phù hợp!") :
+                        addNewReview(ratingOption.value, reviewContent.value) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
+                        : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra điểm đánh giá!");
+                });
+            }
+
+            // UPDATE
+            const submitUpdateReviewBtn = document.querySelector("#submit_update_review");
+            if (submitUpdateReviewBtn) {
+                submitUpdateReviewBtn.addEventListener("click", function () {
+                    ratingOption && ratingOption.value != '' ? reviewContent && reviewContent.value != '' ?
+                        ratingOption.value == tourReview.vote && reviewContent.value == tourReview.content ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Nội dung đánh giá không có thay đổi!") : containsUnwantedWords(reviewContent.value) ? alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Bình luận có từ ngữ không phù hợp!") : updateReview(ratingOption.value, reviewContent.value) : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra nhận xét!")
+                        : alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Vui lòng đưa ra điểm đánh giá!");
+                });
+            }
+
+            // DELETE
+            const submitDeleteReviewBtn = document.querySelector("#submit_delete_review");
+            if (submitDeleteReviewBtn) {
+                submitDeleteReviewBtn.addEventListener("click", function () {
+                    deleteReview(tourReview.id);
+                });
+            }
+        }
+    } catch (error) {
+        console.log(">>> Error: " + error.message);
+    }
+}
+/*END CRUD TOUR REVIEW */
+
+////////////////////////////////////////
+
+/*MAP*/
+function renderMAP(locationSRC) {
+    const ggMapIframe = document.querySelector("#gg-map iframe");
+    ggMapIframe && ggMapIframe.getAttribute("src") != locationSRC ? ggMapIframe.setAttribute("src", `${locationSRC}`) : '';
+}
+
+function handleGetMap() {
+    // Chạy renderMap lần đầu tiên và hiển thị departurePoint của departureDay được chọn đầu tiên
+}
+/*END MAP*/
+
+////////////////////////////////////////
+
+function getParamId() {
     try {
         // Lấy URL hiện tại
         var currentURL = window.location.href;
@@ -528,26 +719,21 @@ async function getParamId() {
     }
 }
 
-import {
-    compareDate,
-    ddslick,
-    getApi,
-    getDropList,
-    renderDepartureDropList,
-    renderToursRating
-} from './global_function.js';
+import { getDropList, renderRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity, dateFormatConvert1, unwantedKeywords, moneyFormat, alertFunc, getDepartureTime } from './global_function.js';
 
 async function start() {
     try {
-        const tour = await getApi(`/api/tour?id=${await getParamId()}`, "NotCallBack");
-        renderTourHeader(tour);
-        handleGetTourImages(tour.id);
-        handleBooking(tour);
-        renderInfo(tour.description, ".description-content");
-        renderInfo(tour.schedule, ".schedule-content");
-        renderInfo(tour.service, ".service-content");
-        handleRenderUserReviews(tour.id);
-
+        tour = await getApi(`/api/tour?id=${tourId}`, "NotCallBack");
+        if (tour !== undefined) {
+            renderTourHeader();
+            handleGetTourImages();
+            handleBooking();
+            renderInfo(tour.departurePoint, ".departure-point-content");
+            renderInfo(tour.description, ".description-content");
+            renderInfo(tour.schedule, ".schedule-content");
+            renderInfo(tour.service, ".service-content");
+            handleRenderUserReviews();
+        }
     } catch (error) {
         console.error(">>> Error:", error.message);
     }

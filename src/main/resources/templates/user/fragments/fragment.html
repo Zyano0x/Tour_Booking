@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
-  <head th:fragment="head" th:attr="data-userId=${userId}">
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org/"
+  xmlns:sec="http://www.w3.org/1999/xhtml"
+>
+  <head th:attr="data-userId=${userId}" th:fragment="head">
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta
-      name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      name="viewport"
     />
     <meta
-      name="description"
       content="Citytours - Premium site template for city tours agencies, transfers and tickets."
+      name="description"
     />
-    <meta name="author" content="Ansonika" />
-    <title>1337_TOURS</title>
+    <meta content="Ansonika" name="author" />
+    <title>1337 TOURS</title>
 
     <!-- Favicons-->
     <link
@@ -22,53 +26,59 @@
     />
     <link
       rel="apple-touch-icon"
-      type="image/x-icon"
       th:href="@{/assets/user/images/apple-touch-icon-57x57-precomposed.png}"
+      type="image/x-icon"
     />
     <link
       rel="apple-touch-icon"
-      type="image/x-icon"
       sizes="72x72"
       th:href="@{/assets/user/images/apple-touch-icon-72x72-precomposed.png}"
+      type="image/x-icon"
     />
     <link
       rel="apple-touch-icon"
-      type="image/x-icon"
       sizes="114x114"
       th:href="@{/assets/user/images/apple-touch-icon-114x114-precomposed.png}"
+      type="image/x-icon"
     />
     <link
       rel="apple-touch-icon"
-      type="image/x-icon"
       sizes="144x144"
       th:href="@{/assets/user/images/apple-touch-icon-144x144-precomposed.png}"
+      type="image/x-icon"
     />
 
     <!-- ICON -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      crossorigin="anonymous"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      referrerpolicy="no-referrer"
+      rel="stylesheet"
+    />
 
     <!-- COMMON CSS -->
     <link
       rel="stylesheet"
-      type="text/css"
       th:href="@{/assets/user/css/bootstrap.min.css}"
+      type="text/css"
     />
     <link
       rel="stylesheet"
-      type="text/css"
       th:href="@{/assets/user/css/style.css}"
+      type="text/css"
     />
     <link
       rel="stylesheet"
-      type="text/css"
       th:href="@{/assets/user/css/vendors.css}"
+      type="text/css"
     />
 
     <!-- CUSTOM CSS -->
     <link
       rel="stylesheet"
-      type="text/css"
       th:href="@{/assets/user/css/custom.css}"
+      type="text/css"
     />
   </head>
 
@@ -94,10 +104,14 @@
             <div class="col-6">
               <ul id="top_links">
                 <li sec:authorize="isAnonymous()">
-                  <a href="#sign-in-dialog" id="access_link"></i> Đăng Nhập</a>
+                  <a href="#sign-in-dialog" id="access_link" class="access_link"
+                    ><i class="fa-solid fa-power-off"></i> Đăng Nhập</a
+                  >
                 </li>
                 <li sec:authorize="isAuthenticated()">
-                  <a href="javascript:void(0)" id="exit_link"></i> Đăng Xuất</a>
+                  <a href="" id="exit_link"
+                    ><i class="fa-solid fa-power-off"></i> Đăng Xuất</a
+                  >
                 </li>
               </ul>
             </div>
@@ -117,7 +131,7 @@
               </h1>
             </div>
           </div>
-          <nav class="col-9">
+          <nav class="col-9 display-space-between">
             <a
               class="cmn-toggle-switch cmn-toggle-switch__htx open_close"
               href="javascript:void(0);"
@@ -126,166 +140,184 @@
             <div class="main-menu">
               <div id="header_menu">
                 <img
-                  th:src="@{/assets/user/images/logo_sticky.png}"
-                  width="160"
-                  height="34"
                   alt="City tours"
                   data-retina="true"
+                  height="34"
+                  th:src="@{/assets/user/images/logo_sticky.png}"
+                  width="160"
                 />
               </div>
-              <a href="#" class="open_close" id="close_in"
+              <a class="open_close" href="#" id="close_in"
                 ><i class="icon_set_1_icon-77"></i
               ></a>
               <ul>
                 <li class="submenu">
-                  <a href="/" class="show-submenu">TRANG CHỦ</a>
+                  <a class="show-submenu" href="/">TRANG CHỦ</a>
                 </li>
                 <li class="submenu">
-                  <a href="/tours" class="show-submenu">TOURS </a>
+                  <a class="show-submenu" href="/tours">TOURS </a>
                 </li>
                 <li class="submenu">
-                  <a href="javascript:void(0);" class="show-submenu"
-                    >BÀI VIẾT
-                  </a>
+                  <a class="show-submenu" href="/articles">BÀI VIẾT </a>
                 </li>
-                <li class="megamenu submenu">
-                  <a href="javascript:void(0);" class="show-submenu-mega"
-                    >PHẢN HỒI
+                <li class="megamenu submenu contact">
+                  <a class="show-submenu-mega" href="javascript:void(0);"
+                    >LIÊN HỆ
                   </a>
-                </li>
-                <li class="megamenu submenu">
-                  <a href="javascript:void(0);" class="show-submenu-mega"
-                    >THÊM <i class="icon-down-open-mini"></i
-                  ></a>
-                  <div class="menu-wrapper">
-                    <div class="row">
-                      <div class="col-lg-4">
-                        <h3>Header styles</h3>
-                        <ul>
-                          <li><a href="index.html">Default transparent</a></li>
-                          <li><a href="header_2.html">Plain color</a></li>
-                          <li>
-                            <a href="header_3.html">Plain color on scroll</a>
-                          </li>
-                          <li>
-                            <a href="header_4.html">With socials on top</a>
-                          </li>
-                          <li>
-                            <a href="header_5.html">With language selection</a>
-                          </li>
-                          <li>
-                            <a href="header_6.html">With lang and conversion</a>
-                          </li>
-                          <li>
-                            <a href="header_7.html"
-                              >With full horizontal menu</a
-                            >
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="col-lg-4">
-                        <h3>Footer styles</h3>
-                        <ul>
-                          <li><a href="index.html">Footer default</a></li>
-                          <li><a href="footer_2.html">Footer style 2</a></li>
-                          <li><a href="footer_3.html">Footer style 3</a></li>
-                          <li><a href="footer_4.html">Footer style 4</a></li>
-                          <li><a href="footer_5.html">Footer style 5</a></li>
-                          <li><a href="footer_6.html">Footer style 6</a></li>
-                          <li><a href="footer_7.html">Footer style 7</a></li>
-                        </ul>
-                      </div>
-                      <div class="col-lg-4">
-                        <h3>Shop section</h3>
-                        <ul>
-                          <li><a href="shop.html">Shop</a></li>
-                          <li><a href="shop-single.html">Shop single</a></li>
-                          <li><a href="shopping-cart.html">Shop cart</a></li>
-                          <li><a href="checkout.html">Shop Checkout</a></li>
-                        </ul>
-                      </div>
-                    </div>
-                    <!-- End row -->
-                  </div>
-                  <!-- End menu-wrapper -->
                 </li>
               </ul>
             </div>
             <!-- End main-menu -->
-            <ul id="top_tools">
-              <!-- <li>
-                  <a href="javascript:void(0);" class="search-overlay-menu-btn"
-                    ><i class="icon_search"></i
-                  ></a>
-                </li> -->
-              <li>
-                <div class="dropdown dropdown-cart">
-                  <a href="#" data-toggle="dropdown" class="cart_bt"
-                    ><i class="icon_bag_alt"></i>
-                    <!-- <strong class="user_booking_quantity">3</strong> -->
-                  </a>
-                </div>
-                <!-- End dropdown-cart-->
-              </li>
-            </ul>
+            <div sec:authorize="isAuthenticated()">
+              <a class="cart_bt profile_bt" href="/my-account"
+                ><i class="fa-regular fa-user"></i
+              ></a>
+              <a class="cart_bt" href="/cart"><i class="icon_bag_alt"></i></a>
+            </div>
           </nav>
         </div>
       </div>
       <!-- container -->
     </header>
 
+    <footer th:fragment="footer" class="revealed">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h3>Need help?</h3>
+            <a href="tel://0988887631" id="phone">+84988887631</a>
+            <a href="mailto:help@citytours.com" id="email_footer"
+            >help@citytours.com</a
+            >
+          </div>
+          <div class="col-md-3">
+            <h3>About</h3>
+            <ul>
+              <li><a href="#">About us</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Login</a></li>
+              <li><a href="#">Register</a></li>
+              <li><a href="#">Terms and condition</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h3>Discover</h3>
+            <ul>
+              <li><a href="#">Community blog</a></li>
+              <li><a href="#">Tour guide</a></li>
+              <li><a href="#">Wishlist</a></li>
+              <li><a href="#">Gallery</a></li>
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <h3>Settings</h3>
+            <div class="styled-select">
+              <select name="lang" id="lang">
+                <option value="English" selected>English</option>
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+                <option value="Russian">Russian</option>
+              </select>
+            </div>
+            <div class="styled-select">
+              <select name="currency" id="currency">
+                <option value="USD" selected>USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="RUB">RUB</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- End row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div id="social_footer">
+              <ul>
+                <li>
+                  <a href="#"><i class="icon-facebook"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-twitter"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-google"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-instagram"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-pinterest"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-vimeo"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="icon-youtube-play"></i></a>
+                </li>
+              </ul>
+              <p>© Citytours 2018</p>
+            </div>
+          </div>
+        </div>
+        <!-- End row -->
+      </div>
+      <!-- End container -->
+    </footer>
+    <!-- End footer -->
+
     <!-- Sign In Popup -->
     <div sec:authorize="isAnonymous()" th:fragment="sign-in-popup">
-      <div id="sign-in-dialog" class="zoom-anim-dialog mfp-hide">
+      <div class="zoom-anim-dialog mfp-hide" id="sign-in-dialog">
         <div class="small-dialog-header">
           <h3>Đăng Nhập</h3>
         </div>
         <form id="form-login">
           <div class="sign-in-wrapper">
             <div class="form-group">
-              <label>Email</label>
+              <label for="email">Email</label>
               <input
-                type="email"
                 class="form-control"
-                name="email"
                 id="email"
+                name="email"
+                type="email"
               />
               <i class="icon_mail_alt"></i>
             </div>
             <div class="form-group">
-              <label>Mật khẩu</label>
+              <label for="password">Mật khẩu</label>
               <input
-                type="password"
                 class="form-control"
-                name="password"
                 id="password"
+                name="password"
+                type="password"
                 value=""
               />
               <i class="icon_lock_alt"></i>
             </div>
             <div class="clearfix add_bottom_15">
               <div class="checkboxes float-left">
-                <input id="remember-me" type="checkbox" name="check" />
+                <input id="remember-me" name="check" type="checkbox" />
                 <label for="remember-me">Nhớ thông tin đăng nhập</label>
               </div>
               <div class="float-right">
-                <a id="forgot" href="javascript:void(0);">Quên Mật Khẩu?</a>
+                <a href="javascript:void(0);" id="forgot">Quên Mật Khẩu?</a>
               </div>
             </div>
             <div class="text-center">
-              <input type="submit" value="Đăng Nhập" class="btn_login" />
+              <input class="btn_login" type="submit" value="Đăng Nhập" />
             </div>
             <div class="text-center">
-              Chưa có tài khoản? <a href="javascript:void(0);">Đăng Ký</a>
+              Chưa có tài khoản? <a href="/register">Đăng Ký</a>
             </div>
             <div id="forgot_pw">
               <div class="form-group">
-                <label>Please confirm login email below</label>
+                <label>Please confirm authentication email below</label>
                 <input
-                  type="email"
                   class="form-control"
-                  name="email_forgot"
                   id="email_forgot"
+                  name="email_forgot"
+                  type="email"
                 />
                 <i class="icon_mail_alt"></i>
               </div>
@@ -294,7 +326,7 @@
                 reset your password to a new preferred one.
               </p>
               <div class="text-center">
-                <input type="submit" value="Reset Password" class="btn_1" />
+                <input class="btn_1" type="submit" value="Reset Password" />
               </div>
             </div>
           </div>
@@ -311,13 +343,130 @@
       <script
         sec:authorize="isAnonymous()"
         th:src="@{/assets/user/js/custom/login.js}"
-      ></script>     
+      ></script>
+      <script
+        sec:authorize="isAuthenticated()"
+        th:src="@{/assets/user/js/custom/logout.js}"
+      ></script>
+      <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+          function showContactOverlay() {
+            const contactOverlay = document.createElement("div");
+            contactOverlay.classList.add("contact_overlay");
+            contactOverlay.style.animation = "fadeIn 0.5s ease";
+
+            const contactBlock = document.createElement("div");
+            contactBlock.classList.add("contact_block");
+            contactBlock.style.animation = "fadeIn 0.5s ease";
+
+            const contactPhone = document.createElement("span");
+            contactPhone.textContent = "ZALO : 0961105747";
+
+            const contactImage = document.createElement("img");
+            contactImage.src = "/assets/user/images/custom/QR.png";
+            contactImage.alt = "Liên hệ (contact)";
+
+            contactBlock.appendChild(contactPhone);
+            contactBlock.appendChild(contactImage);
+            document.body.appendChild(contactOverlay);
+            document.body.appendChild(contactBlock);
+
+            function closeContact() {
+              document.body.removeChild(contactOverlay);
+              document.body.removeChild(contactBlock);
+              contactOverlay.removeEventListener("click", closeContact);
+            }
+
+            contactOverlay.addEventListener("click", closeContact);
+          }
+
+          const contactElements = document.querySelectorAll(".contact");
+          contactElements.forEach(function (contact) {
+            contact.addEventListener("click", showContactOverlay);
+          });
+        });
+      </script>
     </div>
 
     <div th:fragment="map_js">
       <script th:src="@{http://maps.googleapis.com/maps/api/js}"></script>
       <script th:src="@{/assets/user/js/map.js}"></script>
       <script th:src="@{/assets/user/js/infobox.js}"></script>
+    </div>
+
+    <div th:fragment="date-pick">
+      <!-- jQuery UI library -->
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+      <link
+        rel="stylesheet"
+        href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+      />
+
+      <!-- jQuery UI Vietnamese localization -->
+      <script src="https://raw.githubusercontent.com/jquery/jquery-ui/master/ui/i18n/datepicker-vi.js"></script>
+
+      <script>
+        $.datepicker.regional["vi"] = {
+          closeText: "Đóng",
+          prevText: "&#x3c;Trước",
+          nextText: "Tiếp&#x3e;",
+          currentText: "Hôm nay",
+          monthNames: [
+            "Tháng 1",
+            "Tháng 2",
+            "Tháng 3",
+            "Tháng 4",
+            "Tháng 5",
+            "Tháng 6",
+            "Tháng 7",
+            "Tháng 8",
+            "Tháng 9",
+            "Tháng 10",
+            "Tháng 11",
+            "Tháng 12",
+          ],
+          monthNamesShort: [
+            "Tháng 1",
+            "Tháng 2",
+            "Tháng 3",
+            "Tháng 4",
+            "Tháng 5",
+            "Tháng 6",
+            "Tháng 7",
+            "Tháng 8",
+            "Tháng 9",
+            "Tháng 10",
+            "Tháng 11",
+            "Tháng 12",
+          ],
+          dayNames: [
+            "Chủ Nhật",
+            "Thứ Hai",
+            "Thứ Ba",
+            "Thứ Tư",
+            "Thứ Năm",
+            "Thứ Sáu",
+            "Thứ Bảy",
+          ],
+          dayNamesShort: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+          dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+          weekHeader: "Tuần",
+          dateFormat: "dd/mm/yy",
+          firstDay: 0,
+          isRTL: false,
+          showMonthAfterYear: false,
+          yearSuffix: "",
+        };
+        $.datepicker.setDefaults($.datepicker.regional["vi"]); // Đặt ngôn ngữ mặc định là tiếng Việt
+
+        $("input.date-pick").datepicker({
+          dateFormat: "dd-mm-yy", // Đặt định dạng ngày giờ thành tiếng Việt
+          changeDay: true,
+          changeMonth: true,
+          changeYear: true,
+        });
+        // .attr("readonly", "readonly"); // Sử dụng new Date() để đặt ngày là hôm nay
+      </script>
     </div>
   </body>
 </html>

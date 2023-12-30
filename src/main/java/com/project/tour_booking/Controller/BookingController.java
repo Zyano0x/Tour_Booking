@@ -3,12 +3,14 @@ package com.project.tour_booking.Controller;
 import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Entity.Booking;
 import com.project.tour_booking.Service.Booking.BookingService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -49,18 +51,25 @@ public class BookingController {
     }
 
     @GetMapping("/admin/user/{userId}/tour/{tourId}/bookings")
-    public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId, @PathVariable Long tourId) {
+    public ResponseEntity<List<Booking>> getBookingByUserIdAndTourId(@PathVariable Long userId,
+            @PathVariable Long tourId) {
         return new ResponseEntity<>(bookingService.getBookingByUserIdAndTourId(userId, tourId), HttpStatus.OK);
     }
 
-    @PutMapping("/admin/update-booking-status/{bookingId}")
-    public ResponseEntity<String> updateBookingStatus(@PathVariable Long bookingId) {
-        bookingService.updateBookingStatus(bookingId);
-        return new ResponseEntity<>("CẬP NHẬT TRẠNG THÁI THÀNH CÔNG!", HttpStatus.OK);
+    @PutMapping("/update-booking-status")
+    public ResponseEntity<?> updateBookingStatus(@RequestParam Long id) {
+        return ResponseEntity.ok(bookingService.updateBookingStatus(id));
+    }
+
+    @GetMapping("/confirm-cancel")
+    public void confirmCancel(@RequestParam("token") String confirmationToken, @RequestParam("transaction") Long transactionCode, HttpServletResponse res) throws IOException {
+        if (ResponseEntity.ok(bookingService.confirmCancel(transactionCode, confirmationToken)).hasBody())
+            res.sendRedirect("/cart");
     }
 
     @PutMapping("/update-booking/{bookingId}")
-    public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingDTO bookingDTO, @PathVariable Long bookingId) {
+    public ResponseEntity<String> updateBooking(@Valid @RequestBody BookingDTO bookingDTO,
+            @PathVariable Long bookingId) {
         bookingService.updateBooking(bookingDTO, bookingId);
         return new ResponseEntity<>("CẬP NHẬT ĐƠN ĐẶT TOUR THÀNH CÔNG!", HttpStatus.OK);
     }

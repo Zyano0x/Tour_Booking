@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-  <head th:replace="~{user/fragments/fragment::head}"></head>
+  <th:block th:replace="~{user/fragments/fragment::head}"></th:block>
   <body>
-    <div th:replace="~{user/fragments/fragment::preloader}"></div>
+    <th:block th:replace="~{user/fragments/fragment::preloader}"></th:block>
     <!-- End Preload -->
 
     <div class="layer"></div>
     <!-- Mobile menu overlay mask -->
 
     <!-- Header================================================== -->
-    <header th:replace="~{user/fragments/fragment::header}"></header>
+    <th:block th:replace="~{user/fragments/fragment::header}"></th:block>
     <!-- End Header -->
 
     <main>
@@ -18,10 +18,12 @@
           <div class="intro_title">
             <h3 class="animated fadeInDown">Du lịch Việt Nam giá rẻ</h3>
             <p class="animated fadeInDown">Chào mừng đến với 1337_tour</p>
-            <a href="/tours" class="animated fadeInUp button_intro">Xem tours</a>
+            <a href="/tours" class="animated fadeInUp button_intro"
+              >Xem tours</a
+            >
             <a
               href="#"
-              class="animated fadeInUp button_intro outline hidden-sm hidden-xs"
+              class="animated fadeInUp button_intro outline hidden-sm hidden-xs contact"
               >Liên hệ</a
             >
             <!-- <a
@@ -45,7 +47,7 @@
       </section>
       <!-- End Header video -->
 
-      <section id="search_container">
+      <!-- <section id="search_container">
         <div id="search">
           <ul class="nav nav-tabs">
             <li>
@@ -57,20 +59,7 @@
 
           <div class="tab-content">
             <div class="tab-pane active show" id="tours">
-              <!-- <h3>Tìm kiếm chuyến đi của bạn</h3> -->
               <div class="row">
-                <!-- <div class="col-md-6">
-                  <div class="form-group">
-                    <label>...</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="firstname_booking"
-                      name="firstname_booking"
-                      placeholder="Nội dung tìm kiếm..."
-                    />
-                  </div>
-                </div> -->
                 <div class="col-md-12">
                   <div class="form-group">
                     <label>Địa điểm</label>
@@ -86,7 +75,6 @@
                   </div>
                 </div>
               </div>
-              <!-- End row -->
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
@@ -112,45 +100,16 @@
                     />
                   </div>
                 </div>
-                <!-- <div class="col-md-2 col-sm-3 col-6">
-                  <div class="form-group">
-                    <label>Số lượng vé</label>
-                    <div class="numbers-row">
-                      <input
-                        type="text"
-                        value="1"
-                        id="adults"
-                        class="qty2 form-control"
-                        name="adults"
-                      />
-                    </div>
-                  </div>
-                </div> -->
-                <!-- <div class="col-md-2 col-sm-3 col-6">
-                  <div class="form-group">
-                    <label>Children</label>
-                    <div class="numbers-row">
-                      <input
-                        type="text"
-                        value="0"
-                        id="children"
-                        class="qty2 form-control"
-                        name="children"
-                      />
-                    </div>
-                  </div> -->
                 </div>
               </div>
-              <!-- End row -->
               <hr />
               <button class="btn_1 green">
                 <i class="icon-search"></i>Tìm kiếm ngay
               </button>
             </div>
-            <!-- End rab -->
           </div>
         </div>
-      </section>
+      </section> -->
       <!-- End hero -->
 
       <div class="container margin_60">
@@ -161,30 +120,44 @@
           </p>
         </div>
 
-        <div id="favourite-tours" class="row favourite-tours">
-          
-        </div>
+        <div id="favourite-tours" class="row favourite-tours"></div>
         <!-- End row -->
 
         <p class="text-center nopadding">
-          <a href="/tours" class="btn_1 medium"
+          <a href="/tours" class="btn_1 medium tours"
             ><i class="icon-eye-7"></i>Xem tất cả tours
           </a>
         </p>
 
-        <hr>
+        <hr />
 
         <div class="main_title">
           <h2>ĐỊA ĐIỂM <span>YÊU THÍCH</span></h2>
+          <p>Những địa điểm nổi bật</p>
+        </div>
+
+        <div
+          id="favourite-destinations"
+          class="row favourite-destinations"
+        ></div>
+
+        <hr />
+
+        <div class="main_title">
+          <h2>BÀI VIẾT <span>MỚI</span></h2>
           <p>...</p>
         </div>
 
-        <div id="favourite-destinations" class="row favourite-destinations">
+        <div id="new-articles" class="row new-articles"></div>
 
-        </div>
+        <p class="text-center nopadding">
+          <a href="/articles" class="btn_1 medium articles"
+            ><i class="icon-eye-7"></i>Xem tất cả bài viết
+          </a>
+        </p>
       </div>
       <!-- End container -->
-			<!-- End row -->
+      <!-- End row -->
 
       <section class="promo_full">
         <div class="promo_full_wp magnific">
@@ -226,9 +199,11 @@
           </div>
 
           <div class="col-lg-4 wow zoomIn" data-wow-delay="0.4s">
-            <div class="feature_home ">
+            <div class="feature_home">
               <i class="icon_set_1_icon-30"></i>
-              <h3><span class="feature_home-customers">+1000</span> Khách Hàng</h3>
+              <h3>
+                <span class="feature_home-customers">+1000</span> Khách Hàng
+              </h3>
               <p>
                 Lorem ipsum dolor sit amet, vix erat audiam ei. Cum doctus
                 civibus efficiantur in. Nec id tempor imperdiet deterruisset.
@@ -281,90 +256,7 @@
     </main>
     <!-- End main -->
 
-    <footer class="revealed">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h3>Need help?</h3>
-            <a href="tel://004542344599" id="phone">+45 423 445 99</a>
-            <a href="mailto:help@citytours.com" id="email_footer"
-              >help@citytours.com</a
-            >
-          </div>
-          <div class="col-md-3">
-            <h3>About</h3>
-            <ul>
-              <li><a href="#">About us</a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Login</a></li>
-              <li><a href="#">Register</a></li>
-              <li><a href="#">Terms and condition</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <h3>Discover</h3>
-            <ul>
-              <li><a href="#">Community blog</a></li>
-              <li><a href="#">Tour guide</a></li>
-              <li><a href="#">Wishlist</a></li>
-              <li><a href="#">Gallery</a></li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h3>Settings</h3>
-            <div class="styled-select">
-              <select name="lang" id="lang">
-                <option value="English" selected>English</option>
-                <option value="French">French</option>
-                <option value="Spanish">Spanish</option>
-                <option value="Russian">Russian</option>
-              </select>
-            </div>
-            <div class="styled-select">
-              <select name="currency" id="currency">
-                <option value="USD" selected>USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="RUB">RUB</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <!-- End row -->
-        <div class="row">
-          <div class="col-md-12">
-            <div id="social_footer">
-              <ul>
-                <li>
-                  <a href="#"><i class="icon-facebook"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-twitter"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-google"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-instagram"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-pinterest"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-vimeo"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-youtube-play"></i></a>
-                </li>
-              </ul>
-              <p>© Citytours 2018</p>
-            </div>
-          </div>
-        </div>
-        <!-- End row -->
-      </div>
-      <!-- End container -->
-    </footer>
+    <th:block th:replace="~{user/fragments/fragment::footer}"></th:block>
     <!-- End footer -->
 
     <div id="toTop"></div>
@@ -383,11 +275,11 @@
     <!-- End Search Menu -->
 
     <!-- Sign In Popup -->
-    <div th:replace="~{user/fragments/fragment::sign-in-popup}"></div>
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
     <!-- /Sign In Popup -->
 
     <!-- Common scripts -->
-    <div th:replace="~{user/fragments/fragment::common_js}"></div>
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
 
     <!-- Video header scripts -->
     <script th:src="@{/assets/user/js/modernizr.js}"></script>
@@ -401,7 +293,6 @@
         showInpunts: false,
       });
     </script>
-
 
     <script th:src="@{/assets/user/js/jquery.ddslick.js}"></script>
     <script type="module" th:src="@{/assets/user/js/custom/index.js}"></script>

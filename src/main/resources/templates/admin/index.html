@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="header">
+<head th:fragment="header" th:attr="data-user-id=${id}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
     <meta name="author" content="stacks">
     <!-- The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>Circl - Admin Dashboard</title>
+    <title>Circle - Admin Dashboard</title>
 
     <link href="#" rel="shortcut icon" >
     <!-- Styles -->
@@ -22,6 +22,7 @@
     <!-- Theme Styles -->
     <link th:href="@{/assets/admin/css/main.min.css}" rel="stylesheet">
     <link th:href="@{/assets/admin/css/custom.css}" rel="stylesheet">
+    <link th:href="@{/assets/admin/css/iziToast.css}" rel="stylesheet"/>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -85,7 +86,7 @@
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#"><i data-feather="settings"></i>Settings</a>
                             <a class="dropdown-item" href="#"><i data-feather="unlock"></i>Lock</a>
-                            <a class="dropdown-item" href="#"><i data-feather="log-out"></i>Logout</a>
+                            <a class="dropdown-item" href="#" id="logout"><i data-feather="log-out"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
@@ -126,7 +127,7 @@
             </li>
         </ul>
     </div>
-    <div class="page-content">
+    <div class="page-content" id="content" th:fragment="page-content">
         <div class="main-wrapper">
             <div class="row">
                 <div class="col-md-6 col-xl-3">
@@ -347,14 +348,19 @@
     </div>
 </div>
 
-<!-- Javascripts -->
-<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
-<script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
-<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
-<script th:src="@{https://unpkg.com/feather-icons}"></script>
-<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+<!-- Javascript -->
+<div th:fragment="javascript">
+    <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
+    <script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
+    <script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{https://unpkg.com/feather-icons}"></script>
+    <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
+    <script th:src="@{/assets/admin/js/main.min.js}"></script>
+    <script th:src="@{/assets/admin/js/pages/authentication.js}"></script>
+</div>
+
 <script th:src="@{/assets/admin/plugins/apexcharts/apexcharts.min.js}"></script>
-<script th:src="@{/assets/admin/js/main.min.js}"></script>
 <script th:src="@{/assets/admin/js/pages/dashboard.js}"></script>
+
 </body>
 </html>

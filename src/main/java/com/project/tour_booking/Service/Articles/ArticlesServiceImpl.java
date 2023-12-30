@@ -24,19 +24,24 @@ public class ArticlesServiceImpl implements ArticlesService {
     @Override
     public void saveArticles(ArticlesDTO articlesDTO) {
         Articles post = new Articles();
-        post.setContent(articlesDTO.getContent());
         post.setTitle(articlesDTO.getTitle());
+        post.setDescription(articlesDTO.getDescription());
+        post.setThumbnail(articlesDTO.getThumbnail());
+        post.setContent(articlesDTO.getContent());
         post.setDateOfPosting(LocalDate.now());
         post.setStatus(userRepository.findById(articlesDTO.getUserId()).get().getRole() == Role.ADMIN);
         Optional<User> userOptional = userRepository.findById(articlesDTO.getUserId());
-        if (userOptional.isPresent()) post.setUser(userOptional.get());
-        else throw new UserNotFoundException(articlesDTO.getUserId());
+        if (userOptional.isPresent())
+            post.setUser(userOptional.get());
+        else
+            throw new UserNotFoundException(articlesDTO.getUserId());
         articlesRepository.save(post);
     }
 
     @Override
     public Articles getArticles(Long articlesId) {
-        return articlesRepository.findById(articlesId).orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
+        return articlesRepository.findById(articlesId)
+                .orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
     }
 
     @Override
@@ -46,9 +51,12 @@ public class ArticlesServiceImpl implements ArticlesService {
 
     @Override
     public Articles updateArticles(Articles articles, Long articlesId) {
-        Articles updateArticles = articlesRepository.findById(articlesId).orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
+        Articles updateArticles = articlesRepository.findById(articlesId)
+                .orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
 
         updateArticles.setTitle(articles.getTitle());
+        updateArticles.setDescription(articles.getDescription());
+        updateArticles.setThumbnail(articles.getThumbnail());
         updateArticles.setContent(articles.getContent());
         updateArticles.setStatus(articles.getStatus());
         updateArticles.setEditDate(LocalDate.now());
@@ -58,7 +66,8 @@ public class ArticlesServiceImpl implements ArticlesService {
 
     @Override
     public void updateArticlesStatus(Long articlesId) {
-        Articles articles = articlesRepository.findById(articlesId).orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
+        Articles articles = articlesRepository.findById(articlesId)
+                .orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
 
         articles.setStatus(!articles.getStatus());
 

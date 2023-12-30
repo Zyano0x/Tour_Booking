@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Update Departure Day -->
 <div class="modal fade" id="departureDetailsModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -64,6 +64,11 @@
                     </div>
                     <br>
                     <div class="form-group">
+                        <label for="departureTime">Departure Time</label>
+                        <input type="time" class="form-control" id="departureTime" name="departureTime">
+                    </div>
+                    <br>
+                    <div class="form-group">
                         <label for="slots">Slots</label>
                         <input type="text" class="form-control" id="slots">
                     </div>
@@ -75,25 +80,21 @@
                     <br>
                     <div class="form-group">
                         <label>Tour</label>
-                        <label for="tourDropdownUpdate"></label>
-                        <select class="form-control" id="tourDropdownUpdate"></select>
-                        <option th:each="tour : ${tours}"
-                                th:value="${tour.name}"
-                                th:text="${tour.name}">
-                        </option>
+                        <label for="tours"></label>
+                        <select class="form-control" id="tours"></select>
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="updateDeparture(document.getElementById('id').value)">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="update-day">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#departureDetailsModalScrollable').modal('hide');">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- new Departure Day -->
 <div class="modal fade" id="newDepartureModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -113,6 +114,11 @@
                     </div>
                     <br>
                     <div class="form-group">
+                        <label for="_departureTime">Departure Time</label>
+                        <input type="time" class="form-control" id="_departureTime" name="_departureTime">
+                    </div>
+                    <br>
+                    <div class="form-group">
                         <label for="_slots">Slots</label>
                         <input type="text" class="form-control" id="_slots">
                     </div>
@@ -124,41 +130,24 @@
                     <br>
                     <div class="form-group">
                         <label>Tour</label>
-                        <label for="tourDropdownNew"></label>
-                        <select class="form-control" id="tourDropdownNew"></select>
-                        <option th:each="tour : ${tours}"
-                                th:value="${tour.name}"
-                                th:text="${tour.name}">
-                        </option>
+                        <label for="_tours"></label>
+                        <select class="form-control" id="_tours"></select>
                     </div>
                     <p></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addDeparture()">Save</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal" id="add-day">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#newDepartureModalScrollable').modal('hide')">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-        <strong class="mr-auto">Notification</strong>
-    </div>
-    <div class="toast-body">
-    </div>
-</div>
+<!-- Javascript -->
+<th:block th:replace="~{admin/index::javascript}"></th:block>
 
-<!-- Javascripts -->
-<script th:src="@{/assets/admin/plugins/jquery/jquery-3.4.1.min.js}"></script>
-<script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
-<script th:src="@{/assets/admin/plugins/bootstrap/js/bootstrap.min.js}"></script>
-<script th:src="@{https://unpkg.com/feather-icons}"></script>
-<script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
-<script th:src="@{/assets/admin/js/main.min.js}"></script>
-<script th:src="@{/assets/admin/js/pages/departure-data.js}"></script>
-<script th:src="@{/assets/admin/js/pages/toast.js}"></script>
-<script th:src="@{/assets/admin/js/pages/dropdown.js}"></script>
+<script th:src="@{/assets/admin/js/pages/iziToast.js}"></script>
+<script th:type="module" th:src="@{/assets/admin/js/pages/departure-data.js}"></script>
 </body>
 </html>

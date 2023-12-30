@@ -61,19 +61,19 @@ $('.tooltip-1').tooltip({
 });
 
 /* Accordion */
-	function toggleChevron(e) {
-		$(e.target)
-			.prev('.card-header')
-			.find("i.indicator")
-			.toggleClass('icon-minus icon-plus');
-	}
-	$('.accordion_styled').on('hidden.bs.collapse shown.bs.collapse', toggleChevron);
-		function toggleIcon(e) {
-        $(e.target)
-            .prev('.card-header')
-            .find(".indicator")
-            .toggleClass('icon-minus icon-plus');
-    }
+function toggleChevron(e) {
+	$(e.target)
+		.prev('.card-header')
+		.find("i.indicator")
+		.toggleClass('icon-minus icon-plus');
+}
+$('.accordion_styled').on('hidden.bs.collapse shown.bs.collapse', toggleChevron);
+function toggleIcon(e) {
+	$(e.target)
+		.prev('.card-header')
+		.find(".indicator")
+		.toggleClass('icon-minus icon-plus');
+}
 
 /* Button show/hide map */
 $(".btn_map").on("click", function () {
@@ -87,19 +87,19 @@ new WOW().init();
 /* Video modal dialog + Parallax + Scroll to top + Incrementer */
 $(function () {
 	'use strict';
-	$('.parallax-window').parallax({zIndex:1}); /* Parallax modal*/
-	
+	$('.parallax-window').parallax({ zIndex: 1 }); /* Parallax modal*/
+
 	$('.video').magnificPopup({
 		type: 'iframe',
 		closeMarkup: '<button title="%title%" type="button" class="mfp-close" style="font-size:21px">&#215;</button>'
 	}); /* video modal*/
-	
+
 	/*  Image popups */
 	$('.magnific-gallery').each(function () {
 		$(this).magnificPopup({
 			delegate: 'a',
 			type: 'image',
-            preloader: true,
+			preloader: true,
 			gallery: {
 				enabled: true
 			},
@@ -115,7 +115,7 @@ $(function () {
 			midClick: true // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
 		});
 	});
-	
+
 	/* Cart header drop down */
 	$('.dropdown-menu').on("click", function (e) {
 		e.stopPropagation();
@@ -135,7 +135,7 @@ $(function () {
 	function toggleHandler(toggle) {
 		toggle.addEventListener("click", function (e) {
 			e.preventDefault();
-			(this.classList.contains("active") === true) ? this.classList.remove("active"): this.classList.add("active");
+			(this.classList.contains("active") === true) ? this.classList.remove("active") : this.classList.add("active");
 		});
 	};
 
@@ -143,17 +143,17 @@ $(function () {
 	var pxShow = 800; // height on which the button will show
 	var scrollSpeed = 500; // how slow / fast you want the button to scroll to top.
 
-	$(window).scroll(function(){
-	 if($(window).scrollTop() >= pxShow){
-		$("#toTop").addClass('visible');
-	 } else {
-		$("#toTop").removeClass('visible');
-	 }
+	$(window).scroll(function () {
+		if ($(window).scrollTop() >= pxShow) {
+			$("#toTop").addClass('visible');
+		} else {
+			$("#toTop").removeClass('visible');
+		}
 	});
 
-	$('#toTop').on('click', function(){
-	 $('html, body').animate({scrollTop:0}, scrollSpeed);
-	 return false;
+	$('#toTop').on('click', function () {
+		$('html, body').animate({ scrollTop: 0 }, scrollSpeed);
+		return false;
 	});
 
 	/* Input incrementer*/
@@ -210,23 +210,24 @@ $(function () {
 /* Footer reveal */
 if ($(window).width() >= 768) {
 	$('footer.revealed').footerReveal({
-	shadow: false,
-	opacity:0.6,
-	zIndex: 0
-});
+		shadow: false,
+		opacity: 0.6,
+		zIndex: 0
+	});
 }
 
 /* Search */
 $(".search-overlay-menu-btn").on("click", function (a) {
-$('body').addClass('has-fullscreen-modal')
-$(".search-overlay-menu").addClass("open"), $('.search-overlay-menu > form > input[type="search"]').focus()}), 
-$(".search-overlay-close").on("click", function (a) {
-$(".search-overlay-menu").removeClass("open")
-$('body').removeClass('has-fullscreen-modal')
+	$('body').addClass('has-fullscreen-modal')
+	$(".search-overlay-menu").addClass("open"), $('.search-overlay-menu > form > input[type="search"]').focus()
 }),
-$(".search-overlay-menu, .search-overlay-menu .search-overlay-close").on("click keyup", function (a) {
-	(a.target == this || "search-overlay-close" == a.target.className || 27 == a.keyCode) && $(this).removeClass("open")
-});
+	$(".search-overlay-close").on("click", function (a) {
+		$(".search-overlay-menu").removeClass("open")
+		$('body').removeClass('has-fullscreen-modal')
+	}),
+	$(".search-overlay-menu, .search-overlay-menu .search-overlay-close").on("click keyup", function (a) {
+		(a.target == this || "search-overlay-close" == a.target.className || 27 == a.keyCode) && $(this).removeClass("open")
+	});
 
 /* Date and time picker v2 */
 $('.booking_date').dateDropper();
@@ -239,7 +240,7 @@ $('.booking_time').timeDropper({
 });
 
 /* Modal Sign In */
-$('#access_link').magnificPopup({
+$('.access_link').magnificPopup({
 	type: 'inline',
 	fixedContentPos: false,
 	fixedBgPos: true,

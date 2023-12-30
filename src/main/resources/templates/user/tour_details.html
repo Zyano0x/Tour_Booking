@@ -25,23 +25,21 @@
           <div class="container">
             <div class="row">
               <div class="col-md-8">
-                <h1 id="tourName">Name</h1>
+                <h1 id="name">Name</h1>
                 <div class="caption">
                   <span class="destination">...</span>
                   -
                   <span class="type-of-tour">...</span>
                 </div>
-                <span class="rating tourRating genarateRating"></span>
+                <span class="rating genarateRating"></span>
               </div>
               <div class="col-md-4 line-height-1_5">
                 <div id="price_single_main">
                   <span>0</span>
-                  <span>.0</span>
                   <p>VND / Người lớn</p>
                 </div>
                 <div id="price_single_main_for_children">
                   <span>0</span>
-                  <span>.0</span>
                   <p>VND / Trẻ em</p>
                 </div>
               </div>
@@ -56,23 +54,25 @@
       <div id="position">
         <div class="container">
           <ul>
-            <li><a href="">Trang chủ</a></li>
+            <li><a href="/">Trang chủ</a></li>
             <li><a href="/tours">Tours</a></li>
-            <li class="navigation-tour-name" >...</li>
+            <li class="navigation-name">...</li>
           </ul>
         </div>
       </div>
       <!-- End Position -->
 
       <div class="collapse" id="collapseMap">
-        <div id="map" class="map"></div>
+        <div id="gg-map" class="gg-map" style="position: relative; overflow: hidden;">
+          <iframe src="" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
       </div>
       <!-- End Map -->
 
       <div class="container margin_60">
         <div class="row">
           <div class="col-lg-8" id="single_tour_desc">
-            <p class="d-none d-md-block d-block d-lg-none">
+            <!-- <p class="d-none d-md-block d-block d-lg-none">
               <a
                 class="btn_map"
                 data-toggle="collapse"
@@ -81,9 +81,9 @@
                 aria-controls="collapseMap"
                 data-text-swap="Hide map"
                 data-text-original="View on map"
-                >View on map</a
+                >Xem điểm khởi hành</a
               >
-            </p>
+            </p> -->
             <!-- Map button for tablets/mobiles -->
 
             <div id="Img_carousel" class="slider-pro">
@@ -91,6 +91,14 @@
               <div class="sp-thumbnails"></div>
             </div>
 
+            <hr />
+
+            <div id="departurePoint">
+              <div>
+                <h3>ĐIỂM KHỞI HÀNH</h3>
+              </div>
+              <div class="col-lg-12 departure-point-content"></div>
+            </div>
             <hr />
 
             <div id="description">
@@ -117,18 +125,13 @@
             <div class="row">
               <div class="col-lg-3">
                 <h3>ĐÁNH GIÁ</h3>
-                <a
-                  href="#"
-                  class="btn_1 add_bottom_30 .none-padding-right"
-                  data-toggle="modal"
-                  data-target="#myReview"
-                  >Thêm đánh giá</a
-                >
+                <a sec:authorize="isAnonymous()" href="#sign-in-dialog" class="btn_1 access_link"></i> Đăng Nhập</a>
+                <div sec:authorize="isAuthenticated()" id="review_option"></div>
               </div>
               <div class="col-lg-9">
                 <div id="general_rating">
                   <div
-                    class="rating tourRating genarateRating footerGenarateRating"
+                    class="rating genarateRating footerGenarateRating"
                   ></div>
                 </div>
                 <!-- End general_rating -->
@@ -144,7 +147,7 @@
           <!--End  single_tour_desc-->
 
           <aside class="col-lg-4" id="sidebar">
-            <p class="d-none d-xl-block d-lg-block d-xl-none">
+            <!-- <p class="d-none d-xl-block d-lg-block d-xl-none">
               <a
                 class="btn_map"
                 data-toggle="collapse"
@@ -155,7 +158,7 @@
                 data-text-original="View on map"
                 >View on map</a
               >
-            </p>
+            </p> -->
             <div class="theiaStickySidebar">
               <div class="box_style_1 expose" id="booking_box">
                 <div class="booking_overlay">
@@ -164,13 +167,6 @@
                     th:src="@{/assets/user/images/custom/close.png}"
                     alt="Hết vé"
                   />
-                  <!-- <a href="/tours"
-                    ><img
-                      th:src="@{/assets/user/images/custom/hand_right.png}"
-                      alt="Danh sách tours"
-                    />
-                    Xem tours khác</a
-                  > -->
                 </div>
                 <h3 class="inner">- ĐẶT VÉ -</h3>
                 <div class="row">
@@ -224,6 +220,14 @@
                 <br />
                 <table class="table table_summary">
                   <tbody>
+                    <tr class="departureTime">
+                      <td>Giờ khởi hành</td>
+                      <td class="text-right" id="departureTime">...</td>
+                    </tr>
+                    <tr class="time">
+                      <td>Thời gian</td>
+                      <td class="text-right" id="time">...</td>
+                    </tr>
                     <tr class="remainingQuanity">
                       <td>Số lượng còn lại</td>
                       <td class="text-right" id="remainingQuanity">0</td>
@@ -231,14 +235,16 @@
                     <tr class="total">
                       <td>Tổng tiền</td>
                       <td class="text-right">
-                        <span id="total">0</span><span>.0</span>
+                        <span id="total">0</span>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <a id="booking_btn" class="btn_full" href="javascript:void(0)"
-                  >Đặt vé ngay</a
-                >
+                <a sec:authorize="isAnonymous()" href="#sign-in-dialog" class="btn_full access_link outline-none"></i> ĐĂNG NHẬP</a>
+                <a sec:authorize="isAuthenticated()" id="booking_btn" class="btn_full outline-none" href="javascript:void(0)"
+                >Đặt vé ngay</a>
+                <!-- <a id="booking_btn" class="btn_full outline-none" href="javascript:void(0)"
+                >Đặt vé ngay</a> -->
               </div>
               <!--/box_style_1 -->
             </div>
@@ -254,90 +260,7 @@
     </main>
     <!-- End main -->
 
-    <footer class="revealed">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h3>Need help?</h3>
-            <a href="tel://004542344599" id="phone">+45 423 445 99</a>
-            <a href="mailto:help@citytours.com" id="email_footer"
-              >help@citytours.com</a
-            >
-          </div>
-          <div class="col-md-3">
-            <h3>About</h3>
-            <ul>
-              <li><a href="#">About us</a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Login</a></li>
-              <li><a href="#">Register</a></li>
-              <li><a href="#">Terms and condition</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <h3>Discover</h3>
-            <ul>
-              <li><a href="#">Community blog</a></li>
-              <li><a href="#">Tour guide</a></li>
-              <li><a href="#">Wishlist</a></li>
-              <li><a href="#">Gallery</a></li>
-            </ul>
-          </div>
-          <div class="col-md-2">
-            <h3>Settings</h3>
-            <div class="styled-select">
-              <select name="lang" id="lang">
-                <option value="English" selected>English</option>
-                <option value="French">French</option>
-                <option value="Spanish">Spanish</option>
-                <option value="Russian">Russian</option>
-              </select>
-            </div>
-            <div class="styled-select">
-              <select name="currency" id="currency">
-                <option value="USD" selected>USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="RUB">RUB</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <!-- End row -->
-        <div class="row">
-          <div class="col-md-12">
-            <div id="social_footer">
-              <ul>
-                <li>
-                  <a href="#"><i class="icon-facebook"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-twitter"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-google"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-instagram"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-pinterest"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-vimeo"></i></a>
-                </li>
-                <li>
-                  <a href="#"><i class="icon-youtube-play"></i></a>
-                </li>
-              </ul>
-              <p>© Citytours 2018</p>
-            </div>
-          </div>
-        </div>
-        <!-- End row -->
-      </div>
-      <!-- End container -->
-    </footer>
+    <th:block th:replace="~{user/fragments/fragment::footer}"></th:block>
     <!-- End footer -->
 
     <div id="toTop"></div>
@@ -376,7 +299,8 @@
             </h4>
             <button
               type="button"
-              class="close"
+              id="close-modal-review"
+              class="close outline-none"
               data-dismiss="modal"
               aria-label="Close"
             >
@@ -385,9 +309,7 @@
           </div>
           <div class="modal-body">
             <div id="message-review"></div>
-            <form
-              method="post"
-              action="/assets/review_tour.php"
+            <div
               name="review_tour"
               id="review_tour"
             >
@@ -397,7 +319,7 @@
                 type="hidden"
                 value="Paris Arch de Triomphe Tour"
               />
-
+            
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
@@ -426,18 +348,13 @@
                   placeholder="Viết đánh giá của bạn"
                 ></textarea>
               </div>
-
-              <input
-                type="submit"
-                value="Gửi đánh giá"
-                class="btn_1"
-                id="submit-review"
-              />
-            </form>
+              <div id="submit_option"></div>
+            </div>          
           </div>
         </div>
       </div>
     </div>
+    <div div id="animatedAlert" class="animated-alert" ></div >
     <!-- End modal review -->
 
     <!-- Common scripts -->
