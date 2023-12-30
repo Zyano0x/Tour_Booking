@@ -63,6 +63,11 @@ public class PageController {
         return "user/booking_fail";
     }
 
+    @GetMapping("/cancel-booking-success")
+    public String cancelBookingSuccess() {
+        return "user/cancel-booking-success";
+    }
+
     @GetMapping("/my-account")
     public String myAccount(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
