@@ -62,9 +62,10 @@ public class BookingController {
     }
 
     @GetMapping("/confirm-cancel")
-    public void confirmCancel(@RequestParam("token") String confirmationToken, @RequestParam("transaction") Long transactionCode, HttpServletResponse res) throws IOException {
+    public void confirmCancel(@RequestParam("token") String confirmationToken,
+            @RequestParam("transaction") Long transactionCode, HttpServletResponse res) throws IOException {
         if (ResponseEntity.ok(bookingService.confirmCancel(transactionCode, confirmationToken)).hasBody())
-            res.sendRedirect("/cart");
+            res.sendRedirect("/cancel-booking-success");
     }
 
     @PutMapping("/update-booking/{bookingId}")

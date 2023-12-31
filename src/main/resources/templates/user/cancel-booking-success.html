@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+  <th:block th:replace="~{user/fragments/fragment::head}"></th:block>
+
+  <body>
+    <th:block th:replace="~{user/fragments/fragment::preloader}"></th:block>
+    <!-- End Preload -->
+
+    <div class="layer"></div>
+    <!-- Mobile menu overlay mask -->
+
+    <!-- Header================================================== -->
+    <th:block th:replace="~{user/fragments/fragment::header}"></th:block>
+    <!-- End Header -->
+
+    <div class="box-message">
+      <h1>HỦY VÉ THÀNH CÔNG!</h1>
+      <h2>
+        Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Vé của bạn đã được hủy.
+      </h2>
+    </div>
+
+    <!-- Sign In Popup -->
+    <th:block th:replace="~{user/fragments/fragment::sign-in-popup}"></th:block>
+    <!-- /Sign In Popup -->
+
+    <!-- Common scripts -->
+    <th:block th:replace="~{user/fragments/fragment::common_js}"></th:block>
+
+    <!--Review modal validation -->
+    <script th:src="@{/assets/user/assets/validate.js}"></script>
+  </body>
+</html>
+
+<style>
+  body {
+    height: 100vh;
+    background-image: linear-gradient(
+        to right bottom,
+        rgba(0, 0, 0, 0.8),
+        rgba(0, 0, 0, 0.8)
+      ),
+      url(https://images.unsplash.com/photo-1703717101037-132d2c3fdd03?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .box-message * {
+    color: #fff;
+    text-align: center;
+  }
+
+  .box-message h1 {
+    color: #4caf50;
+  }
+</style>
