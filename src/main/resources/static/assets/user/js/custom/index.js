@@ -27,6 +27,7 @@ function renderSlider(sliders) {
 async function renderFavouriteTours(tours, fatherBlock) {
   const favouriteTours = tours.filter(tour => tour.status && tour.isHot);
   if (favouriteTours.length > 0) {
+    let count = 0;
     for (const favouriteTour of favouriteTours) {
       let html = `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.2s">
             <div div class="tour_container" >
@@ -57,6 +58,8 @@ async function renderFavouriteTours(tours, fatherBlock) {
         </div >`;
       if (html != '')
         fatherBlock.insertAdjacentHTML("beforeend", html);
+      if (++count == 6)
+        break;
     }
   }
 }
@@ -69,6 +72,7 @@ function renderFavouriteDestinations(destinations) {
   try {
     const favouriteDestinationsBlock = document.querySelector("#favourite-destinations");
     if (favouriteDestinationsBlock) {
+      let count = 0;
       for (const destination of destinations) {
         let html = destination.status && destination.isHot ?
           `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
@@ -101,6 +105,8 @@ function renderFavouriteDestinations(destinations) {
             // Chuyển đến trang tours
             window.location.href = "/tours";
           });
+        if (++count == 6)
+          break;
       }
     } else
       throw new Error("Element with id '#favourite-destinations' not found in the DOM");
