@@ -6,7 +6,7 @@ import com.project.tour_booking.DTO.TourDTO;
 import com.project.tour_booking.Entity.Tour;
 
 public interface TourService {
-  void saveTour(TourDTO tourDTO);
+  Tour saveTour(TourDTO tourDTO);
 
   Tour getTour(Long tourId);
 

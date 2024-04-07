@@ -2,6 +2,7 @@ package com.project.tour_booking.DTO;
 
 import java.time.LocalDate;
 
+import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.persistence.Temporal;
@@ -15,6 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignUpDTO {

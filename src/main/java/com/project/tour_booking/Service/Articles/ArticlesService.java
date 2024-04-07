@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ArticlesService {
 
-    void saveArticles(ArticlesDTO articlesDTO);
+    Articles saveArticles(ArticlesDTO articlesDTO);
 
     Articles getArticles(Long articlesId);
 

@@ -23,44 +23,43 @@ public class TourServiceImpl implements TourService {
     private DestinationRepository destinationRepository;
 
     @Override
-    public void saveTour(TourDTO tourDTO) {
-        Tour tour = new Tour();
-        tour.setStatus(tourDTO.getStatus());
-        tour.setDateOfPosting(LocalDate.now());
-        tour.setName(tourDTO.getName());
-        tour.setThumbnail(tourDTO.getThumbnail());
-        tour.setDescription(tourDTO.getDescription());
-        tour.setService(tourDTO.getService());
-        tour.setTime(tourDTO.getTime());
-        tour.setSchedule(tourDTO.getSchedule());
-        tour.setPriceForAdult(tourDTO.getPriceForAdult());
-        tour.setPriceForChildren(tourDTO.getPriceForChildren());
-        tour.setDeparturePoint(tourDTO.getDeparturePoint());
-        tour.setIsHot(tourDTO.getIsHot());
-        Optional<TypeOfTour> tOTOptional = typeOfTourRepository.findById(tourDTO.getTotId());
-        if (tOTOptional.isPresent()) {
-            if (tOTOptional.get().getStatus()) {
-                tour.setTypeOfTour(tOTOptional.get());
-            } else {
-                throw new TypeOfTourNotEnableException(tourDTO.getTotId());
+    public Tour saveTour(TourDTO tourDTO) {
+        try {
+            Tour tour = new Tour();
+            tour.setStatus(tourDTO.getStatus());
+            tour.setDateOfPosting(LocalDate.now());
+            tour.setName(tourDTO.getName());
+            tour.setThumbnail(tourDTO.getThumbnail());
+            tour.setDescription(tourDTO.getDescription());
+            tour.setService(tourDTO.getService());
+            tour.setTime(tourDTO.getTime());
+            tour.setSchedule(tourDTO.getSchedule());
+            tour.setPriceForAdult(tourDTO.getPriceForAdult());
+            tour.setPriceForChildren(tourDTO.getPriceForChildren());
+            tour.setDeparturePoint(tourDTO.getDeparturePoint());
+            tour.setIsHot(tourDTO.getIsHot());
+            TypeOfTour typeOfTour = typeOfTourRepository.findById(tourDTO.getTotId())
+                    .filter(TypeOfTour::getStatus)
+                    .orElseThrow(() -> new TypeOfTourNotFoundException(tourDTO.getTotId()));
+            tour.setTypeOfTour(typeOfTour);
+
+            Destination destination = destinationRepository.findById(tourDTO.getDestinationId())
+                    .filter(Destination::getStatus)
+                    .orElseThrow(() -> new DestinationNotFoundException(tourDTO.getDestinationId()));
+            tour.setDestination(destination);
+
+            // Tạo dữ liệu trong bảng ảnh
+            for (String path : tourDTO.getImages()) {
+                TourImage tourImage = new TourImage(path);
+                tourImage.setTour(tour);
+                tourImageRepository.save(tourImage);
             }
-        } else throw new TypeOfTourNotFoundException(tourDTO.getTotId());
 
-        Optional<Destination> destinationOptional = destinationRepository.findById(tourDTO.getDestinationId());
-        if (destinationOptional.isPresent()) if (destinationOptional.get().getStatus()) {
-            tour.setDestination(destinationOptional.get());
-        } else {
-            throw new DesnationNotEnableException(tourDTO.getDestinationId());
-        }
-        else throw new DestinationNotFoundException(tourDTO.getDestinationId());
-
-        tourRepository.save(tour);
-
-        // Tạo dữ liệu trong bảng ảnh
-        for (String path : tourDTO.getImages()) {
-            TourImage tourImage = new TourImage(path);
-            tourImage.setTour(tour);
-            tourImageRepository.save(tourImage);
+            tourRepository.save(tour);
+            return tour;
+        } catch (TypeOfTourNotFoundException | DestinationNotFoundException | DesnationNotEnableException |
+                 TypeOfTourNotEnableException e) {
+            throw new TourSaveException("Error while saving tour: " + e.getMessage());
         }
     }
 
@@ -74,7 +73,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<Tour> getTours() {
-        return (List<Tour>) tourRepository.findAll();
+        return tourRepository.findAll();
     }
 
     @Override

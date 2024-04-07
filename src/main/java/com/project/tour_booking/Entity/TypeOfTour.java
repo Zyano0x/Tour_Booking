@@ -12,8 +12,10 @@ import java.util.List;
 @Table(name = "types_of_tours")
 @Setter
 @Getter
+@Builder
 @RequiredArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class TypeOfTour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

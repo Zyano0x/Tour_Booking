@@ -12,11 +12,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
-@Table(name = "tour_image")
+@Table(name = "tour_images")
 @Setter
 @Getter
+@Builder
 @RequiredArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class TourImage {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -64,67 +64,73 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> signIn(SignInDTO signInDTO, HttpServletResponse response) {
-        authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword()));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword()));
 
-        var user = userRepository.findByEmail(signInDTO.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-        var token = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
+            var user = userRepository.findByEmail(signInDTO.getEmail())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+            var token = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefreshToken(user);
 
-        Cookie cookie = new Cookie("Authorization", token);
-        cookie.setPath("/");
-        cookie.setMaxAge(Integer.MAX_VALUE);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+            Cookie cookie = new Cookie("Authorization", token);
+            cookie.setPath("/");
+            cookie.setMaxAge(Integer.MAX_VALUE);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
 
-        return ResponseEntity.ok().body(new AuthenticationResponse(token, refreshToken));
+            return ResponseEntity.ok().body(new AuthenticationResponse(token, refreshToken));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 
     @Override
     public ResponseEntity<?> signUp(SignUpDTO signUpDTO) {
-        // Check for username exists in a DB
-        if (userRepository.existsByUsername(signUpDTO.getUsername())) {
-            throw new IllegalArgumentException("Username is already exist!");
+        try {
+            // Check for username exists in a DB
+            if (userRepository.existsByUsername(signUpDTO.getUsername())) {
+                throw new IllegalArgumentException("Username is already exist!");
+            }
+
+            // Check for email exists in DB
+            if (userRepository.existsByEmail(signUpDTO.getEmail())) {
+                throw new IllegalArgumentException("Email is already taken!");
+            }
+
+            // Create user
+            User user = new User();
+            user.setName(signUpDTO.getName());
+            user.setUsername(signUpDTO.getUsername());
+            user.setEmail(signUpDTO.getEmail());
+            user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
+            user.setBirthday(signUpDTO.getBirthday());
+            user.setGender(signUpDTO.getGender());
+            user.setAddress(signUpDTO.getAddress());
+            user.setCid(signUpDTO.getCid());
+            user.setPhone(signUpDTO.getPhone());
+            user.setRole(Role.USER);
+            user.setEnabled(false);
+            user.setLocked(false);
+
+            userRepository.save(user);
+
+            SecureToken token = new SecureToken(user);
+
+            secureTokenRepository.save(token);
+
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setFrom("no-reply@tourbooking.com");
+            mailMessage.setTo(user.getUsername());
+            mailMessage.setSubject("Complete Registration!");
+            mailMessage.setText("To confirm your account, please click here: "
+                    + "http://localhost:1337/api/auth/confirm-account?token=" + token.getToken());
+
+            emailService.sendEmail(mailMessage);
+
+            return ResponseEntity.ok("User registered successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        // Check for email exists in DB
-        if (userRepository.existsByEmail(signUpDTO.getEmail())) {
-            throw new IllegalArgumentException("Email is already taken!");
-        }
-
-        // Create user
-        User user = new User();
-        user.setName(signUpDTO.getName());
-        user.setUsername(signUpDTO.getUsername());
-        user.setEmail(signUpDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
-        user.setBirthday(signUpDTO.getBirthday());
-        user.setGender(signUpDTO.getGender());
-        user.setAddress(signUpDTO.getAddress());
-        user.setCid(signUpDTO.getCid());
-        user.setPhone(signUpDTO.getPhone());
-        user.setRole(Role.USER);
-        user.setEnabled(false);
-        user.setLocked(false);
-
-        userRepository.save(user);
-
-        SecureToken token = new SecureToken(user);
-
-        secureTokenRepository.save(token);
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("no-reply@tourbooking.com");
-        mailMessage.setTo(user.getUsername());
-        mailMessage.setSubject("Complete Registration!");
-        mailMessage.setText("To confirm your account, please click here: "
-                + "http://localhost:1337/api/auth/confirm-account?token=" + token.getToken());
-
-        emailService.sendEmail(mailMessage);
-
-        return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
-
     }
 
     @Override
@@ -235,8 +241,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User user(String email) {
-        return ResponseEntity.ok(
-                userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found")))
+        return ResponseEntity
+                .ok(userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found")))
                 .getBody();
     }
 

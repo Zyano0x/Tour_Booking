@@ -17,11 +17,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Table(name = "destination")
+@Table(name = "destinations")
 @Setter
 @Getter
+@Builder
 @RequiredArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Destination {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

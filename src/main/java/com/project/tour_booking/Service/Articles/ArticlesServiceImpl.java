@@ -22,20 +22,24 @@ public class ArticlesServiceImpl implements ArticlesService {
     private final UserRepository userRepository;
 
     @Override
-    public void saveArticles(ArticlesDTO articlesDTO) {
-        Articles post = new Articles();
-        post.setTitle(articlesDTO.getTitle());
-        post.setDescription(articlesDTO.getDescription());
-        post.setThumbnail(articlesDTO.getThumbnail());
-        post.setContent(articlesDTO.getContent());
-        post.setDateOfPosting(LocalDate.now());
-        post.setStatus(userRepository.findById(articlesDTO.getUserId()).get().getRole() == Role.ADMIN);
-        Optional<User> userOptional = userRepository.findById(articlesDTO.getUserId());
-        if (userOptional.isPresent())
-            post.setUser(userOptional.get());
-        else
+    public Articles saveArticles(ArticlesDTO articlesDTO) {
+        Optional<User> user = userRepository.findById(articlesDTO.getUserId());
+
+        if (user.isPresent()) {
+            Articles post = new Articles();
+            post.setTitle(articlesDTO.getTitle());
+            post.setDescription(articlesDTO.getDescription());
+            post.setThumbnail(articlesDTO.getThumbnail());
+            post.setContent(articlesDTO.getContent());
+            post.setDateOfPosting(LocalDate.now());
+            post.setStatus(user.get().getRole() == Role.ADMIN);
+            post.setUser(user.get());
+
+            articlesRepository.save(post);
+            return post;
+        } else {
             throw new UserNotFoundException(articlesDTO.getUserId());
-        articlesRepository.save(post);
+        }
     }
 
     @Override
