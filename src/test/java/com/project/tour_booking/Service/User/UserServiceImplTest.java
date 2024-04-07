@@ -182,7 +182,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void signUp_UsernameExists() {
+    void signUp_UsernameExists() {
         SignUpDTO signUpDTO = SignUpDTO.builder()
                 .name("Bear")
                 .username("Bear")
@@ -203,7 +203,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void signUp_EmailExists() {
+    void signUp_EmailExists() {
         SignUpDTO signUpDTO = SignUpDTO.builder()
                 .name("Bear")
                 .username("Bear")
@@ -225,7 +225,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void signUp_SuccessfulRegistration() throws InstantiationException, IllegalAccessException {
+    void signUp_SuccessfulRegistration() throws InstantiationException, IllegalAccessException {
         SignUpDTO signUpDTO = SignUpDTO.builder()
                 .name("Bear")
                 .username("Bear")
