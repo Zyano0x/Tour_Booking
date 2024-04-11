@@ -449,7 +449,7 @@ function booking() {
 
             bookingBtn.addEventListener("click", function () {
                 let totalPrice = moneyFormat(totalBlock.innerText);
-                if (adult.value != '0' || children.value != '0') {
+                if (adult.value != '0') {
                     let totalQuantity = parseInt(adult.value) + parseInt(children.value);
                     if (parseInt(remainingQuanityBlock.innerText) >= totalQuantity) {
                         const payment = {
@@ -481,7 +481,7 @@ function booking() {
                         alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé còn lại không đủ!");
                     }
                 } else {
-                    alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé phải lớn hơn 0!");
+                    alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé cho người lớn phải lớn hơn 0!");
                 }
             })
         } else {
