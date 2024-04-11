@@ -61,7 +61,7 @@ export function compareDateNow(dateStr) {
     } else {
         // Nếu cùng năm, so sánh tháng
         if (inputMonth > currentMonth) {
-            return 0;
+            return 1;
         } else if (inputMonth < currentMonth) {
             return 0;
         } else {
