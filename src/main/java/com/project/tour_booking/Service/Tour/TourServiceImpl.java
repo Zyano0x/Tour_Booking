@@ -47,6 +47,7 @@ public class TourServiceImpl implements TourService {
                     .filter(Destination::getStatus)
                     .orElseThrow(() -> new DestinationNotFoundException(tourDTO.getDestinationId()));
             tour.setDestination(destination);
+            tourRepository.save(tour);
 
             // Tạo dữ liệu trong bảng ảnh
             for (String path : tourDTO.getImages()) {
@@ -55,7 +56,6 @@ public class TourServiceImpl implements TourService {
                 tourImageRepository.save(tourImage);
             }
 
-            tourRepository.save(tour);
             return tour;
         } catch (TypeOfTourNotFoundException | DestinationNotFoundException | DesnationNotEnableException |
                  TypeOfTourNotEnableException e) {
