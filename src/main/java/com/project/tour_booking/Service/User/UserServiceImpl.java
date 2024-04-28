@@ -1,9 +1,6 @@
 package com.project.tour_booking.Service.User;
 
-import com.project.tour_booking.DTO.AuthenticationResponse;
-import com.project.tour_booking.DTO.ResetPasswordDTO;
-import com.project.tour_booking.DTO.SignInDTO;
-import com.project.tour_booking.DTO.SignUpDTO;
+import com.project.tour_booking.DTO.*;
 import com.project.tour_booking.Entity.Role;
 import com.project.tour_booking.Entity.SecureToken;
 import com.project.tour_booking.Entity.User;
@@ -14,10 +11,12 @@ import com.project.tour_booking.Service.JWT.JWTService;
 import com.project.tour_booking.Service.SecureToken.SecureTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,20 +30,15 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final AuthenticationManager authenticationManager;
-
     private final SecureTokenService secureTokenService;
-
     private final EmailService emailService;
-
     private final JWTService jwtService;
-
     private final UserRepository userRepository;
-
     private final SecureTokenRepository secureTokenRepository;
-
     private final PasswordEncoder passwordEncoder;
+
+    private final ModelMapper modelMapper = new ModelMapper();
 
     public VerificationResult validateToken(String confirmationToken) {
         SecureToken token = secureTokenRepository.findByToken(confirmationToken);
@@ -63,79 +57,62 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> signIn(SignInDTO signInDTO, HttpServletResponse response) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword()));
+    public AuthenticationResponse signIn(SignInDTO signInDTO, HttpServletResponse response) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword()));
 
-            var user = userRepository.findByEmail(signInDTO.getEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-            var token = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
+        var user = userRepository.findByEmail(signInDTO.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var token = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
-            Cookie cookie = new Cookie("Authorization", token);
-            cookie.setPath("/");
-            cookie.setMaxAge(Integer.MAX_VALUE);
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
+        Cookie cookie = new Cookie("Authorization", token);
+        cookie.setPath("/");
+        cookie.setMaxAge(Integer.MAX_VALUE);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
 
-            return ResponseEntity.ok().body(new AuthenticationResponse(token, refreshToken));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        return new AuthenticationResponse(token, refreshToken, userDTO);
     }
 
     @Override
-    public ResponseEntity<?> signUp(SignUpDTO signUpDTO) {
-        try {
-            // Check for username exists in a DB
-            if (userRepository.existsByUsername(signUpDTO.getUsername())) {
-                throw new IllegalArgumentException("Username is already exist!");
-            }
-
-            // Check for email exists in DB
-            if (userRepository.existsByEmail(signUpDTO.getEmail())) {
-                throw new IllegalArgumentException("Email is already taken!");
-            }
-
-            // Create user
-            User user = new User();
-            user.setName(signUpDTO.getName());
-            user.setUsername(signUpDTO.getUsername());
-            user.setEmail(signUpDTO.getEmail());
-            user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
-            user.setBirthday(signUpDTO.getBirthday());
-            user.setGender(signUpDTO.getGender());
-            user.setAddress(signUpDTO.getAddress());
-            user.setCid(signUpDTO.getCid());
-            user.setPhone(signUpDTO.getPhone());
-            user.setRole(Role.USER);
-            user.setEnabled(false);
-            user.setLocked(false);
-
-            userRepository.save(user);
-
-            SecureToken token = new SecureToken(user);
-
-            secureTokenRepository.save(token);
-
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom("no-reply@tourbooking.com");
-            mailMessage.setTo(user.getUsername());
-            mailMessage.setSubject("Complete Registration!");
-            mailMessage.setText("To confirm your account, please click here: "
-                    + "http://localhost:1337/api/auth/confirm-account?token=" + token.getToken());
-
-            emailService.sendEmail(mailMessage);
-
-            return ResponseEntity.ok("User registered successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    public UserDTO signUp(SignUpDTO signUpDTO) {
+        // Check for username exists in a DB
+        if (userRepository.existsByUsername(signUpDTO.getUsername())) {
+            throw new IllegalArgumentException("Username is already exist!");
         }
+
+        // Check for email exists in DB
+        if (userRepository.existsByEmail(signUpDTO.getEmail())) {
+            throw new IllegalArgumentException("Email is already taken!");
+        }
+
+        // Create user
+        User user = new User();
+        user.setName(signUpDTO.getName());
+        user.setUsername(signUpDTO.getUsername());
+        user.setEmail(signUpDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
+        user.setBirthday(signUpDTO.getBirthday());
+        user.setGender(signUpDTO.getGender());
+        user.setAddress(signUpDTO.getAddress());
+        user.setCid(signUpDTO.getCid());
+        user.setPhone(signUpDTO.getPhone());
+        user.setRole(Role.USER);
+        user.setEnabled(false);
+        user.setLocked(false);
+
+        userRepository.save(user);
+
+        SecureToken token = new SecureToken(user);
+        secureTokenRepository.save(token);
+        emailService.sendEmailVerify(user, token);
+
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override
     public ResponseEntity<?> confirmEmailVerification(String confirmationToken) {
-
         if (validateToken(confirmationToken) == VerificationResult.INVALID_TOKEN) {
             return new ResponseEntity<>("Invalid verification token.", HttpStatus.BAD_REQUEST);
         } else if (validateToken(confirmationToken) == VerificationResult.EXPIRED) {
@@ -143,16 +120,14 @@ public class UserServiceImpl implements UserService {
         } else if (validateToken(confirmationToken) == VerificationResult.VALID) {
             SecureToken token = secureTokenRepository.findByToken(confirmationToken);
             User user = token.getUser();
-
             user.setEnabled(true);
 
             userRepository.save(user);
-
             secureTokenService.removeToken(token);
 
-            return new ResponseEntity<>("Email verified successfully!", HttpStatus.OK);
+            return ResponseEntity.ok().body("Email verified successfully!");
         } else {
-            return new ResponseEntity<>("Error: Couldn't verify email", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("Couldn't verify email.");
         }
     }
 
@@ -164,18 +139,12 @@ public class UserServiceImpl implements UserService {
             token.setToken(UUID.randomUUID().toString());
             token.setExpireTime(new SecureToken().getTokenExpirationTime());
 
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom("no-reply@tourbooking.com");
-            mailMessage.setTo(user.getEmail());
-            mailMessage.setSubject("Complete Registration!");
-            mailMessage.setText("To confirm your account, please click here: "
-                    + "http://localhost:1337/api/auth/confirm-account?token=" + token.getToken());
+            emailService.sendEmailVerify(user, token);
 
-            emailService.sendEmail(mailMessage);
-            return new ResponseEntity<>("A new verification link hs been sent to your email, "
-                    + "please, check to complete your registration", HttpStatus.OK);
+            return ResponseEntity.ok().body("A new verification link hs been sent to your email, "
+                    + "please, check to complete your registration");
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body("Cannot resend verification link.");
     }
 
     @Override
@@ -188,16 +157,9 @@ public class UserServiceImpl implements UserService {
         SecureToken token = new SecureToken(user);
         secureTokenRepository.save(token);
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("no-reply@tourbooking.com");
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Reset Password");
-        mailMessage.setText("To reset password your account, please click here: "
-                + "http://localhost:1337/api/auth/reset-password?token=" + token.getToken());
+        emailService.sendEmailForgotPassword(user, token);
 
-        emailService.sendEmail(mailMessage);
-
-        return new ResponseEntity<>("Password reset email sent to " + email, HttpStatus.OK);
+        return ResponseEntity.ok().body("Password reset email sent to " + email);
     }
 
     @Override
@@ -228,15 +190,16 @@ public class UserServiceImpl implements UserService {
 
         secureTokenService.removeToken(token);
 
-        return new ResponseEntity<>("Password reset successful", HttpStatus.OK);
+        return ResponseEntity.ok().body("Password reset successful");
     }
 
     @Override
-    public ResponseEntity<?> updateUserStatus(String email) {
-        User user = userRepository.findByEmail(email)
+    public ResponseEntity<?> updateUserStatus(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         user.setLocked(!user.isLocked());
-        return ResponseEntity.ok().body(userRepository.save(user));
+        userRepository.save(user);
+        return ResponseEntity.ok().body(user);
     }
 
     @Override

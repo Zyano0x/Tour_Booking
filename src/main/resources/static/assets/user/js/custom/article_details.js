@@ -20,7 +20,7 @@ async function renderArticleHeader() {
     dateOfPosting ? dateOfPosting.textContent = dateFormatConvert1(article.dateOfPosting) : '';
     navigationName ? navigationName.textContent = article.title : '';
 
-    const rating = await renderRating(`/api/article/${articleId}/article-reviews`);
+    const rating = await renderRating(`/api/v1/article-reviews/articles/${articleId}`);
     document.querySelectorAll(".genarateRating").forEach(element => {
         element.innerHTML = rating;
     });
@@ -153,7 +153,7 @@ async function renderUsersReviews(userReviews) {
                                 <div class="rating userRating">
                                     ${renderUserRating(parseInt(articleReview.vote))}
                                 </div>
-                                ${(await getApi(`/api/user-by-id?id=${userId}`)).role == "ADMIN" ? `<span>Xóa</span>` : ''}
+                                ${(await getApi(`/api/v1/users-by-id?id=${userId}`)).role == "ADMIN" ? `<span>Xóa</span>` : ''}
                             </div>
                         </div>
                         <!-- End review strip -->
@@ -181,7 +181,7 @@ async function renderUsersReviews(userReviews) {
 
 async function handleRenderUserReviews() {
     try {
-        userReviews = await getApi(`/api/article/${articleId}/article-reviews`, "NotCallBack");
+        userReviews = await getApi(`/api/v1/article-reviews/articles/${articleId}`, "NotCallBack");
         userReviews.reverse();
         renderReviewOption();
 
@@ -345,7 +345,7 @@ function addNewReview(rating, review) {
         };
 
         // Make the API request
-        fetch("/api/article-review", requestOptions)
+        fetch("/api/v1/article-reviews", requestOptions)
             .then(response => {
                 if (response.ok) {
                     return response.text();
@@ -384,7 +384,7 @@ function updateReview(rating, review) {
         };
 
         // Make the API request
-        fetch(`/api/update-article-review/${articleReview.id}`, requestOptions)
+        fetch(`/api/v1/update-article-reviews/${articleReview.id}`, requestOptions)
             .then(response => {
                 if (response.ok) {
                     return response.text();
@@ -411,7 +411,7 @@ function updateReview(rating, review) {
 
 async function deleteReview(id) {
     try {
-        const response = await fetch(`/api/delete-article-review/${id}`, {
+        const response = await fetch(`/api/v1/delete-article-reviews/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json', // Nếu API yêu cầu header có kiểu dữ liệu
@@ -494,7 +494,7 @@ import { getApi, dateFormatConvert1, unwantedKeywords, renderRating } from './gl
 
 async function start() {
     try {
-        article = await getApi(`/api/articles?id=${articleId}`, "NotCallBack");
+        article = await getApi(`/api/v1/articles/${articleId}`, "NotCallBack");
         if (article !== undefined) {
             renderArticleHeader();
             renderContent(article.content, "#article-content");

@@ -24,7 +24,7 @@ async function renderTourHeader() {
     priceForChildren ? priceForChildren.textContent = moneyFormat(tour.priceForChildren, true) : '';
     navigationName ? navigationName.textContent = tour.name : '';
 
-    const rating = await renderRating(`/api/tour/${tourId}/tour-reviews`);
+    const rating = await renderRating(`/api/v1/tour-reviews/tours/${tourId}`);
     document.querySelectorAll(".genarateRating").forEach(element => {
         element.innerHTML = rating;
     });
@@ -87,7 +87,7 @@ function loadScript(src) {
 }
 
 async function handleGetTourImages() {
-    await getApi(`/api/tour/${tourId}/tour-images`, renderTourImages);
+    await getApi(`/api/v1/tour-images/tours/${tourId}`, renderTourImages);
 
     // Create layout & animation slider
     await loadScript("/assets/user/js/jquery.sliderPro.min.js")
@@ -213,7 +213,7 @@ function renderUserRating(score) {
         }
         return rating;
     } catch (error) {
-        console.log(">>> Error: " + error.message);
+        console.error(error.message);
     }
 }
 
@@ -239,7 +239,7 @@ async function renderUsersReviews(userReviews) {
                                 <div class="rating userRating">
                                     ${renderUserRating(parseInt(tourReview.vote))}
                                 </div>
-                                ${(await getApi(`/api/user-by-id?id=${userId}`)).role == "ADMIN" ? `<span>Xóa</span>` : ''}
+                                ${(await getApi(`/api/v1/users-by-id?id=${userId}`)).role === "ADMIN" ? `<span>Xóa</span>` : ''}
                             </div> 
                         </div>
                         <!-- End review strip -->
@@ -257,17 +257,15 @@ async function renderUsersReviews(userReviews) {
                     });
                 }
             }
-        } else {
-            throw new Error(`>>> Element with selector '#boxReview' not found in the DOM`);
         }
     } catch (error) {
-        console.log(">>> Error: " + error.message);
+        console.error(error.message);
     }
 }
 
 async function handleRenderUserReviews() {
     try {
-        userReviews = await getApi(`/api/tour/${tourId}/tour-reviews`, "NotCallBack");
+        userReviews = await getApi(`/api/v1/tour-reviews/tours/${tourId}`, "NotCallBack");
         userReviews.reverse();
         renderReviewOption();
 
@@ -383,7 +381,7 @@ function updateBookingQuantity() {
         const remainingQuanityBlock = document.querySelector("#remainingQuanity");
         if (remainingQuanityBlock) {
             setInterval(async function () {
-                remainingQuanityBlock.innerText = (await getApi(`/api/departure-day?id=${deparuteDayIdForUpdate}`, "NotCallBack")).quantity;
+                remainingQuanityBlock.innerText = (await getApi(`/api/v1/departure-days/${deparuteDayIdForUpdate}`, "NotCallBack")).quantity;
             }, 100);
         } else {
             throw new Error(`>>> Element with selector '#remainingQuanity' not found in the DOM`);
@@ -395,8 +393,9 @@ function updateBookingQuantity() {
 
 async function bookingOverLay() {
     try {
-        var departureDays = await getApi(`/api/tour/${tourId}/departure-days`, "NotCallBack");
-        var validDepartureDays = departureDays.filter(departureDay => departureDay.status && compareDateNow(departureDay.departureDay) == 1 && departureDay.quantity > 0);
+        const departureDays = await getApi(`/api/v1/departure-days/tours/${tourId}`, "NotCallBack", "GET");
+
+        const validDepartureDays = departureDays.filter(departureDay => departureDay.status && (new Date(departureDay.departureDay) > new Date()) && departureDay.quantity > 0);
 
         if (validDepartureDays.length <= 0) {
             document.querySelector("#booking_box").style.pointerEvents = "none";
@@ -405,7 +404,7 @@ async function bookingOverLay() {
         }
         return false;
     } catch (error) {
-        console.log(">>> Error: " + error.message);
+        console.error(error.message);
     }
 }
 
@@ -421,7 +420,7 @@ function changeDepartureDay() {
 
 
                     // Cập nhật thời gian khởi hành tương ứng cho từng ngày khởi hành
-                    departureTimeBlock ? departureTimeBlock.textContent = (await getApi(`/api/departure-day?id=${optionValue.value}`)).departureTime : '';
+                    departureTimeBlock ? departureTimeBlock.textContent = (await getApi(`/api/v1/departure-days/${optionValue.value}`)).departureTime : '';
                     if (optionValue) {
                         deparuteDayIdForUpdate = parseInt(optionValue.value);
                     } else {
@@ -460,7 +459,7 @@ function booking() {
                             "departureDayId": departureDay.value
                         };
 
-                        fetch('/api/payment/create', {
+                        fetch('/api/v1/payment/create', {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
@@ -469,8 +468,7 @@ function booking() {
                         })
                             .then((response) => response.json())
                             .then((data) => {
-                                console.log(data.paymentUrl);
-                                window.location.href = data.paymentUrl;
+                                window.location.assign(data.paymentUrl);
                             })
                             .catch((error) => {
                                 console.error("Error creating payment:", error);
@@ -495,7 +493,7 @@ function booking() {
 async function handleBooking() {
     try {
         if (!(await bookingOverLay(tourId))) {
-            await getDropList(`/api/tour/${tourId}/departure-days`, renderDepartureDropList, "#departureDays", "all_tours.png");
+            await getDropList(`/api/v1/departure-days/tours/${tourId}`, renderDepartureDropList, "#departureDays", "all_tours.png");
 
             // Set departureDayId ban đầu
             deparuteDayIdForUpdate = parseInt(document.querySelector(".dd-option-selected .dd-option-value").value);
@@ -544,42 +542,30 @@ function containsUnwantedWords(comment) {
     return false; // Nếu không tìm thấy từ khóa không mong muốn, trả về false
 }
 
-function addNewReview(rating, review) {
+async function addNewReview(rating, review) {
     try {
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        let raw = JSON.stringify({
-            "content": review,
-            "vote": rating,
-            "userId": userId,
-            "tourId": tourId,
-        });
-
-        let requestOptions = {
-            method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
-        };
-
-        // Make the API request
-        fetch("/api/tour-review", requestOptions)
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    throw new Error('Failed to add tour review. Status: ' + response.status);
-                }
+        console.log(userId, tourId);
+        const res = await fetch("/api/v1/tour-reviews", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                content: review,
+                vote: rating,
+                userId,
+                tourId,
             })
-            .then(result => {
-                alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Thêm đánh giá thành công!");
-                renderTourHeader();
-                handleRenderUserReviews();
-                closeModalReview.click();
-            })
-            .catch(error => {
-                console.log(">>> Error: " + error.message);
-            });
+        })
+
+        if (res.status === 201) {
+            alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", "Thêm đánh giá thành công!");
+            renderTourHeader();
+            handleRenderUserReviews();
+            closeModalReview.click();
+        }
     } catch (error) {
-        console.log(">>> Error: " + error.message);
+        console.error(error.message);
     }
 }
 
@@ -600,7 +586,7 @@ function updateReview(rating, review) {
         };
 
         // Make the API request
-        fetch(`/api/update-tour-review/${tourReview.id}`, requestOptions)
+        fetch(`/api/v1/update-tour-reviews/${tourReview.id}`, requestOptions)
             .then(response => {
                 if (response.ok) {
                     return response.text();
@@ -627,7 +613,7 @@ function updateReview(rating, review) {
 
 async function deleteReview(id) {
     try {
-        const response = await fetch(`/api/delete-tour-review/${id}`, {
+        const response = await fetch(`/api/v1/delete-tour-reviews/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json', // Nếu API yêu cầu header có kiểu dữ liệu
@@ -707,23 +693,35 @@ function handleGetMap() {
 function getParamId() {
     try {
         // Lấy URL hiện tại
-        var currentURL = window.location.href;
+        const currentURL = window.location.href;
 
         // Tạo đối tượng URL từ URL hiện tại
-        var urlObject = new URL(currentURL);
+        const urlObject = new URL(currentURL);
 
         // Lấy giá trị của tham số có tên là "id"
-        return urlObject.pathname.split('/').pop();
+        return urlObject.pathname.split('/')[2];
     } catch (error) {
-        console.log(">>> Error when getting url parameter: " + error.message);
+        console.error(error.message);
     }
 }
 
-import { getDropList, renderRating, getApi, renderDepartureDropList, compareDateNow, ddslick, changeQuantity, dateFormatConvert1, unwantedKeywords, moneyFormat, alertFunc, getDepartureTime } from './global_function.js';
+import {
+    alertFunc,
+    changeQuantity,
+    dateFormatConvert1,
+    ddslick,
+    getApi,
+    getDepartureTime,
+    getDropList,
+    moneyFormat,
+    renderDepartureDropList,
+    renderRating,
+    unwantedKeywords
+} from './global_function.js';
 
 async function start() {
     try {
-        tour = await getApi(`/api/tour?id=${tourId}`, "NotCallBack");
+        tour = await getApi(`/api/v1/tours/${tourId}`, "NotCallBack");
         if (tour !== undefined) {
             renderTourHeader();
             handleGetTourImages();

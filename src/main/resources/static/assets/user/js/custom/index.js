@@ -14,9 +14,9 @@ function renderSlider(sliders) {
         autoPlayVideo: false,
       });
     } else
-      throw new Error("Element with id '#headerVideoMedia' not found in the DOM");
+      console.error("Element with id '#headerVideoMedia' not found in the DOM");
   } catch (error) {
-    console.log(">>> Error: " + error.message)
+    console.error(">>> Error: " + error.message)
   }
 }
 /*END SLIDER*/
@@ -51,14 +51,14 @@ async function renderFavouriteTours(tours, fatherBlock) {
                   <strong>${favouriteTour.name}</strong>
                 </h3>
                 <div id="rating${favouriteTour.id}" class="rating">
-                  ${await renderRating(`/api/tour/${favouriteTour.id}/tour-reviews`)}
+                  ${await renderRating(`/api/v1/tour-reviews/tours/${favouriteTour.id}`)}
               </div >
             </div >
           </div >
         </div >`;
-      if (html != '')
+      if (html !== '')
         fatherBlock.insertAdjacentHTML("beforeend", html);
-      if (++count == 6)
+      if (++count === 6)
         break;
     }
   }
@@ -75,7 +75,7 @@ function renderFavouriteDestinations(destinations) {
       let count = 0;
       for (const destination of destinations) {
         let html = destination.status && destination.isHot ?
-          `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
+            `<div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
               <div class="hotel_container">
                 <div class="ribbon_3 popular"><span>Nổi bật</span></div>
                 <div class="img_container">
@@ -85,33 +85,26 @@ function renderFavouriteDestinations(destinations) {
                 </div>
                 <div class="hotel_title">
                   <h3><strong>${destination.name}</strong></h3>
-                  <!-- end rating -->
                 </div>
               </div>
-              <!-- End box -->
-            </div>
-            <!-- End col -->`
-          : ''
-        if (html != '')
+            </div>`
+            : ''
+        if (html !== '') {
           favouriteDestinationsBlock.insertAdjacentHTML("afterbegin", html);
-        document
-          .querySelector(`.destination-link${destination.id}`)
-          .addEventListener("click", function (event) {
-            event.preventDefault();
-
-            // Lưu trạng thái vào local storage
-            localStorage.setItem("destinationFilter", `${destination.id}`);
-
-            // Chuyển đến trang tours
-            window.location.href = "/tours";
-          });
-        if (++count == 6)
+          document
+              .querySelector(`.destination-link${destination.id}`)
+              .addEventListener("click", function (event) {
+                event.preventDefault();
+                localStorage.setItem("destinationFilter", `${destination.id}`);
+                window.location.assign("/tours");
+              });
+        }
+        if (++count === 6)
           break;
       }
-    } else
-      throw new Error("Element with id '#favourite-destinations' not found in the DOM");
+    }
   } catch (error) {
-    console.log(">>> Error: " + error.message)
+    console.error(error)
   }
 }
 /*END FAVOURITE DESTINATIONS*/
@@ -147,14 +140,14 @@ async function renderNewArticles(articles, fatherBlock) {
                   <strong>${newArticle.title}</strong>
                 </h3>
                 <div id="rating${newArticle.id}" class="rating">
-                  ${await renderRating(`/api/article/${newArticle.id}/article-reviews`)}
+                  ${await renderRating(`/api/v1/article-reviews/articles/${newArticle.id}`)}
               </div >
             </div >
           </div >
         </div >`;
-      if (html != '')
+      if (html !== '')
         fatherBlock.insertAdjacentHTML("beforeend", html);
-      if (++count == 6)
+      if (++count === 6)
         break;
     }
   }
@@ -165,13 +158,13 @@ async function renderNewArticles(articles, fatherBlock) {
 
 import {getApi, handleGetData, moneyFormat, renderRating} from './global_function.js';
 
-function start() {
-  getApi("/api/sliders", renderSlider);
-  handleGetData("/api/tours", renderFavouriteTours, "#favourite-tours");
-  getApi("/api/destinations", renderFavouriteDestinations);
-  handleGetData("/api/articles/all", renderNewArticles, "#new-articles");
+async function start() {
+  await getApi("/api/v1/sliders", renderSlider, "GET")
+  handleGetData("/api/v1/tours", renderFavouriteTours, "#favourite-tours");
+  await getApi("/api/v1/destinations", renderFavouriteDestinations, "GET");
+  handleGetData("/api/v1/articles", renderNewArticles, "#new-articles");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  start();
+document.addEventListener("DOMContentLoaded", async function () {
+  await start();
 });

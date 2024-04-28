@@ -1,28 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/bookings")
+        fetch("/api/v1/bookings")
             .then(response => response.json())
             .then(data => {
                 fetchTableBooking(data);
                 feather.replace();
                 eyeAction();
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchBookingDetails(id) {
-        const url = `/api/booking/${encodeURIComponent(id)}`;
+        const url = `/api/v1/bookings/${encodeURIComponent(id)}`;
 
         fetch(url)
-            .then(response => {
-                if (response.ok) return response.json();
-                else throw new Error("Error Status: " + response.status);
-            })
+            .then(response => response.json())
             .then(data => {
                 fetchBookingDetailsModal(data);
                 $('#bookingDetailsModalScrollable').modal('show');
             })
-            .catch(error => console.error('Error fetching booking details:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchTableBooking(data) {

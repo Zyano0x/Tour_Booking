@@ -10,11 +10,10 @@ import java.util.*;
 
 public class VNPayConfig {
     public static String vnp_Version = "2.1.0";
-    public static String vnp_Command = "pay";
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "http://localhost:1337/api/payment/payment_info";
-    public static String vnp_TmnCode = "DFK2SLP0";
-    public static String secretKey = "XZXHCYTWVXPGWYKJOWMCNKLWHZZMPUIW";
+    public static String vnp_ReturnUrl = "http://localhost:1337/api/v1/payment/payment_info";
+    public static String vnp_TmnCode = "4CHILCJJ";
+    public static String secretKey = "VPNGTSWLXTJNCMLFXLGMHMQTAXJZJIWP";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {

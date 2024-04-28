@@ -12,36 +12,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class ArticlesController {
-
     private final ArticlesService articlesService;
 
-    @PostMapping("/post-articles")
-    public ResponseEntity<String> saveArticles(@Valid @RequestBody ArticlesDTO articlesDTO) {
-        articlesService.saveArticles(articlesDTO);
-        return new ResponseEntity<>("ĐĂNG BÀI THÀNH CÔNG!", HttpStatus.CREATED);
+    @PostMapping("/articles")
+    public ResponseEntity<Articles> saveArticles(@Valid @RequestBody ArticlesDTO articlesDTO) {
+        return new ResponseEntity<>(articlesService.saveArticles(articlesDTO), HttpStatus.CREATED);
     }
 
-    @GetMapping("/articles")
-    public ResponseEntity<Articles> getTour(@RequestParam Long id) {
+    @GetMapping("/articles/{id}")
+    public ResponseEntity<Articles> getTour(@PathVariable Long id) {
         return new ResponseEntity<>(articlesService.getArticles(id), HttpStatus.OK);
     }
 
-    @GetMapping("/articles/all")
+    @GetMapping("/articles")
     public ResponseEntity<List<Articles>> getAllArticles() {
         return new ResponseEntity<>(articlesService.getAllArticles(), HttpStatus.OK);
-    }
-
-    @PutMapping("/admin/update-articles")
-    public ResponseEntity<Articles> updateArticles(@Valid @RequestBody Articles articles, @RequestParam Long id) {
-        return new ResponseEntity<>(articlesService.updateArticles(articles, id), HttpStatus.OK);
-    }
-
-    @PutMapping("/admin/update-articles-status")
-    public ResponseEntity<String> updateArticlesStatus(@RequestParam Long id) {
-        articlesService.updateArticlesStatus(id);
-        return new ResponseEntity<String>("Updated articles status", HttpStatus.OK);
     }
 }

@@ -6,7 +6,7 @@ import com.project.tour_booking.DTO.TourImageDTO;
 import com.project.tour_booking.Entity.TourImage;
 
 public interface TourImageService {
-  void saveTourImage(TourImageDTO tourImageDTO);
+  TourImage saveTourImage(TourImageDTO tourImageDTO);
 
   TourImage getTourImage(Long tourImageId);
 

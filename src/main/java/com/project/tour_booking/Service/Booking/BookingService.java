@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface BookingService {
-  void saveBooking(BookingDTO bookingDTO);
+  Booking saveBooking(BookingDTO bookingDTO);
 
   Booking getBooking(Long bookingId);
 
@@ -21,9 +21,9 @@ public interface BookingService {
 
   List<Booking> getBookingByUserIdAndTourId(Long userId, Long tourId);
 
-  void updateBooking(BookingDTO bookingDTO, Long bookingId);
+  Booking updateBooking(BookingDTO bookingDTO, Long bookingId);
 
-  ResponseEntity<?> updateBookingStatus(Long bookingId);
+  void updateBookingStatus(Long bookingId);
 
-  ResponseEntity<?> confirmCancel(Long transactionCode, String confirmationToken);
+  Booking confirmCancel(Long transactionCode, String confirmationToken);
 }

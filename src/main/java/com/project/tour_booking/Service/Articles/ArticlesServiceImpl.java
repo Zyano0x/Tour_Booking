@@ -9,6 +9,7 @@ import com.project.tour_booking.Repository.ArticlesRepository;
 import com.project.tour_booking.Repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,17 +21,14 @@ import java.util.Optional;
 public class ArticlesServiceImpl implements ArticlesService {
     private final ArticlesRepository articlesRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Articles saveArticles(ArticlesDTO articlesDTO) {
         Optional<User> user = userRepository.findById(articlesDTO.getUserId());
 
         if (user.isPresent()) {
-            Articles post = new Articles();
-            post.setTitle(articlesDTO.getTitle());
-            post.setDescription(articlesDTO.getDescription());
-            post.setThumbnail(articlesDTO.getThumbnail());
-            post.setContent(articlesDTO.getContent());
+            Articles post = modelMapper.map(articlesDTO, Articles.class);
             post.setDateOfPosting(LocalDate.now());
             post.setStatus(user.get().getRole() == Role.ADMIN);
             post.setUser(user.get());
@@ -69,12 +67,13 @@ public class ArticlesServiceImpl implements ArticlesService {
     }
 
     @Override
-    public void updateArticlesStatus(Long articlesId) {
+    public Articles updateArticlesStatus(Long articlesId) {
         Articles articles = articlesRepository.findById(articlesId)
                 .orElseThrow(() -> new EntityNotFoundException("Articles not found with id: " + articlesId));
 
         articles.setStatus(!articles.getStatus());
 
         articlesRepository.save(articles);
+        return articles;
     }
 }

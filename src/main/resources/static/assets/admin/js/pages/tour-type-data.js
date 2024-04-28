@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/types-of-tours")
+        fetch("/api/v1/types-of-tours")
             .then(response => response.json())
             .then(data => {
                 fetchTableTourType(data);
@@ -8,24 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 eyeAction();
                 lockAction();
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchTypeDetails(id) {
-        const url = `/api/type-of-tours?id=${encodeURIComponent(id)}`;
-        console.log('Requesting type details:', url);
+        const url = `/api/v1/type-of-tours/${encodeURIComponent(id)}`;
 
         fetch(url)
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json();
-            })
+            .then(response =>  response.json())
             .then(data => {
-                console.log('Received data:', data);
                 fetchTourTypeDetailsModal(data);
                 $('#typeDetailsModalScrollable').modal('show'); // Show the modal
             })
-            .catch(error => console.error('Error fetching type details:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchTableTourType(data) {
@@ -65,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', event => {
                 event.preventDefault();
                 const id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                const url = `/api/admin/update-type-of-tours-status?id=${encodeURIComponent(id)}`;
+                const url = `/api/v1/admin/update-type-of-tours-status/${encodeURIComponent(id)}`;
 
                 let myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
@@ -76,12 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
 
                 fetch(url, requestOptions)
-                    .then(response => {
-                        if (response.ok) return response.json();
-                        else throw new Error("Error Status: " + response.status);
-                    })
+                    .then(response => response.json())
                     .then(result => console.log(result))
-                    .catch(error => console.log('Error updating status:', error));
+                    .catch(error => console.error(error));
             });
         });
     }
@@ -90,75 +82,68 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-document.getElementById('update-typeTour').addEventListener('click', function(event) {
-    event.preventDefault();
+async function updateTypeTour() {
+    try {
+        const id = document.getElementById('id').value;
+        const name = document.getElementById('name').value;
+        const description = document.getElementById('content').value;
+        const status = document.getElementById('status').value;
 
-    const id = document.getElementById('id').value;
-    const url = `/api/admin/update-type-of-tours?id=${encodeURIComponent(id)}`;
+        const res = await fetch(`/api/v1/admin/update-type-of-tours/${encodeURIComponent(id)}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                description,
+                status,
+            })
+        });
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const name = document.getElementById('name').value;
-    const description = document.getElementById('content').value;
-    const status = document.getElementById('status').value;
-
-    let raw = JSON.stringify({
-        "name": name,
-        "description": description,
-        "status": status,
-    });
-
-    let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-
-    fetch(url, requestOptions)
-        .then(response => {
-            if (response.ok) return response.json();
-            else throw new Error('Failed to update type tour. Status: ' + response.status);
-        })
-        .then(result => {
+        if (res.status === 200) {
             showToast('Succeed Update Type Tour', 'Success', 'green');
             $('#typeDetailsModalScrollable').modal('hide');
-        })
-        .catch(error => showToast('Failed Update Type Tour', 'Error', 'red'));
-})
-
-document.getElementById('add-typeTour').addEventListener('click', function(event) {
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Failed Update Type Tour', 'Error', 'red')
+    }
+}
+document.getElementById('update-typeTour').addEventListener('click', async function(event) {
     event.preventDefault();
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    await updateTypeTour();
+})
 
-    const name = document.getElementById('_name').value;
-    const description = document.getElementById('_content').value;
+async function addTypeTour() {
+    try {
+        const name = document.getElementById('_name').value;
+        const description = document.getElementById('_content').value;
 
-    let raw = JSON.stringify({
-        "name": name,
-        "description": description,
-    });
+        const res = await fetch("/api/v1/admin/type-of-tours", {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                description,
+            })
+        });
 
-    let requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-
-    fetch("/api/admin/type-of-tours", requestOptions)
-        .then(response => {
-            if (response.ok) return response.text();
-            else throw new Error('Failed to update type tour. Status: ' + response.status);
-        })
-        .then(result => {
+        if (res.status === 201) {
             showToast('Succeed Add Type Tour', 'Success', 'green');
             $('#newTypeModalScrollable').modal('hide');
-        })
-        .catch(error => showToast('Failed Add Type Tour', 'Error', 'red'));
+        }
+    } catch (e) {
+        showToast('Failed Add Type Tour', 'Error', 'red');
+    }
+}
+document.getElementById('add-typeTour').addEventListener('click', async function(event) {
+    event.preventDefault();
+
+    await addTypeTour();
 })
 
 function fetchTourTypeDetailsModal(data) {

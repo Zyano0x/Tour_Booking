@@ -70,8 +70,7 @@ export function compareDateNow(dateStr) {
                 return 1;
             } else if (inputDay < currentDay) {
                 return 0;
-            }
-            else
+            } else
                 return -1;
         }
     }
@@ -207,7 +206,7 @@ export function renderDepartureDropList(data, fatherBlock, icon, option) {
         let htmls = [];
 
         data.forEach(item => {
-            if (item.status && compareDateNow(item.departureDay) == 1 && item.quantity > 0) {
+            if (item.status && new Date(item.departureDay) > new Date() && item.quantity > 0) {
                 htmls.push(`
                     <option value="${item.id}" data-imagesrc="/assets/user/images/icons_search/${icon}">
                         ${item.departureDay}
@@ -239,7 +238,7 @@ export async function getDepartureTime(departureTimeSelector, departureDayId, bi
     } else {
         departureTime = document.querySelector(departureTimeSelector);
     }
-    departureTime ? departureTime.textContent = (await getApi(`/api/departure-day?id=${departureDayId}`)).departureTime : '';
+    departureTime ? departureTime.textContent = (await getApi(`/api/v1/departure-days/${departureDayId}`)).departureTime : '';
 }
 
 export function renderDeparturesDropList(data, fatherBlock, icon) {
@@ -313,7 +312,9 @@ export async function handleGetData(apiUrl, callBack, fatherBlockSelector) {
         if (fatherBlock) {
             await getApi(apiUrl, "NotCallBack")
                 .then(data => callBack(data.reverse(), fatherBlock))
-                .catch(error => { throw new Error(error) });
+                .catch(error => {
+                    throw new Error(error)
+                });
         } else {
             throw new Error("Element not found in the DOM");
         }
@@ -322,18 +323,21 @@ export async function handleGetData(apiUrl, callBack, fatherBlockSelector) {
     }
 }
 
-export async function getApi(apiUrl, callBack) {
+export async function getApi(apiUrl, callBack, method) {
     try {
-        const response = await fetch(apiUrl);
-        if (!response.ok)
-            throw new Error(`>>> Response was not ok: ${response.statusText}`);
-        const data = await response.json();
-        if (typeof callBack === 'function')
-            callBack(data);
-        else
-            return data;
+        const response = await fetch(apiUrl, {
+            method
+        });
+
+        if (response.status === 200) {
+            const data = await response.json();
+            if (typeof callBack === 'function')
+                callBack(data);
+            else
+                return data;
+        }
     } catch (error) {
-        console.log(">>> Error: " + error.message);
+        console.error(">>> Error: " + error.message);
     }
 }
 

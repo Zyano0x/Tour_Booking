@@ -52,8 +52,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void saveBooking(BookingDTO bookingDTO) {
-
+    public Booking saveBooking(BookingDTO bookingDTO) {
         // Kiểm tra tồn tại
         Optional<User> userOptional = userRepository.findById(bookingDTO.getUserId());
         if (userOptional.isPresent()) {
@@ -102,29 +101,8 @@ public class BookingServiceImpl implements BookingService {
                                     // Gửi mail
                                     User user = booking.getUser();
 
-                                    // Định dạng ngày theo định dạng "dd-MM-yyyy"
-                                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                                    // Định dạng "HH:mm"
-                                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-                                    SimpleMailMessage mailMessage = new SimpleMailMessage();
-                                    mailMessage.setFrom("no-reply@tourbooking.com");
-                                    mailMessage.setTo(user.getUsername());
-                                    mailMessage.setSubject("Thông Báo Đặt Tour Thành Công");
-                                    mailMessage.setText("Ngày đặt: " + booking.getBookingDate().format(dateFormatter)
-                                            + "\nTour: "
-                                            + booking.getDepartureDay().getTour().getName() + "\nThời gian: "
-                                            + booking.getDepartureDay().getTour().getTime() + "\nKhởi hành vào ngày ["
-                                            + booking.getDepartureDay().getDepartureDay().format(dateFormatter)
-                                            + "] lúc ["
-                                            + booking.getDepartureDay().getDepartureTime().format(timeFormatter)
-                                            + "] tại [" + booking.getDepartureDay().getTour().getDeparturePoint()
-                                            + "]\nSố lượng người lớn: "
-                                            + booking.getQuantityOfAdult() + "\nSố lượng trẻ em: "
-                                            + booking.getQuantityOfChild() + "\nTổng tiền: "
-                                            + booking.getTotalPrice() + " VND");
-
-                                    emailService.sendEmail(mailMessage);
+                                    emailService.sendEmailVerifyBooking(user, booking);
+                                    return booking;
                                 } else
                                     throw new TourNotFoundException(departureDay.getTour().getId());
                             } else
@@ -162,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getBookingIsValidOfUserId(Long userId) {
-        return bookingRepository.findAllByUserId(userId).stream().filter(booking -> booking.getStatus())
+        return bookingRepository.findAllByUserId(userId).stream().filter(Booking::getStatus)
                 .collect(Collectors.toList());
     }
 
@@ -181,7 +159,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void updateBooking(BookingDTO bookingDTO, Long bookingId) {
+    public Booking updateBooking(BookingDTO bookingDTO, Long bookingId) {
         // Kiểm tra tồn tại
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
         if (bookingOptional.isPresent()) {
@@ -226,29 +204,7 @@ public class BookingServiceImpl implements BookingService {
 
                                 User user = presentBooking.getUser();
 
-                                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                                // Định dạng "HH:mm"
-                                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-                                SimpleMailMessage mailMessage = new SimpleMailMessage();
-                                mailMessage.setFrom("no-reply@tourbooking.com");
-                                mailMessage.setTo(user.getUsername());
-                                mailMessage.setSubject("Cập Nhật Đơn Hàng");
-                                mailMessage.setText("Ngày đặt: " + presentBooking.getBookingDate().format(dateFormatter)
-                                        + "\nTour: "
-                                        + presentBooking.getDepartureDay().getTour().getName() + "\nThời gian: "
-                                        + presentBooking.getDepartureDay().getTour().getTime()
-                                        + "\nKhởi hành vào ngày ["
-                                        + presentBooking.getDepartureDay().getDepartureDay().format(dateFormatter)
-                                        + "] lúc ["
-                                        + presentBooking.getDepartureDay().getDepartureTime().format(timeFormatter)
-                                        + "] tại [" + presentBooking.getDepartureDay().getTour().getDeparturePoint()
-                                        + "]\nSố lượng người lớn: "
-                                        + presentBooking.getQuantityOfAdult() + "\nSố lượng trẻ em: "
-                                        + presentBooking.getQuantityOfChild() + "\nTổng tiền: "
-                                        + presentBooking.getTotalPrice() + " VND");
-
-                                emailService.sendEmail(mailMessage);
-
+                                emailService.sendEmailUpdateBooking(user, presentBooking);
                             } else
                                 throw new DepartureDayNotEnableStatusException(newDepartureDay.getDepartureDay());
                         } else
@@ -257,14 +213,14 @@ public class BookingServiceImpl implements BookingService {
                         throw new DepartureDayNotFoundException(bookingDTO.getDepartureDayId());
                 }
 
-                Integer updateQuantityOfAdult = bookingDTO.getQuantityOfAdult() - presentBooking.getQuantityOfAdult();
-                Integer updateQuantityOfChild = bookingDTO.getQuantityOfChild() - presentBooking.getQuantityOfChild();
-                Integer updateTotalQuantity = updateQuantityOfAdult + updateQuantityOfChild;
+                int updateQuantityOfAdult = bookingDTO.getQuantityOfAdult() - presentBooking.getQuantityOfAdult();
+                int updateQuantityOfChild = bookingDTO.getQuantityOfChild() - presentBooking.getQuantityOfChild();
+                int updateTotalQuantity = updateQuantityOfAdult + updateQuantityOfChild;
 
                 DepartureDay updateDepartureDay = departureDayRepository.findById(bookingDTO.getDepartureDayId()).get();
 
                 // Bắt đầu kiểm tra và cập nhật trường số lượng người lớn ở booking
-                Integer departureQuantity = updateDepartureDay.getQuantity();
+                int departureQuantity = updateDepartureDay.getQuantity();
                 if (updateTotalQuantity != 0) {
                     if (updateTotalQuantity <= departureQuantity) {
 
@@ -288,7 +244,7 @@ public class BookingServiceImpl implements BookingService {
                     } else
                         throw new BookingNotEnoughQuantityException(updateDepartureDay.getDepartureDay());
                 }
-                bookingRepository.save(presentBooking);
+                return bookingRepository.save(presentBooking);
             } else
                 throw new BookingStatusException();
         } else
@@ -296,47 +252,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public ResponseEntity<?> updateBookingStatus(Long bookingId) {
+    public void updateBookingStatus(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
 
         User user = booking.getUser();
-        Long transactionCode = booking.getTransactionCode();
 
         SecureToken token = new SecureToken(user);
         secureTokenRepository.save(token);
 
-        BigDecimal refund = refundMoney(booking.getTotalPrice(), booking.getDepartureDay().getDepartureDay());
-
-        // Định dạng ngày theo định dạng "dd-MM-yyyy"
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        // Định dạng "HH:mm"
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("no-reply@tourbooking.com");
-        mailMessage.setTo(user.getUsername());
-        mailMessage.setSubject("Xác Nhận Hủy Đơn Hàng");
-        mailMessage.setText("Ngày đặt: " + booking.getBookingDate().format(dateFormatter) + "\nTour: "
-                + booking.getDepartureDay().getTour().getName() + "\nThời gian: "
-                + booking.getDepartureDay().getTour().getTime() + "\nKhởi hành vào ngày ["
-                + booking.getDepartureDay().getDepartureDay().format(dateFormatter) + "] lúc ["
-                + booking.getDepartureDay().getDepartureTime().format(timeFormatter)
-                + "] tại [" + booking.getDepartureDay().getTour().getDeparturePoint() + "]\nSố lượng người lớn: "
-                + booking.getQuantityOfAdult() + "\nSố lượng trẻ em: " + booking.getQuantityOfChild() + "\nTổng tiền: "
-                + booking.getTotalPrice() + " VND\nHoàn trả: " + refund
-                + ".00 VND\nĐể xác nhận hủy đơn, vui lòng nhấn vào link: "
-                + "http://localhost:1337/api/confirm-cancel?token="
-                + token.getToken() + "&transaction=" + transactionCode);
-
-        emailService.sendEmail(mailMessage);
-
-        return new ResponseEntity<>("Đã gửi email xác nhận hủy đặt vé", HttpStatus.OK);
+        emailService.sendEmailUpdateBookingStatus(user, booking, token);
     }
 
-    @Transactional
     @Override
-    public ResponseEntity<?> confirmCancel(Long transactionCode, String confirmationToken) {
+    public Booking confirmCancel(Long transactionCode, String confirmationToken) {
         Optional<Booking> booking = bookingRepository.findByTransactionCode(transactionCode);
         if (booking.isPresent()) {
             Booking updateStatusBooking = booking.get();
@@ -368,45 +297,22 @@ public class BookingServiceImpl implements BookingService {
             }
 
             if (validateToken(confirmationToken) == UserServiceImpl.VerificationResult.INVALID_TOKEN) {
-                return new ResponseEntity<>("Invalid verification token.", HttpStatus.BAD_REQUEST);
+                throw new TokenException("Invalid verification token.");
             } else if (validateToken(confirmationToken) == UserServiceImpl.VerificationResult.EXPIRED) {
-                return new ResponseEntity<>("Verification token already expired.", HttpStatus.BAD_REQUEST);
+                throw new TokenException("Verification token already expired.");
             } else if (validateToken(confirmationToken) == UserServiceImpl.VerificationResult.VALID) {
                 SecureToken token = secureTokenRepository.findByToken(confirmationToken);
-                BigDecimal refund = refundMoney(updateStatusBooking.getTotalPrice(),
-                        updateStatusBooking.getDepartureDay().getDepartureDay());
 
                 // Lưu vào csdl
                 departureDayRepository.save(updateQuantityDepartureDay);
                 bookingRepository.save(updateStatusBooking);
                 secureTokenService.removeToken(token);
 
-                SimpleMailMessage mailMessage = new SimpleMailMessage();
-                mailMessage.setFrom("no-reply@tourbooking.com");
-                mailMessage.setTo("ghuy042@gmail.com");
-                mailMessage.setSubject("Xác Nhận Hủy Đơn Hàng");
-                mailMessage.setText("Số hóa đơn xác nhận hủy: " + transactionCode
-                        + "\nSố tiền cần hoàn lại: " + refund + ".00 VND");
+                emailService.sendEmailConfirmBookingCancel(updateStatusBooking, transactionCode);
 
-                emailService.sendEmail(mailMessage);
-
-                return new ResponseEntity<>("Đã xác nhận hủy", HttpStatus.OK);
+                return updateStatusBooking;
             }
-        } else
-            throw new BookingNotFoundException(transactionCode);
-
-        return new ResponseEntity<>("Hủy thất bại", HttpStatus.BAD_REQUEST);
-    }
-
-    public BigDecimal refundMoney(BigDecimal refund, LocalDate departureDay) {
-        long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(), departureDay);
-
-        Float refundPercent;
-        if (daysDifference >= 7) {
-            refundPercent = 0.8f;
-        } else {
-            refundPercent = 0.7f;
         }
-        return refund.multiply(new BigDecimal(refundPercent)).setScale(0, RoundingMode.HALF_UP);
+        throw new BookingNotFoundException(transactionCode);
     }
 }

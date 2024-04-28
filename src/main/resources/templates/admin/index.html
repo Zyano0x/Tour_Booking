@@ -32,7 +32,6 @@
     <![endif]-->
 </head>
 <body>
-
 <div class="page-container">
     <div class="page-header" th:fragment="page-header">
         <nav class="navbar navbar-expand-lg d-flex justify-content-between">
@@ -42,7 +41,7 @@
                         <a class="nav-link" id="sidebar-toggle" href="#"><i data-feather="arrow-left"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/panel">Home</a>
+                        <a class="nav-link" href="/panel/dashboard">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Settings</a>
@@ -53,7 +52,7 @@
                 </ul>
             </div>
             <div class="logo">
-                <a class="navbar-brand" href="/panel"></a>
+                <a class="navbar-brand" href="/panel/dashboard"></a>
             </div>
             <div class="" id="headerNav">
                 <ul class="navbar-nav">
@@ -98,32 +97,32 @@
             <li class="sidebar-title">
                 Main
             </li>
-            <li th:class="${path == '/panel'} ? 'active-page' : ''">
-                <a href="/panel"><i data-feather="home"></i>Dashboard</a>
+            <li>
+                <a href="/panel/dashboard" id="dashboard-link"><i data-feather="home"></i>Dashboard</a>
             </li>
             <li class="sidebar-title">
                 Management
             </li>
-            <li th:class="${path == '/panel/user-manage'} ? 'active-page' : ''">
-                <a href="/panel/user-manage"><i data-feather="user"></i>User</a>
+            <li>
+                <a href="/panel/users-manage" id="user-manage-link"><i data-feather="user"></i>User</a>
             </li>
-            <li th:class="${path == '/panel/tour-manage'} ? 'active-page' : ''">
-                <a href="/panel/tour-manage"><i data-feather="compass"></i>Tour</a>
+            <li>
+                <a href="/panel/tours-manage" id="tour-manage-link"><i data-feather="compass"></i>Tour</a>
             </li>
-            <li th:class="${path == '/panel/tour-type-manage'} ? 'active-page' : ''">
-                <a href="/panel/tour-type-manage"><i data-feather="type"></i>Tour Type</a>
+            <li>
+                <a href="/panel/tour-types-manage" id="tour-type-manage-link"><i data-feather="type"></i>Tour Type</a>
             </li>
-            <li th:class="${path == '/panel/destination-manage'} ? 'active-page' : ''">
-                <a href="/panel/destination-manage"><i data-feather="crosshair"></i>Destination</a>
+            <li>
+                <a href="/panel/destinations-manage" id="destination-manage-link"><i data-feather="crosshair"></i>Destination</a>
             </li>
-            <li th:class="${path == '/panel/departure-manage'} ? 'active-page' : ''">
-                <a href="/panel/departure-manage"><i data-feather="calendar"></i>Departure Day</a>
+            <li>
+                <a href="/panel/departures-manage" id="departure-manage-link"><i data-feather="calendar"></i>Departure Day</a>
             </li>
-            <li th:class="${path == '/panel/articles-manage'} ? 'active-page' : ''">
-                <a href="/panel/articles-manage"><i data-feather="book"></i>Articles</a>
+            <li>
+                <a href="/panel/articles-manage" id="articles-manage-link"><i data-feather="book"></i>Articles</a>
             </li>
-            <li th:class="${path == '/panel/booking-manage'} ? 'active-page' : ''">
-                <a href="/panel/booking-manage"><i data-feather="shopping-cart"></i>Booking</a>
+            <li>
+                <a href="/panel/bookings-manage" id="booking-manage-link"><i data-feather="shopping-cart"></i>Booking</a>
             </li>
         </ul>
     </div>
@@ -348,7 +347,6 @@
     </div>
 </div>
 
-<!-- Javascript -->
 <div th:fragment="javascript">
     <script th:src="@{https://code.jquery.com/jquery-3.6.4.min.js}"></script>
     <script th:src="@{https://unpkg.com/@popperjs/core@2}"></script>
@@ -357,10 +355,35 @@
     <script th:src="@{/assets/admin/plugins/perfectscroll/perfect-scrollbar.min.js}"></script>
     <script th:src="@{/assets/admin/js/main.min.js}"></script>
     <script th:src="@{/assets/admin/js/pages/authentication.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current path from the URL
+            let currentPath = window.location.pathname;
+
+            // Find the corresponding link and add the active-page class
+            document.querySelectorAll('.page-sidebar a').forEach(function(link) {
+                if (link.getAttribute('href') === currentPath) {
+                    link.parentNode.classList.add('active-page');
+                }
+            });
+        });
+
+        // Add event listeners to handle clicking on links
+        document.querySelectorAll('.page-sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                // Remove active-page class from all li elements
+                document.querySelectorAll('.page-sidebar li').forEach(li => {
+                    li.classList.remove('active-page');
+                });
+
+                // Add active-page class to the clicked link's parent li
+                this.parentNode.classList.add('active-page');
+            });
+        });
+    </script>
 </div>
 
-<script th:src="@{/assets/admin/plugins/apexcharts/apexcharts.min.js}"></script>
-<script th:src="@{/assets/admin/js/pages/dashboard.js}"></script>
-
+<script th:src="@{/assets/admin/plugins/apexcharts/apexcharts.min.js}" defer></script>
+<script th:src="@{/assets/admin/js/pages/dashboard.js}" defer></script>
 </body>
 </html>

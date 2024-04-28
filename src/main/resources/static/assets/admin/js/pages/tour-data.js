@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/tours")
+        fetch("/api/v1/tours")
             .then(response => response.json())
             .then(data => {
                 fetchTableTour(data);
@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 eyeAction();
                 lockAction();
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchTourDetails(id) {
-        const url = `/api/tour?id=${encodeURIComponent(id)}`;
+        const url = `/api/v1/tours/${encodeURIComponent(id)}`;
         console.log('Requesting tour details:', url);
 
         fetch(url)
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', event => {
                 event.preventDefault();
                 const id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                const url = `/api/admin/update-tour-status?id=${encodeURIComponent(id)}`;
+                const url = `/api/v1/admin/update-tour-status/${encodeURIComponent(id)}`;
 
                 let myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
@@ -76,12 +76,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
 
                 fetch(url, requestOptions)
-                    .then(response => {
-                        if (response.ok) return response.text();
-                        else throw new Error("Error Status: " + response.status);
-                    })
+                    .then(response => response.json())
                     .then(result => console.log(result))
-                    .catch(error => console.log('Error updating tour status:', error));
+                    .catch(error => console.log(error));
             });
         });
     }
@@ -93,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
 const ckEditorInstances = new Map();
 
 function fetchImagesByTourId(id) {
-    const url = `/api/tour/${encodeURIComponent(id)}/tour-images`;
+    const url = `/api/v1/tour-images/tours/${encodeURIComponent(id)}`;
 
     fetch(url)
         .then(response => response.json())
@@ -104,7 +101,7 @@ function fetchImagesByTourId(id) {
                 textarea.value += image.path + '\n';
             });
         })
-        .catch(error => console.error('Error fetching type of tour options:', error));
+        .catch(error => console.error(error));
 }
 
 function fetchTourDetailsModal(data) {
@@ -166,9 +163,9 @@ function initializeCKEditor(content) {
 
 import {fetchData} from './utils.js';
 
-fetchData('/api/types-of-tours', function(data, dropdownId) {
+fetchData('/api/v1/types-of-tours', function (data, dropdownId) {
     const typeOfTourDropdown = document.getElementById(dropdownId);
-    data.forEach(function(typeOfTour) {
+    data.forEach(function (typeOfTour) {
         const option = document.createElement('option');
         option.value = typeOfTour.id;
         option.text = typeOfTour.name;
@@ -176,9 +173,9 @@ fetchData('/api/types-of-tours', function(data, dropdownId) {
     });
 }, 'typesOfTour');
 
-fetchData('/api/destinations', function(data, dropdownId) {
+fetchData('/api/v1/destinations', function (data, dropdownId) {
     const destinationDropdown = document.getElementById(dropdownId);
-    data.forEach(function(destination) {
+    data.forEach(function (destination) {
         const option = document.createElement('option');
         option.value = destination.id;
         option.text = destination.name;
@@ -186,70 +183,69 @@ fetchData('/api/destinations', function(data, dropdownId) {
     });
 }, 'destinations');
 
-document.getElementById('update-tour').addEventListener('click', function(event){
-    event.preventDefault();
+async function updateTour() {
+    try {
+        const id = document.getElementById('id').value;
+        const name = document.getElementById('name').value;
+        const description = document.getElementById('content').value;
+        const service = ckEditorInstances.get(document.getElementById('service')).getData();
+        const time = document.getElementById('time').value;
+        const schedule = ckEditorInstances.get(document.getElementById('schedule')).getData();
+        const priceForAdult = document.getElementById('priceForAdult').value;
+        const priceForChildren = document.getElementById('priceForChildren').value;
+        const departurePoint = document.getElementById('departurePoint').value;
+        const dateOfPosting = document.getElementById('dateOfPosting').value;
+        const editDate = document.getElementById('editDate').value;
+        const status = document.getElementById('status').value;
+        const isHot = document.getElementById('isHot').value;
+        const typeOfTourId = document.getElementById('typesOfTour').value;
+        const destinationId = document.getElementById('destinations').value;
+        const thumbnail = document.getElementById('thumbnail').value;
+        const images = document.getElementById('images').value.split('\n').filter(Boolean); // Split images into an array
 
-    const id = document.getElementById('id').value;
-    const url = `/api/admin/update-tour?id=${encodeURIComponent(id)}`;
+        const res = await fetch(`/api/v1/admin/update-tours/${encodeURIComponent(id)}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "name": name,
+                "description": description,
+                "service": service,
+                "time": time,
+                "schedule": schedule,
+                "priceForAdult": parseFloat(priceForAdult), // Parse to ensure it's a number
+                "priceForChildren": parseFloat(priceForChildren), // Parse to ensure it's a number
+                "departurePoint": departurePoint,
+                "dateOfPosting": dateOfPosting,
+                "editDate": editDate,
+                "isHot": isHot,
+                "status": status,
+                "images": images,
+                "totId": typeOfTourId,
+                "destinationId": destinationId,
+                "thumbnail": thumbnail,
+            })
+        });
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const name = document.getElementById('name').value;
-    const description = document.getElementById('content').value;
-    const service = ckEditorInstances.get(document.getElementById('service')).getData();
-    const time = document.getElementById('time').value;
-    const schedule = ckEditorInstances.get(document.getElementById('schedule')).getData();
-    const priceForAdult = document.getElementById('priceForAdult').value;
-    const priceForChildren = document.getElementById('priceForChildren').value;
-    const departurePoint = document.getElementById('departurePoint').value;
-    const dateOfPosting = document.getElementById('dateOfPosting').value;
-    const editDate = document.getElementById('editDate').value;
-    const status = document.getElementById('status').value;
-    const isHot = document.getElementById('isHot').value;
-    const typeOfTourId = document.getElementById('typesOfTour').value;
-    const destinationId = document.getElementById('destinations').value;
-    const thumbnail = document.getElementById('thumbnail').value;
-    const images = document.getElementById('images').value.split('\n').filter(Boolean); // Split images into an array
-
-    let raw = JSON.stringify({
-        "name": name,
-        "description": description,
-        "service": service,
-        "time": time,
-        "schedule": schedule,
-        "priceForAdult": parseFloat(priceForAdult), // Parse to ensure it's a number
-        "priceForChildren": parseFloat(priceForChildren), // Parse to ensure it's a number
-        "departurePoint": departurePoint,
-        "dateOfPosting": dateOfPosting,
-        "editDate": editDate,
-        "isHot": isHot,
-        "status": status,
-        "images": images,
-        "totId": typeOfTourId,
-        "destinationId": destinationId,
-        "thumbnail": thumbnail,
-    });
-
-    let requestOptions = {
-        method: 'PUT', headers: myHeaders, body: raw, redirect: 'follow'
-    };
-
-    fetch(url, requestOptions)
-        .then(response => {
-            if (response.ok) return response.json();
-            else throw new Error('Failed to update tour. Status: ' + response.status);
-        })
-        .then(result => {
+        if (res.status === 200) {
             showToast('Succeed Update Tour', 'Success', 'green');
             $('#tourDetailsModalScrollable').modal('hide');
-        })
-        .catch(error => showToast('Failed Update Tour', 'Error', 'red'));
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Failed Update Tour', 'Error', 'red')
+    }
+}
+document.getElementById('update-tour').addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    await updateTour();
 })
 
-fetchData('/api/types-of-tours', function(data, dropdownId) {
+fetchData('/api/v1/types-of-tours', function (data, dropdownId) {
     const typeOfTourDropdown = document.getElementById(dropdownId);
-    data.forEach(function(typeOfTour) {
+    data.forEach(function (typeOfTour) {
         const option = document.createElement('option');
         option.value = typeOfTour.id;
         option.text = typeOfTour.name;
@@ -257,9 +253,9 @@ fetchData('/api/types-of-tours', function(data, dropdownId) {
     });
 }, '_typesOfTour');
 
-fetchData('/api/destinations', function(data, dropdownId) {
+fetchData('/api/v1/destinations', function (data, dropdownId) {
     const destinationDropdown = document.getElementById(dropdownId);
-    data.forEach(function(destination) {
+    data.forEach(function (destination) {
         const option = document.createElement('option');
         option.value = destination.id;
         option.text = destination.name;
@@ -267,58 +263,57 @@ fetchData('/api/destinations', function(data, dropdownId) {
     });
 }, '_destinations');
 
-document.getElementById('add-tour').addEventListener('click', function(event) {
-    event.preventDefault();
+async function addTour() {
+    try {
+        const name = document.getElementById('_name').value;
+        const description = document.getElementById('_content').value;
+        const service = document.getElementById('_service').value;
+        const time = document.getElementById('_time').value;
+        const schedule = document.getElementById('_schedule').value;
+        const priceForAdult = document.getElementById('_priceForAdult').value;
+        const priceForChildren = document.getElementById('_priceForChildren').value;
+        const departurePoint = document.getElementById('_departurePoint').value;
+        const status = document.getElementById('_status').value;
+        const isHot = document.getElementById('_isHot').value;
+        const typeOfTourId = document.getElementById('_typesOfTour').value;
+        const destinationId = document.getElementById('_destinations').value;
+        const thumbnail = document.getElementById('_thumbnail').value;
+        const images = document.getElementById('_images').value.split('\n').filter(Boolean);
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const name = document.getElementById('_name').value;
-    const description = document.getElementById('_content').value;
-    const service = document.getElementById('_service').value;
-    const time = document.getElementById('_time').value;
-    const schedule = document.getElementById('_schedule').value;
-    const priceForAdult = document.getElementById('_priceForAdult').value;
-    const priceForChildren = document.getElementById('_priceForChildren').value;
-    const departurePoint = document.getElementById('_departurePoint').value;
-    const status = document.getElementById('_status').value;
-    const isHot = document.getElementById('_isHot').value;
-    const typeOfTourId = document.getElementById('_typesOfTour').value;
-    const destinationId = document.getElementById('_destinations').value;
-    const thumbnail = document.getElementById('_thumbnail').value;
-    const images = document.getElementById('_images').value.split('\n').filter(Boolean);
-
-    let raw = JSON.stringify({
-        "name": name,
-        "description": description,
-        "service": service,
-        "time": time,
-        "schedule": schedule,
-        "priceForAdult": parseFloat(priceForAdult),
-        "priceForChildren": parseFloat(priceForChildren),
-        "departurePoint": departurePoint,
-        "isHot": isHot,
-        "status": status,
-        "images": images,
-        "totId": typeOfTourId,
-        "destinationId": destinationId,
-        "thumbnail": thumbnail,
-    });
-
-    let requestOptions = {
-        method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
-    };
-
-    fetch("/api/admin/tour", requestOptions)
-        .then(response => {
-            if (response.ok) return response.text();
-            else throw new Error('Failed to add tour. Status: ' + response.status);
+        const res = await fetch('/api/v1/admin/tours', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "name": name,
+                "description": description,
+                "service": service,
+                "time": time,
+                "schedule": schedule,
+                "priceForAdult": parseFloat(priceForAdult),
+                "priceForChildren": parseFloat(priceForChildren),
+                "departurePoint": departurePoint,
+                "isHot": isHot,
+                "status": status,
+                "images": images,
+                "totId": typeOfTourId,
+                "destinationId": destinationId,
+                "thumbnail": thumbnail,
+            })
         })
-        .then(result => {
+
+        if (res.status === 201) {
             showToast('Succeed Add Tour', 'Success', 'green');
             $('#newTourModalScrollable').modal('hide');
-        })
-        .catch(error => {
-            showToast('Failed Add Tour', 'Error', 'red');
-        });
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Failed Add Tour', 'Error', 'red');
+    }
+}
+document.getElementById('add-tour').addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    await addTour();
 })

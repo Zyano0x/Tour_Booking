@@ -13,19 +13,13 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @CrossOrigin
 public class DepartureDayController {
     private DepartureDayService departureDayService;
 
-    @PostMapping("/admin/departure-day")
-    public ResponseEntity<String> saveDepartureDay(@Valid @RequestBody DepartureDayDTO departureDayDTO) {
-        departureDayService.saveDepartureDay(departureDayDTO);
-        return new ResponseEntity<>("THÊM NGÀY KHỞI HÀNH THÀNH CÔNG!", HttpStatus.CREATED);
-    }
-
-    @GetMapping("/departure-day")
-    public ResponseEntity<DepartureDay> getDepartureDay(@RequestParam Long id) {
+    @GetMapping("/departure-days/{id}")
+    public ResponseEntity<DepartureDay> getDepartureDay(@PathVariable Long id) {
         return new ResponseEntity<>(departureDayService.getDepartureDay(id), HttpStatus.OK);
     }
 
@@ -34,18 +28,8 @@ public class DepartureDayController {
         return new ResponseEntity<>(departureDayService.getDepartureDays(), HttpStatus.OK);
     }
 
-    @GetMapping("/tour/{tourId}/departure-days")
+    @GetMapping("/departure-days/tours/{tourId}")
     public ResponseEntity<List<DepartureDay>> getDepartureDaysByTourId(@PathVariable Long tourId) {
         return new ResponseEntity<>(departureDayService.getDepartureDaysByTourId(tourId), HttpStatus.OK);
-    }
-
-    @PutMapping("/admin/update-departure-day")
-    public ResponseEntity<DepartureDay> updateDepartureDay(@Valid @RequestBody DepartureDayDTO departureDayDTO, @RequestParam Long id) {
-        return new ResponseEntity<>(departureDayService.updateDepartureDay(departureDayDTO, id), HttpStatus.OK);
-    }
-
-    @PutMapping("/admin/update-departure-day-status")
-    public ResponseEntity<DepartureDay> updateDepartureDayStatus(@RequestParam Long id) {
-        return new ResponseEntity<>(departureDayService.updateDepartureDayStatus(id), HttpStatus.OK);
     }
 }

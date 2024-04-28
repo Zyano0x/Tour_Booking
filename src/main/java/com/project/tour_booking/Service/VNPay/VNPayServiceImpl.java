@@ -2,26 +2,30 @@ package com.project.tour_booking.Service.VNPay;
 
 import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Security.VNPayConfig;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.project.tour_booking.Security.VNPayConfig.vnp_Command;
 import static com.project.tour_booking.Security.VNPayConfig.vnp_Version;
 
 @Service
 public class VNPayServiceImpl implements VNPayService {
     @Override
-    public ResponseEntity<?> createPayment(BookingDTO bookingDTO) throws UnsupportedEncodingException {
+    public Map<String, String> createPayment(BookingDTO bookingDTO) {
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
+        String vnp_Command = "pay";
         String vnp_IpAddr = "127.0.0.1";
 
         Map<String, String> vnp_Params = new HashMap<>();
@@ -32,7 +36,7 @@ public class VNPayServiceImpl implements VNPayService {
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_BankCode", "");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+        vnp_Params.put("vnp_OrderInfo", "Thanh toan giao dich:" + vnp_TxnRef);
         vnp_Params.put("vnp_OrderType", "other");
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
@@ -55,7 +59,7 @@ public class VNPayServiceImpl implements VNPayService {
         while (itr.hasNext()) {
             String fieldName = (String) itr.next();
             String fieldValue = vnp_Params.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+            if ((fieldValue != null) && (!fieldValue.isEmpty())) {
                 //Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
@@ -76,6 +80,6 @@ public class VNPayServiceImpl implements VNPayService {
         String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + queryUrl;
         Map<String, String> response = new HashMap<>();
         response.put("paymentUrl", paymentUrl);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return response;
     }
 }

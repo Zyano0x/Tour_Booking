@@ -6,7 +6,7 @@ import com.project.tour_booking.DTO.DepartureDayDTO;
 import com.project.tour_booking.Entity.DepartureDay;
 
 public interface DepartureDayService {
-  void saveDepartureDay(DepartureDayDTO departureDayDTO);
+  DepartureDay saveDepartureDay(DepartureDayDTO departureDayDTO);
 
   DepartureDay getDepartureDay(Long departureDayId);
 

@@ -1,35 +1,31 @@
-document.querySelector("#form-login").addEventListener('submit', function (event) {
+document.querySelector("#form-login").addEventListener('submit', async function (event) {
     event.preventDefault();
 
     let email = document.querySelector('#email').value;
     let password = document.querySelector('#password').value;
 
-    login(email, password);
+    await login(email, password);
 });
 
-function login(email, password) {
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+async function login(email, password) {
+    try {
+        const res = await fetch("/api/v1/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        });
 
-    let raw = JSON.stringify({
-        email: email,
-        password: password,
-    });
-
-    let requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-    };
-
-    fetch("/api/auth/login", requestOptions)
-        .then((response) => {
-            if (response.ok) return response.json();
-            else throw new Error("Error: " + response.statusText);
-        })
-        .then((result) => {
-            window.location.href = "/";
-        })
-        .catch((error) => console.error("Login Error:", error.message));
+        if (res.status === 200) {
+            window.setTimeout(() => {
+                window.location.assign("/");
+            }, 1500);
+        }
+    } catch (err) {
+        console.error(err);
+    }
 }

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/admin/users")
+        fetch("/api/v1/admin/users-manage")
             .then(response => response.json())
             .then(data => {
                 fetchTableUser(data);
@@ -8,24 +8,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 eyeAction();
                 lockAction();
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchUserDetails(email) {
-        const url = `/api/admin/user?email=${encodeURIComponent(email)}`;
-        console.log('Requesting user details:', url);
-
+        const url = `/api/v1/admin/users/${encodeURIComponent(email)}`;
         fetch(url)
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('Received data:', data);
                 fetchDataModal(data);
                 $('#exampleModal').modal('show'); // Show the modal
             })
-            .catch(error => console.error('Error fetching user details:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchTableUser(data) {
@@ -64,10 +58,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function lockAction() {
         document.querySelectorAll('.lock-icon').forEach(item => {
-            item.addEventListener('click', event => {
+            item.addEventListener('click', async event => {
                 event.preventDefault();
-                let email = item.parentElement.parentElement.querySelector('td:nth-child(3)').innerText;
-                updateStatus(email);
+                let id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
+                await updateStatus(id);
             });
         });
     }
@@ -76,21 +70,20 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-function updateStatus(email) {
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "text/plain");
-
-    let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: email,
-        redirect: 'follow'
-    };
-
-    fetch("/api/admin/update-user-status", requestOptions)
-        .then(response => response.json())
-        .then(result => console.log(result))
-        .catch(error => console.log('Error updating user status:', error));
+async function updateStatus(id) {
+    try {
+        await fetch(`/api/v1/admin/update-user-status/${encodeURIComponent(id)}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+            }),
+        });
+    } catch (e) {
+        console.error( e);
+    }
 }
 
 function fetchDataModal(data) {

@@ -18,10 +18,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "destinations")
-@Setter
-@Getter
+@Data
 @Builder
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class Destination {

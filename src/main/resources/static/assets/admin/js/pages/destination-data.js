@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/destinations")
+        fetch("/api/v1/destinations")
             .then(response => response.json())
             .then(data => {
                 fetchTableDestination(data);
@@ -12,20 +12,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchDestinationDetails(id) {
-        const url = `/api/destination?id=${encodeURIComponent(id)}`;
-        console.log('Requesting type details:', url);
+        const url = `/api/v1/destinations/${encodeURIComponent(id)}`;
 
         fetch(url)
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('Received data:', data);
                 fetchDestinationDetailsModal(data);
                 $('#destinationDetailsModalScrollable').modal('show'); // Show the modal
             })
-            .catch(error => console.error('Error fetching type details:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchTableDestination(data) {
@@ -66,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', event => {
                 event.preventDefault();
                 const id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                const url = `/api/admin/update-destination-status?id=${encodeURIComponent(id)}`;
+                const url = `/api/v1/admin/update-destination-status/${encodeURIComponent(id)}`;
 
                 let myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
@@ -91,80 +86,71 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(fetchData, 1000);
 });
 
-document.getElementById('update-destination').addEventListener('click', function(event) {
-    event.preventDefault();
+async function updateDestination() {
+    try {
+        const id = document.getElementById('id').value;
+        const name = document.getElementById('name').value;
+        const isHot = document.getElementById('isHot').value;
+        const status = document.getElementById('status').value;
+        const thumbnail = document.getElementById('thumbnail').value;
 
-    const id = document.getElementById('id').value;
-    const url = `/api/admin/update-destination?id=${encodeURIComponent(id)}`;
+        const res = await fetch(`/api/v1/admin/update-destinations/${encodeURIComponent(id)}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                isHot,
+                status,
+                thumbnail,
+            })
+        });
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const name = document.getElementById('name').value;
-    const isHot = document.getElementById('isHot').value;
-    const status = document.getElementById('status').value;
-    const thumbnail = document.getElementById('thumbnail').value;
-
-    let raw = JSON.stringify({
-        "name": name,
-        "isHot": isHot,
-        "status": status,
-        "thumbnail": thumbnail
-    });
-
-    let requestOptions = {
-        method: 'PUT',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-
-    fetch(url, requestOptions)
-        .then(response => {
-            if (response.ok) return response.json();
-            else throw new Error('Failed to update destination. Status: ' + response.status);
-        })
-        .then(result => {
+        if (res.status === 200) {
             showToast('Succeed Update Destination', 'Success', 'green');
             $('#destinationDetailsModalScrollable').modal('hide');
-        })
-        .catch(error => showToast('Failed Update Destination', 'Error', 'red'));
-})
-
-document.getElementById('add-destination').addEventListener('click', function(event) {
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+document.getElementById('update-destination').addEventListener('click', async function(event) {
     event.preventDefault();
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    await updateDestination();
+})
 
-    const name = document.getElementById('_name').value;
-    const isHot = document.getElementById('_isHot').value;
-    const thumbnail = document.getElementById('_thumbnail').value;
+async function addDestination() {
+    try {
+        const name = document.getElementById('_name').value;
+        const isHot = document.getElementById('_isHot').value;
+        const thumbnail = document.getElementById('_thumbnail').value;
 
-    let raw = JSON.stringify({
-        "name": name,
-        "isHot": isHot,
-        "thumbnail": thumbnail,
-    });
+        const res = await fetch("/api/v1/admin/destinations", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                isHot,
+                thumbnail,
+            })
+        });
 
-    let requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-
-    // Make the API request
-    fetch("/api/admin/destination", requestOptions)
-        .then(response => {
-            if (response.ok) return response.text();
-            else throw new Error('Failed to add destination. Status: ' + response.status);
-        })
-        .then(result => {
+        if (res.status === 201) {
             showToast('Succeed Add Destination', 'Success', 'green');
             $('#newDestinationModalScrollable').modal('hide');
-        })
-        .catch(error => showToast('Failed Add Destination', 'Error', 'red'));
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+document.getElementById('add-destination').addEventListener('click', async function(event) {
+    event.preventDefault();
+
+    await addDestination();
 })
 
 function fetchDestinationDetailsModal(data) {

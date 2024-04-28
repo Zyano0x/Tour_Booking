@@ -26,7 +26,7 @@ async function renderArticles(perArticles, fatherBlock) {
                             <div class="col-lg-6 col-md-6">
                                 <div class="article_list_desc list_desc">
                                     <div class="rating">
-                                        ${await renderRating(`/api/article/${perArticle.id}/article-reviews`)}
+                                        ${await renderRating(`/api/v1/article-reviews/articles/${perArticle.id}`)}
                                     </div>
                                     <h4><strong>${perArticle.title}</strong></h4>
                                     <p>${perArticle.description}</p>
@@ -174,7 +174,7 @@ async function handleGetArticles(callBack, fatherBlockSelector) {
     try {
         const fatherBlock = document.querySelector(fatherBlockSelector);
         if (fatherBlock) {
-            await getApi("/api/articles/all", "NotCallBack")
+            await getApi("/api/v1/articles", "NotCallBack")
                 .then(data => callBack(data.reverse(), fatherBlock))
                 .catch(error => { throw new Error(error) });
         } else {
@@ -246,7 +246,7 @@ async function funcSortByRatingDec() {
         articles.map(async (article) => {
             return {
                 article,
-                reviewScore: await getReviewScore(`/api/article/${article.id}/article-reviews`),
+                reviewScore: await getReviewScore(`/api/v1/article-reviews/articles/${article.id}`),
             };
         })
     )).sort((a, b) => b.reviewScore - a.reviewScore).map(item => item.article);
@@ -257,7 +257,7 @@ async function funcSortByRatingInc() {
         articles.map(async (article) => {
             return {
                 article,
-                reviewScore: await getReviewScore(`/api/article/${article.id}/article-reviews`),
+                reviewScore: await getReviewScore(`/api/v1/article-reviews/articles/${article.id}`),
             };
         })
     )).sort((a, b) => a.reviewScore - b.reviewScore).map(item => item.article);

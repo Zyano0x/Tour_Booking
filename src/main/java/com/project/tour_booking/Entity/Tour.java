@@ -14,10 +14,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "tour")
-@Setter
-@Getter
+@Data
 @Builder
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tour {

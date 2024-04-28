@@ -89,14 +89,14 @@ async function handleRenderValidBookings(fatherBlock) {
             let htmls = ``;
             let departureDayCurrent = bookings[i].departureDay;
 
-            if (bookings[i].status && compareDateNow(departureDayCurrent.departureDay) == 1) {
+            if (bookings[i].status && new Date(departureDayCurrent.departureDay) > new Date()) {
                 let tour = departureDayCurrent.tour;
-                let departureDays = await getApi(`/api/tour/${tour.id}/departure-days`);
+                let departureDays = await getApi(`/api/v1/departure-days/tours/${tour.id}`);
 
                 // Lọc departureDays dựa trên các điều kiện
                 departureDays = departureDays.filter(departureDay => departureDay.status &&
-                    compareDateNow(departureDay.departureDay) == 1 &&
-                    departureDay.quantity > 0 && departureDay.id != departureDayCurrent.id);
+                    new Date(departureDay.departureDay) > new Date() &&
+                    departureDay.quantity > 0 && departureDay.id !== departureDayCurrent.id);
 
                 // Kiểm tra departureDayCurrent.quantity và thêm nó vào mảng nếu cần
                 departureDays.push(departureDayCurrent);
@@ -228,7 +228,7 @@ async function renderExpiredBookings(fatherBlock) {
             let htmls = ``;
             let departureDayCurrent = bookings[i].departureDay;
 
-            if (bookings[i].status && compareDateNow(departureDayCurrent.departureDay) != 1) {
+            if (bookings[i].status && new Date(departureDayCurrent.departureDay) < new Date()) {
                 let tour = departureDayCurrent.tour;
 
                 htmls += `
@@ -360,7 +360,7 @@ function CancelBooking() {
         if (cancelBtns.length > 0) {
             for (const cancelBtn of cancelBtns) {
                 cancelBtn.addEventListener("click", async function () {
-                    let booking = await getApi(`/api/booking/${cancelBtn.parentNode.dataset.booking}`);
+                    let booking = await getApi(`/api/v1/bookings/${cancelBtn.parentNode.dataset.booking}`);
                     let htmls = `
                     <div class="custom-prompt" id="customPrompt">
                         <div class="prompt-content">
@@ -386,10 +386,10 @@ function CancelBooking() {
                     document.querySelector(".action-btn.cancel-btn").addEventListener("click", function () {
                         dialog.parentNode.removeChild(dialog);
                     });
-                    document.querySelector(".action-btn.update-btn").addEventListener("click", function () {
+                    document.querySelector(".action-btn.update-btn").addEventListener("click", async function () {
                         dialog.parentNode.removeChild(dialog);
-                        alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", 'Email xác nhận đã được gửi!');
-                        const url = `/api/update-booking-status?id=${cancelBtn.parentNode.dataset.booking}`;
+
+                        const url = `/api/v1/update-booking-status/${cancelBtn.parentNode.dataset.booking}`;
                         fetch(url, {
                             method: "PUT",
                             headers: {
@@ -401,6 +401,7 @@ function CancelBooking() {
                             .catch((error) => {
                                 console.error("Error creating payment:", error);
                             });
+                        alertFunc("fa-solid fa-circle-check", "#5cc41a", "#dafbb9", 'Email xác nhận đã được gửi!');
                     });
                 });
             }
@@ -421,7 +422,7 @@ function UpdateBooking() {
         if (selectedOptions.length > 0) {
             for (const selectedOption of selectedOptions) {
                 let bookingId = selectedOption.parentNode.parentNode.id.slice().substring("departureDays".length);
-                const url = `/api/update-booking/${bookingId}`;
+                const url = `/api/v1/update-bookings/${bookingId}`;
 
                 const updateBtn = document.querySelector(`.update${bookingId}`);
 
@@ -434,8 +435,8 @@ function UpdateBooking() {
                         const children = updateBtn.parentNode.parentNode.querySelector(".children-quantity");
                         let totalQuantity = parseInt(adult.textContent) + parseInt(children.textContent);
 
-                        if (selectDepartureId != presentDepartureId) {
-                            if (parseInt((await getApi(`/api/departure-day?id=${selectDepartureId}`, "NotCallBack")).quantity) < totalQuantity) {
+                        if (selectDepartureId !== presentDepartureId) {
+                            if (parseInt((await getApi(`/api/v1/departure-days/${selectDepartureId}`, "NotCallBack")).quantity) < totalQuantity) {
                                 alertFunc("fa-solid fa-circle-exclamation", "#faad14", "#fbf1be", "Số lượng vé đã vượt quá số lượng vé còn lại!");
                             } else {
                                 let myHeaders = new Headers();
@@ -497,7 +498,7 @@ function departureTimeByChangeDepartureDay() {
 import { compareDateNow, dateFormatConvert, ddslick, getApi, moneyFormat, renderDepartureDropList, alertFunc, getDepartureTime } from './global_function.js';
 
 async function start() {
-    bookings = await getApi(`/api/user/${document.head.dataset.userid}/bookings`);
+    bookings = await getApi(`/api/v1/bookings/users/${document.head.dataset.userid}`);
     if (bookings.length > 0) {
         handleGetBooking();
     }

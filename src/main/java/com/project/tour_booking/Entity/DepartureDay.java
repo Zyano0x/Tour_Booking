@@ -32,7 +32,7 @@ public class DepartureDay {
     private Integer quantity;
 
     @NonNull
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "departure_day")
     @ValidDepartureDay(message = "Ngày khởi hành phải sau ngày khởi tạo!")
     private LocalDate departureDay;

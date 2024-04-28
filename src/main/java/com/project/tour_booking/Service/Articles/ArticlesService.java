@@ -16,5 +16,5 @@ public interface ArticlesService {
 
     Articles updateArticles(@Valid Articles articlesDTO, Long articlesId);
 
-    void updateArticlesStatus(Long articlesId);
+    Articles updateArticlesStatus(Long articlesId);
 }

@@ -83,7 +83,7 @@ async function renderTours(perTours, fatherBlock) {
               <div class="col-lg-6 col-md-6">
               <div class="list_desc">
                   <div class="rating">
-                    ${await renderRating(`/api/tour/${perTour.id}/tour-reviews`)}
+                    ${await renderRating(`/api/v1/tour-reviews/tours/${perTour.id}`)}
                   </div>
                   <h4><strong>${perTour.name}</strong></h4>
                   <p>${perTour.description}</p>
@@ -216,7 +216,7 @@ function handleRenderTours(data, fatherBlock) {
     tours = data.slice(); // Có thể thay đổi
 
     // Lọc tours theo destination từ trang chủ
-    if (destinationFilter && destinationFilter != '') {
+    if (destinationFilter && destinationFilter !== '') {
       tours = tours.filter(tour => tour.destination.id == destinationFilter);
       presentOriginTours = tours.slice();
     }
@@ -297,7 +297,7 @@ async function funcSortByRatingDec() {
     tours.map(async (tour) => {
       return {
         tour,
-        reviewScore: await getReviewScore(`/api/tour/${tour.id}/tour-reviews`),
+        reviewScore: await getReviewScore(`/api/v1/tour-reviews/tours/${tour.id}`),
       };
     })
   )).sort((a, b) => b.reviewScore - a.reviewScore).map(item => item.tour);
@@ -308,7 +308,7 @@ async function funcSortByRatingInc() {
     tours.map(async (tour) => {
       return {
         tour,
-        reviewScore: await getReviewScore(`/api/tour/${tour.id}/tour-reviews`),
+        reviewScore: await getReviewScore(`/api/v1/tour-reviews/tours/${tour.id}`),
       };
     })
   )).sort((a, b) => a.reviewScore - b.reviewScore).map(item => item.tour);
@@ -366,22 +366,22 @@ async function funcToursFilter() {
     const filterDestination = document.querySelector("#destinationsDropList .dd-option-selected .dd-option-value");
     const filterTOT = document.querySelector("#typeOfTourDropList .dd-option-selected .dd-option-value");
 
-    if (filterDestination && filterDestination.value != '0') {
+    if (filterDestination && filterDestination.value !== '0') {
       tours = tours.filter(tour => {
-        return tour.destination.id == filterDestination.value;
+        return tour.destination.id === filterDestination.value;
       });
     }
-    if (filterTOT && filterTOT.value != '0') {
+    if (filterTOT && filterTOT.value !== '0') {
       tours = tours.filter(tour => {
-        return tour.typeOfTour.id == filterTOT.value;
+        return tour.typeOfTour.id === filterTOT.value;
       });
     }
-    if (filterDatePick && filterDatePick.value != '') {
+    if (filterDatePick && filterDatePick.value !== '') {
       let temp = [];
 
       for (const tour of tours) {
-        let departureDays = await getApi(`/api/tour/${tour.id}/departure-days`);
-        departureDays = departureDays.filter(departureDay => departureDay.status && compareDates(departureDay.departureDay, filterDatePick.value) === 0);
+        let departureDays = await getApi(`/api/v1/departure-days/tours/${tour.id}`);
+        departureDays = departureDays.filter(departureDay => departureDay.status && compareDates(departureDay.departureDay, filterDatePick.value));
         if (departureDays.length > 0) {
           temp.push(tour);
         }
@@ -457,8 +457,8 @@ import {
 } from './global_function.js';
 
 async function start() {
-  handleGetData("/api/tours", handleRenderTours, "#tours_list");
-  Promise.all([getDropList("/api/destinations", renderSearchDropList, "#destinationsDropList", "walking.png"), getDropList("/api/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png")]).then(data => handleToursFilter("#tours_list")).catch(error => console.log(">>> Error: " + error.message));
+  handleGetData("/api/v1/tours", handleRenderTours, "#tours_list");
+  Promise.all([getDropList("/api/v1/destinations", renderSearchDropList, "#destinationsDropList", "walking.png"), getDropList("/api/v1/types-of-tours", renderSearchDropList, "#typeOfTourDropList", "all_tours.png")]).then(data => handleToursFilter("#tours_list")).catch(error => console.log(">>> Error: " + error.message));
 }
 
 document.addEventListener("DOMContentLoaded", function () {

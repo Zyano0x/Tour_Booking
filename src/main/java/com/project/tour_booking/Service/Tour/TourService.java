@@ -16,5 +16,5 @@ public interface TourService {
 
   Tour updateTour(TourDTO tourDTO, Long tourId);
 
-  void updateTourStatus(Long tourId);
+  Tour updateTourStatus(Long tourId);
 }

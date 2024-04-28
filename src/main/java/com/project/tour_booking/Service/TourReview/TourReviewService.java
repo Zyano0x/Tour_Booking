@@ -6,15 +6,13 @@ import com.project.tour_booking.DTO.TourReviewDTO;
 import com.project.tour_booking.Entity.TourReview;
 
 public interface TourReviewService {
-  void saveTourReview(TourReviewDTO tourReviewDTO);
+  TourReview saveTourReview(TourReviewDTO tourReviewDTO);
 
   TourReview getTourReview(Long tourReviewId);
 
   TourReview getTourReviewByTourIdAndUserId(Long tourId, Long userId);
 
   List<TourReview> getAllTourReviewByTourId(Long tourId);
-
-  // String getRatingByTourId(Long tourId);
 
   List<TourReview> getAllTourReviewByUserId(Long userId);
 

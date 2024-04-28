@@ -12,6 +12,8 @@ import com.project.tour_booking.Repository.DepartureDayRepository;
 import com.project.tour_booking.Repository.DestinationRepository;
 import com.project.tour_booking.Repository.TourRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,27 +22,30 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DestinationServiceImpl implements DestinationService {
-    private DestinationRepository destinationRepository;
-    private TourRepository tourRepository;
-    private DepartureDayRepository departureDayRepository;
-    private BookingRepository bookingRepository;
+    private final DestinationRepository destinationRepository;
+    private final TourRepository tourRepository;
+    private final DepartureDayRepository departureDayRepository;
+    private final BookingRepository bookingRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public void saveDestination(DestinationDTO destinationDTO) {
-        Destination destination = new Destination();
-        destination.setName(destinationDTO.getName());
-        destination.setThumbnail(destinationDTO.getThumbnail());
+    public Destination saveDestination(DestinationDTO destinationDTO) {
+        Destination destination = modelMapper.map(destinationDTO, Destination.class);
         destination.setStatus(true);
-        destination.setIsHot(destinationDTO.getIsHot());
+
         destinationRepository.save(destination);
+
+        return destination;
     }
 
     @Override
     public Destination getDestination(Long destinationId) {
         Optional<Destination> destinationOptional = destinationRepository.findById(destinationId);
-        if (destinationOptional.isPresent()) return destinationOptional.get();
+        if (destinationOptional.isPresent()) {
+            return destinationOptional.get();
+        }
         else throw new DestinationNotFoundException(destinationId);
     }
 
@@ -51,34 +56,31 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     public Destination updateDestination(Destination destination, Long destinationId) {
-        Optional<Destination> destinationOptional = destinationRepository.findById(destinationId);
+        Optional<Destination> destinationOpt = destinationRepository.findById(destinationId);
+        if (destinationOpt.isPresent()) {
+            Destination currDestination = destinationOpt.get();
+            currDestination.setName(destination.getName());
+            currDestination.setThumbnail(destination.getThumbnail());
+            currDestination.setIsHot(destination.getIsHot());
 
-        if (destinationOptional.isPresent()) {
-            Destination updateDestination = destinationOptional.get();
-
-            updateDestination.setName(destination.getName());
-            updateDestination.setThumbnail(destination.getThumbnail());
-            updateDestination.setIsHot(destination.getIsHot());
-
-            if (updateDestination.getStatus() != destination.getStatus()) {
-                updateDestination.setStatus(destination.getStatus());
-
-                if (!updateDestination.getStatus()) {
+            if (currDestination.getStatus() != destination.getStatus()) {
+                currDestination.setStatus(destination.getStatus());
+                if (!currDestination.getStatus()) {
                     // Tìm và disable các tour thuộc địa điểm
-                    List<Tour> tours = tourRepository.findAllByDestinationId(destinationId).stream().filter(tour -> tour.getStatus()).collect(Collectors.toList());
+                    List<Tour> tours = tourRepository.findAllByDestinationId(destinationId).stream().filter(Tour::getStatus).toList();
                     if (!tours.isEmpty()) {
                         for (Tour tour : tours) {
                             tour.setStatus(false);
 
                             // Chỉ hủy các ngày khởi hành còn hạn và đang được kích hoạt
-                            List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tour.getId()).stream().filter(departureDay -> departureDay.getStatus() && departureDay.getDepartureDay().isAfter(LocalDate.now())).collect(Collectors.toList());
+                            List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tour.getId()).stream().filter(departureDay -> departureDay.getStatus() && departureDay.getDepartureDay().isAfter(LocalDate.now())).toList();
                             for (DepartureDay departureDay : departureDays) {
                                 departureDay.setStatus(false);
 
                                 // Hủy các booking liên quan
-                                List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId()).stream().filter(booking -> booking.getStatus()).collect(Collectors.toList());
+                                List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId()).stream().filter(Booking::getStatus).toList();
                                 if (!bookings.isEmpty()) {
-                                    Integer totalQuantity = 0;
+                                    int totalQuantity = 0;
                                     for (Booking booking : bookings) {
                                         booking.setStatus(false);
                                         bookingRepository.save(booking);
@@ -89,14 +91,13 @@ public class DestinationServiceImpl implements DestinationService {
                                 }
                                 departureDayRepository.save(departureDay);
                             }
-
                             tourRepository.save(tour);
                         }
                     }
                 }
             }
-
-            return destinationRepository.save(updateDestination);
+            destinationRepository.save(currDestination);
+            return currDestination;
         } else throw new TypeOfTourNotFoundException(destinationId);
     }
 
@@ -110,21 +111,21 @@ public class DestinationServiceImpl implements DestinationService {
                 updateDestination.setIsHot(false);
 
                 // Tìm và disable các tour thuộc địa điểm
-                List<Tour> tours = tourRepository.findAllByDestinationId(destinationId).stream().filter(tour -> tour.getStatus()).collect(Collectors.toList());
+                List<Tour> tours = tourRepository.findAllByDestinationId(destinationId).stream().filter(Tour::getStatus).toList();
                 if (!tours.isEmpty()) {
                     for (Tour tour : tours) {
                         tour.setStatus(false);
 
                         // Chỉ hủy các ngày khởi hành còn hạn và đang được kích hoạt
-                        List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tour.getId()).stream().filter(departureDay -> departureDay.getStatus() && departureDay.getDepartureDay().isAfter(LocalDate.now())).collect(Collectors.toList());
+                        List<DepartureDay> departureDays = departureDayRepository.findAllByTourId(tour.getId()).stream().filter(departureDay -> departureDay.getStatus() && departureDay.getDepartureDay().isAfter(LocalDate.now())).toList();
                         if (!departureDays.isEmpty()) {
                             for (DepartureDay departureDay : departureDays) {
                                 departureDay.setStatus(false);
 
                                 // Hủy các booking liên quan
-                                List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId()).stream().filter(booking -> booking.getStatus()).collect(Collectors.toList());
+                                List<Booking> bookings = bookingRepository.findAllByDepartureDayId(departureDay.getId()).stream().filter(Booking::getStatus).toList();
                                 if (!bookings.isEmpty()) {
-                                    Integer totalQuantity = 0;
+                                    int totalQuantity = 0;
                                     for (Booking booking : bookings) {
                                         booking.setStatus(false);
                                         bookingRepository.save(booking);
@@ -136,15 +137,14 @@ public class DestinationServiceImpl implements DestinationService {
                                 departureDayRepository.save(departureDay);
                             }
                         }
-
                         tourRepository.save(tour);
                     }
                 }
             } else {
                 updateDestination.setStatus(true);
             }
-
-            return destinationRepository.save(updateDestination);
+            destinationRepository.save(updateDestination);
+            return updateDestination;
         } else throw new DestinationNotFoundException(destinationId);
     }
 }

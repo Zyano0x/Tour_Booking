@@ -3,6 +3,8 @@ package com.project.tour_booking.Service.Slide;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.project.tour_booking.DTO.SliderDTO;
@@ -13,16 +15,17 @@ import com.project.tour_booking.Repository.SliderRepository;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SliderServiceImpl implements SliderService {
-    private SliderRepository sliderRepository;
+    private final SliderRepository sliderRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public void savSlider(SliderDTO sliderDTO) {
-        Slider slider = new Slider();
-        slider.setPath(sliderDTO.getPath());
+    public Slider savSlider(SliderDTO sliderDTO) {
+        Slider slider = modelMapper.map(sliderDTO, Slider.class);
         slider.setStatus(false);
         sliderRepository.save(slider);
+        return slider;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class SliderServiceImpl implements SliderService {
     }
 
     @Override
-    public void updateSliderStatus(Long sliderId) {
+    public Slider updateSliderStatus(Long sliderId) {
         Optional<Slider> sliderOptional = sliderRepository.findById(sliderId);
         if (sliderOptional.isPresent()) {
             if (!sliderOptional.get().getStatus()) {
@@ -66,6 +69,7 @@ public class SliderServiceImpl implements SliderService {
             }
             sliderOptional.get().setStatus(!sliderOptional.get().getStatus());
             sliderRepository.save(sliderOptional.get());
+            return sliderOptional.get();
         } else {
             throw new SliderNotFoundException(sliderId);
         }

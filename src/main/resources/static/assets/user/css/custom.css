@@ -773,6 +773,8 @@ th {
 #article-content img {
     margin: auto;
     display: block;
+    width: 100%;
+    height: 750px;
 }
 
 #article-content i {

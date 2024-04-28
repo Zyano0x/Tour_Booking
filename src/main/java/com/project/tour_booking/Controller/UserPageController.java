@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 @AllArgsConstructor
-public class PageController {
+public class UserPageController {
     private UserService userService;
 
     @GetMapping

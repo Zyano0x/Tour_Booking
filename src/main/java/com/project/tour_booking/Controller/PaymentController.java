@@ -3,9 +3,11 @@ package com.project.tour_booking.Controller;
 import com.project.tour_booking.DTO.BookingDTO;
 import com.project.tour_booking.Service.Booking.BookingService;
 import com.project.tour_booking.Service.VNPay.VNPayService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,17 +15,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/v1/payment")
 @RequiredArgsConstructor
 public class PaymentController {
     private final VNPayService vnPayService;
     private final BookingService bookingService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPayment(@RequestBody BookingDTO bookingDTO, HttpSession session)
-            throws UnsupportedEncodingException {
+    public ResponseEntity<?> createPayment(@RequestBody BookingDTO bookingDTO, HttpSession session) {
         session.setAttribute("BookingInfo", bookingDTO);
-        return vnPayService.createPayment(bookingDTO);
+        return new ResponseEntity<>(vnPayService.createPayment(bookingDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/payment_info")

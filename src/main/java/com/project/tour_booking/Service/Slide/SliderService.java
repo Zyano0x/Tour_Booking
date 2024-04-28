@@ -6,7 +6,7 @@ import com.project.tour_booking.DTO.SliderDTO;
 import com.project.tour_booking.Entity.Slider;
 
 public interface SliderService {
-    void savSlider(SliderDTO sliderDTO);
+    Slider savSlider(SliderDTO sliderDTO);
 
     Slider getSlider(Long sliderId);
 
@@ -14,5 +14,5 @@ public interface SliderService {
 
     Slider updateSlider(Slider slider, Long sliderId);
 
-    void updateSliderStatus(Long sliderId);
+    Slider updateSliderStatus(Long sliderId);
 }

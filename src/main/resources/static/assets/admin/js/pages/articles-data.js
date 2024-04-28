@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fetchData() {
-        fetch("/api/articles/all")
+        fetch("/api/v1/articles")
             .then(response => response.json())
             .then(data => {
                 fetchTableArticles(data);
@@ -8,23 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 eyeAction();
                 lockAction();
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchArticlesDetails(id) {
-        const url = `/api/articles?id=${encodeURIComponent(id)}`;
-        console.log('Requesting articles details:', url);
+        const url = `/api/v1/articles/${encodeURIComponent(id)}`;
 
         fetch(url)
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 fetchArticlesDetailsModal(data);
                 $('#articlesDetailsModalScrollable').modal('show'); // Show the modal
             })
-            .catch(error => console.error('Error fetching type details:', error));
+            .catch(error => console.error(error));
     }
 
     function fetchTableArticles(data) {
@@ -65,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
             item.addEventListener('click', event => {
                 event.preventDefault();
                 const id = item.parentElement.parentElement.querySelector('th[scope="row"]').innerText;
-                const url = `/api/admin/update-articles-status?id=${encodeURIComponent(id)}`;
+                const url = `/api/v1/admin/update-articles-status/${encodeURIComponent(id)}`;
 
                 let myHeaders = new Headers();
                 myHeaders.append("Content-Type", "application/json");
@@ -74,9 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
 
                 fetch(url, requestOptions)
-                    .then(response => {
-                        if (response.ok) return response.json(); else throw new Error("Error Status: " + response.status);
-                    })
+                    .then(response => response.json())
                     .then(result => console.log(result))
                     .catch(error => console.log('Error updating status:', error));
             });
@@ -89,69 +83,79 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const ckEditorInstances = new Map();
 
-document.getElementById('update-articles').addEventListener('click', function (event) {
-    event.preventDefault();
+async function updateArticles() {
+    try {
+        const id = document.getElementById('id').value;
+        const title = document.getElementById('title').value;
+        const status = document.getElementById('status').value;
+        const thumbnail = document.getElementById('thumbnail').value;
+        const description = ckEditorInstances.get(document.getElementById('description')).getData();
+        const content = ckEditorInstances.get(document.getElementById('content')).getData();
 
-    const id = document.getElementById('id').value;
-    const url = `/api/admin/update-articles?id=${encodeURIComponent(id)}`;
+        const res = await fetch(`/api/v1/admin/update-articles/${encodeURIComponent(id)}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title,
+                content,
+                description,
+                thumbnail,
+                status
+            })
+        });
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const title = document.getElementById('title').value;
-    const status = document.getElementById('status').value;
-    const thumbnail = document.getElementById('thumbnail').value;
-    const description = ckEditorInstances.get(document.getElementById('description')).getData();
-    const content = ckEditorInstances.get(document.getElementById('content')).getData();
-
-    let raw = JSON.stringify({
-        "title": title, "content": content, "description": description, "thumbnail": thumbnail, "status": status
-    });
-
-    let requestOptions = {
-        method: 'PUT', headers: myHeaders, body: raw, redirect: 'follow'
-    };
-
-    fetch(url, requestOptions)
-        .then(response => {
-            if (response.ok) return response.json(); else throw new Error("Error Status: " + response.status);
-        })
-        .then(result => {
+        if (res.status === 200) {
             showToast('Succeed Update Articles', 'Success', 'green');
             $('#articlesDetailsModalScrollable').modal('hide');
-        })
-        .catch(error => showToast('Failed Update Articles', 'Error', 'red'));
-})
-
-document.getElementById('add-articles').addEventListener('click', function (event) {
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Failed Update Articles', 'Error', 'red')
+    }
+}
+document.getElementById('update-articles').addEventListener('click', async function (event) {
     event.preventDefault();
 
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    await updateArticles();
+})
 
-    const title = document.getElementById('_title').value;
-    const content = document.getElementById('_content').value;
-    const description = document.getElementById('_description').value;
-    const thumbnail = document.getElementById('_thumbnail').value;
-    const id = document.head.getAttribute('data-user-id');
+async function addArticles() {
+    try {
+        const title = document.getElementById('_title').value;
+        const content = document.getElementById('_content').value;
+        const description = document.getElementById('_description').value;
+        const thumbnail = document.getElementById('_thumbnail').value;
+        const id = document.head.getAttribute('data-user-id');
 
-    let raw = JSON.stringify({
-        "title": title, "content": content, "thumbnail": thumbnail, "description": description, "userId": id
-    });
+        const res = await fetch("/api/v1/articles", {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title,
+                content,
+                thumbnail,
+                description,
+                userId: id
+            })
+        });
 
-    let requestOptions = {
-        method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
-    };
-
-    fetch("/api/post-articles", requestOptions)
-        .then(response => {
-            if (response.ok) return response.text(); else throw new Error("Error Status: " + response.status);
-        })
-        .then(result => {
+        if (res.status === 201) {
             showToast('Succeed Add Articles', 'Success', 'green');
             $('#newArticlesModalScrollable').modal('hide');
-        })
-        .catch(error => showToast('Failed Add Articles', 'Error', 'red'));
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Failed Add Articles', 'Error', 'red');
+    }
+}
+document.getElementById('add-articles').addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    await addArticles();
 });
 
 function fetchArticlesDetailsModal(data) {

@@ -1,29 +1,28 @@
 package com.project.tour_booking.Controller;
 
-import com.project.tour_booking.DTO.ResetPasswordDTO;
-import com.project.tour_booking.DTO.SignInDTO;
-import com.project.tour_booking.DTO.SignUpDTO;
+import com.project.tour_booking.DTO.*;
 import com.project.tour_booking.Service.User.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticateController {
 
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody SignInDTO signInDTO, HttpServletResponse response) {
-        return ResponseEntity.ok(userService.signIn(signInDTO, response));
+    public ResponseEntity<AuthenticationResponse> loginUser(@RequestBody SignInDTO signInDTO, HttpServletResponse response) {
+        return new ResponseEntity<>(userService.signIn(signInDTO, response), HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody SignUpDTO signUpDTO) {
-        return ResponseEntity.ok(userService.signUp(signUpDTO));
+    public ResponseEntity<UserDTO> registerUser(@RequestBody SignUpDTO signUpDTO) {
+        return new ResponseEntity<>(userService.signUp(signUpDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/confirm-account")
