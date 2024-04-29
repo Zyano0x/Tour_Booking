@@ -1,5 +1,6 @@
 package com.project.tour_booking.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -40,6 +41,7 @@ public class Articles {
     private String content;
 
     @NonNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date_of_posting")
     private LocalDate dateOfPosting;
 

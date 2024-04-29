@@ -89,6 +89,7 @@ async function updateArticles() {
         const title = document.getElementById('title').value;
         const status = document.getElementById('status').value;
         const thumbnail = document.getElementById('thumbnail').value;
+        const dateOfPosting = document.getElementById('posting').value
         const description = ckEditorInstances.get(document.getElementById('description')).getData();
         const content = ckEditorInstances.get(document.getElementById('content')).getData();
 
@@ -102,6 +103,7 @@ async function updateArticles() {
                 content,
                 description,
                 thumbnail,
+                dateOfPosting,
                 status
             })
         });

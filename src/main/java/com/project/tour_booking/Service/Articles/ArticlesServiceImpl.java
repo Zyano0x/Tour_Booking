@@ -61,6 +61,7 @@ public class ArticlesServiceImpl implements ArticlesService {
         updateArticles.setThumbnail(articles.getThumbnail());
         updateArticles.setContent(articles.getContent());
         updateArticles.setStatus(articles.getStatus());
+        updateArticles.setDateOfPosting(articles.getDateOfPosting());
         updateArticles.setEditDate(LocalDate.now());
 
         return articlesRepository.save(updateArticles);

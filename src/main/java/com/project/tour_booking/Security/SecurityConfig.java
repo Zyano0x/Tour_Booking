@@ -25,13 +25,19 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST = {
             "/assets/**",
             "/panel/login",
+            "/articles/**",
+            "/tours/**",
             "/api/v1/auth/**",
             "/api/v1/sliders",
             "/api/v1/destinations",
-            "/api/v1/articles",
-            "/api/v1/tours",
+            "/api/v1/articles/**",
+            "/api/v1/tour-images/**",
+            "/api/v1/departure-days/**",
+            "/api/v1/tours/**",
+            "/api/v1/types-of-tours",
             "/api/v1/article-reviews/**",
             "/api/v1/tour-reviews/**",
+            "/api/v1/users-by-id/**",
             "/*"
     };
 
